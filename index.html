@@ -295,7 +295,7 @@
 
   </div>
 
-  <footer>Oniva' SRL — Uso interno riservato · Dati aggiornati ad aprile 2026</footer>
+  <footer>Oniva' SRL — Uso interno riservato · Dati aggiornati al 15 aprile 2026</footer>
 
 </div>
 
@@ -345,35 +345,35 @@ if (sessionStorage.getItem('oniva_auth') === '1') {
 // ── DATI ─────────────────────────────────────────────────
 const RAW = {
   anni: [2021,2022,2023,2024,2025,2026],
-  viaggi: [44,140,313,375,388,130],
+  viaggi: [44,140,313,375,388,131],
   ricavi: [0,0,2201776,2624310,3679531,0],
   costi:  [0,0,2196188,2624704,3657020,0],
-  valore: [0,0,2388347,3271127,3910928,1506880],
+  valore: [0,0,2388347,3271127,3911288,1513130],
   tipoPerAnno: {
     2021:{HONEYMOON:13,'MULTI-TRAVELER':8,MYSTERY:11,'FAMILY+KIDS':3,WELFARE:9,ONE:0,'SOLO SERVIZI':0,ALTRO:0},
     2022:{HONEYMOON:59,'MULTI-TRAVELER':31,MYSTERY:33,'FAMILY+KIDS':11,WELFARE:1,ONE:0,'SOLO SERVIZI':5,ALTRO:0},
-    2023:{HONEYMOON:117,'MULTI-TRAVELER':83,MYSTERY:62,'FAMILY+KIDS':34,WELFARE:1,ONE:2,'SOLO SERVIZI':9,ALTRO:0},
-    2024:{HONEYMOON:172,'MULTI-TRAVELER':92,MYSTERY:43,'FAMILY+KIDS':40,WELFARE:0,ONE:2,'SOLO SERVIZI':16,ALTRO:0},
-    2025:{HONEYMOON:179,'MULTI-TRAVELER':105,MYSTERY:29,'FAMILY+KIDS':49,WELFARE:0,ONE:5,'SOLO SERVIZI':1,ALTRO:15},
-    2026:{HONEYMOON:76,'MULTI-TRAVELER':23,MYSTERY:4,'FAMILY+KIDS':9,WELFARE:0,ONE:3,'SOLO SERVIZI':0,ALTRO:15}
+    2023:{HONEYMOON:122,'MULTI-TRAVELER':83,MYSTERY:62,'FAMILY+KIDS':34,WELFARE:1,ONE:2,'SOLO SERVIZI':9,ALTRO:0},
+    2024:{HONEYMOON:182,'MULTI-TRAVELER':92,MYSTERY:43,'FAMILY+KIDS':40,WELFARE:0,ONE:2,'SOLO SERVIZI':16,ALTRO:0},
+    2025:{HONEYMOON:184,'MULTI-TRAVELER':105,MYSTERY:29,'FAMILY+KIDS':49,WELFARE:0,ONE:5,'SOLO SERVIZI':1,ALTRO:28},
+    2026:{HONEYMOON:83,'MULTI-TRAVELER':27,MYSTERY:5,'FAMILY+KIDS':9,WELFARE:0,ONE:3,'SOLO SERVIZI':0,ALTRO:4}
   },
   dest: [
-    {name:'Giappone',  n:193, v:1619060},
-    {name:'Polinesia', n:65,  v:1185485},
-    {name:'USA',       n:57,  v:611730},
-    {name:'Messico',   n:34,  v:352802},
-    {name:'Indonesia', n:30,  v:278672},
-    {name:'Australia', n:22,  v:268910},
-    {name:'Thailandia',n:19,  v:185831},
-    {name:'Turchia',   n:23,  v:94540},
-    {name:'Marocco',   n:22,  v:107768},
-    {name:'Peru',      n:14,  v:131045}
+    {name:'Giappone',      n:113, v:1051600},
+    {name:'USA+Polinesia', n:39,  v:709690},
+    {name:'Polinesia',     n:32,  v:663715},
+    {name:'USA',           n:43,  v:497304},
+    {name:'Messico',       n:22,  v:246657},
+    {name:'Peru',          n:20,  v:219271},
+    {name:'Indonesia',     n:17,  v:156327},
+    {name:'Australia',     n:10,  v:169390},
+    {name:'Marocco',       n:11,  v:55370},
+    {name:'Turchia',       n:10,  v:46275}
   ],
   // Pipeline 2026: valore mensile per origine
   pipeline2026: {
     mesi: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
-    da2025: [319990, 35388, 54830, 114642, 187945, 200475, 125980, 442990, 114985, 64195, 14750, 0],
-    da2026: [0, 0, 8040, 28000, 49620, 168150, 191130, 348570, 240160, 272360, 105060, 22330]
+    da2025: [320350, 35388, 54830, 114642, 187945, 200475, 125980, 442990, 114985, 64195, 14750, 0],
+    da2026: [0, 0, 8040, 28000, 49620, 174400, 191130, 348570, 240160, 272360, 105060, 22330]
   }
 };
 
