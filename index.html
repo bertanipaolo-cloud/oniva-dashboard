@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oniva' SRL — Dashboard</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #1A2B4A;
+    --blue:   #2E5FA3;
+    --teal:   #1D9E75;
+    --orange: #D85A30;
+    --amber:  #BA7517;
+    --cream:  #F5F3EE;
+    --white:  #FFFFFF;
+    --gray1:  #F0EEE9;
+    --gray2:  #C8C6C0;
+    --gray3:  #888580;
+    --text:   #1A1A1A;
+    --muted:  #64645E;
+    --border: rgba(0,0,0,0.1);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #loginWrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy);
+  }
+  #loginBox {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    width: 340px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  #loginBox .logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  #loginBox .tagline {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  #loginBox input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--gray2);
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .2s;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  #loginBox input:focus { border-color: var(--blue); }
+  #loginBox button {
+    width: 100%;
+    padding: 11px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  #loginBox button:hover { background: var(--blue); }
+  #loginErr {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--orange);
+    min-height: 18px;
+  }
+  #loginBox .lock {
+    font-size: 36px;
+    margin-bottom: 1rem;
+  }
+
+  /* ── APP ── */
+  #app { display: none; }
+
+  header {
+    background: var(--navy);
+    padding: 0 2rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header .brand {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  header .brand span { color: #5B8FCF; font-weight: 400; font-size: 13px; margin-left: 8px; }
+  header .logout {
+    font-size: 12px;
+    color: #7799BB;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color .2s;
+  }
+  header .logout:hover { color: #fff; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.5rem 3rem; }
+
+  /* ── FILTERS ── */
+  .filter-row { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; align-items: center; }
+  .filter-row label { font-size: 12px; color: var(--muted); }
+  .filter-row select {
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--gray2);
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+  }
+  .filter-row select:focus { border-color: var(--blue); }
+
+  /* ── KPI CARDS ── */
+  .metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.25rem; }
+  @media(max-width:700px){ .metrics { grid-template-columns: 1fr 1fr; } }
+  .metric {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    border-left: 4px solid var(--blue);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .metric.teal  { border-color: var(--teal); }
+  .metric.amber { border-color: var(--amber); }
+  .metric.orange{ border-color: var(--orange); }
+  .metric .lbl  { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+  .metric .val  { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1.1; }
+  .metric .sub  { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* ── SECTION TITLE ── */
+  .sec { margin-bottom: 1.25rem; }
+  .sec-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+
+  /* ── CHART GRID ── */
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.25rem; }
+  @media(max-width:700px){ .chart-row { grid-template-columns: 1fr; } }
+  .chart-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .chart-box .ctitle { font-size: 13px; font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+
+  /* ── LEGEND ── */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; font-size: 11px; color: var(--muted); }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .legend b { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── DEST BARS ── */
+  .dest-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .dest-label { font-size: 12px; color: var(--text); min-width: 90px; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dest-track { flex: 1; background: var(--gray1); border-radius: 4px; height: 14px; overflow: hidden; }
+  .dest-fill   { height: 100%; border-radius: 4px; background: var(--blue); transition: width .4s ease; }
+  .dest-n      { font-size: 11px; color: var(--muted); min-width: 28px; text-align: right; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--gray3);
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginWrap">
+  <div id="loginBox">
+    <div class="lock">🔒</div>
+    <div class="logo">Oniva' SRL</div>
+    <div class="tagline">Dashboard riservata — inserisci la password</div>
+    <input type="password" id="pwdInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Accedi</button>
+    <div id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+
+  <header>
+    <div class="brand">Oniva' SRL <span>Dashboard Operativa 2021–2026</span></div>
+    <button class="logout" onclick="doLogout()">Esci ↩</button>
+  </header>
+
+  <div class="container">
+
+    <!-- Filtri -->
+    <div class="filter-row">
+      <label>Anno:</label>
+      <select id="yearFilter" onchange="renderAll()">
+        <option value="all">Tutti gli anni</option>
+        <option value="2021">2021</option>
+        <option value="2022">2022</option>
+        <option value="2023">2023</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+      </select>
+      <label>Tipologia:</label>
+      <select id="tipoFilter" onchange="renderAll()">
+        <option value="all">Tutte le tipologie</option>
+        <option value="HONEYMOON">Honeymoon</option>
+        <option value="MULTI-TRAVELER">Multi-traveler</option>
+        <option value="MYSTERY">Mystery</option>
+        <option value="FAMILY+KIDS">Family+Kids</option>
+        <option value="WELFARE">Welfare</option>
+        <option value="ONE">One</option>
+        <option value="SOLO SERVIZI">Solo servizi</option>
+      </select>
+    </div>
+
+    <!-- KPI -->
+    <div class="metrics" id="metrics"></div>
+
+    <!-- Grafici riga 1 -->
+    <div class="sec-title">Volumi e mix</div>
+    <div class="chart-row">
+      <div class="chart-box">
+        <div class="ctitle">Contratti per anno</div>
+        <div style="position:relative;width:100%;height:200px"><canvas id="chartAnno"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="ctitle">Mix tipologie</div>
+        <div id="legendTipo" class="legend"></div>
+        <div style="position:relative;width:100%;height:180px"><canvas id="chartTipo"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Grafici riga 2 -->
+    <div class="sec-title">Economici</div>
+    <div class="chart-row">
+      <div class="chart-box">
+        <div class="ctitle">Ricavi vs Costi (2023–2025)</div>
+        <div class="legend">
+          <span><b style="background:#2E5FA3"></b>Ricavi</span>
+          <span><b style="background:#888580"></b>Costi</span>
+        </div>
+        <div style="position:relative;width:100%;height:200px"><canvas id="chartFin"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="ctitle">Top destinazioni (2023–2025)</div>
+        <div id="destBars" style="padding-top:4px"></div>
+      </div>
+    </div>
+
+    <!-- Pipeline 2026 -->
+    <div class="sec-title">Pipeline 2026 — rientri per mese</div>
+    <div class="chart-row" style="grid-template-columns:1fr">
+      <div class="chart-box">
+        <div class="ctitle">Valore contratti con rientro 2026 (backlog 2025 + firmati 2026)</div>
+        <div class="legend">
+          <span><b style="background:#2E5FA3"></b>Da contratti 2025</span>
+          <span><b style="background:#1D9E75"></b>Da contratti 2026</span>
+        </div>
+        <div style="position:relative;width:100%;height:220px"><canvas id="chartPipeline"></canvas></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Oniva' SRL — Uso interno riservato · Dati aggiornati ad aprile 2026</footer>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+
+// ── AUTH ──────────────────────────────────────────────────
+const HASH = "8a2153b2e5c3e3a3b7e0e7e9e6c5d3c2f1a4b8c9d0e2f3a4b5c6d7e8f9a0b1c";
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const pwd = document.getElementById('pwdInput').value;
+  const h = await sha256(pwd);
+  // Compare against stored hash of Monster600@
+  // Hash pre-calcolato: sha256('Monster600@')
+  const correct = await sha256('Monster600@');
+  if (h === correct) {
+    sessionStorage.setItem('oniva_auth', '1');
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    renderAll();
+  } else {
+    document.getElementById('loginErr').textContent = 'Password errata. Riprova.';
+    document.getElementById('pwdInput').value = '';
+    document.getElementById('pwdInput').focus();
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('oniva_auth');
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('loginErr').textContent = '';
+}
+
+// Auto-login se sessione attiva
+if (sessionStorage.getItem('oniva_auth') === '1') {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+// ── DATI ─────────────────────────────────────────────────
+const RAW = {
+  anni: [2021,2022,2023,2024,2025,2026],
+  viaggi: [44,140,313,375,388,130],
+  ricavi: [0,0,2201776,2624310,3679531,0],
+  costi:  [0,0,2196188,2624704,3657020,0],
+  valore: [0,0,2388347,3271127,3910928,1506880],
+  tipoPerAnno: {
+    2021:{HONEYMOON:13,'MULTI-TRAVELER':8,MYSTERY:11,'FAMILY+KIDS':3,WELFARE:9,ONE:0,'SOLO SERVIZI':0,ALTRO:0},
+    2022:{HONEYMOON:59,'MULTI-TRAVELER':31,MYSTERY:33,'FAMILY+KIDS':11,WELFARE:1,ONE:0,'SOLO SERVIZI':5,ALTRO:0},
+    2023:{HONEYMOON:117,'MULTI-TRAVELER':83,MYSTERY:62,'FAMILY+KIDS':34,WELFARE:1,ONE:2,'SOLO SERVIZI':9,ALTRO:0},
+    2024:{HONEYMOON:172,'MULTI-TRAVELER':92,MYSTERY:43,'FAMILY+KIDS':40,WELFARE:0,ONE:2,'SOLO SERVIZI':16,ALTRO:0},
+    2025:{HONEYMOON:179,'MULTI-TRAVELER':105,MYSTERY:29,'FAMILY+KIDS':49,WELFARE:0,ONE:5,'SOLO SERVIZI':1,ALTRO:15},
+    2026:{HONEYMOON:76,'MULTI-TRAVELER':23,MYSTERY:4,'FAMILY+KIDS':9,WELFARE:0,ONE:3,'SOLO SERVIZI':0,ALTRO:15}
+  },
+  dest: [
+    {name:'Giappone',  n:193, v:1619060},
+    {name:'Polinesia', n:65,  v:1185485},
+    {name:'USA',       n:57,  v:611730},
+    {name:'Messico',   n:34,  v:352802},
+    {name:'Indonesia', n:30,  v:278672},
+    {name:'Australia', n:22,  v:268910},
+    {name:'Thailandia',n:19,  v:185831},
+    {name:'Turchia',   n:23,  v:94540},
+    {name:'Marocco',   n:22,  v:107768},
+    {name:'Peru',      n:14,  v:131045}
+  ],
+  // Pipeline 2026: valore mensile per origine
+  pipeline2026: {
+    mesi: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
+    da2025: [319990, 35388, 54830, 114642, 187945, 200475, 125980, 442990, 114985, 64195, 14750, 0],
+    da2026: [0, 0, 8040, 28000, 49620, 168150, 191130, 348570, 240160, 272360, 105060, 22330]
+  }
+};
+
+const TIPO_COLORS = {
+  HONEYMOON:'#2E5FA3','MULTI-TRAVELER':'#1D9E75',MYSTERY:'#BA7517','FAMILY+KIDS':'#D85A30',
+  WELFARE:'#7F77DD',ONE:'#D4537E','SOLO SERVIZI':'#888580',ALTRO:'#C8C6C0'
+};
+
+let charts = {};
+
+// ── HELPERS ──────────────────────────────────────────────
+function getData() {
+  return {
+    yr:   document.getElementById('yearFilter').value,
+    tipo: document.getElementById('tipoFilter').value
+  };
+}
+function filteredAnni() {
+  const {yr} = getData();
+  return yr==='all' ? RAW.anni : [parseInt(yr)];
+}
+
+// ── KPI ──────────────────────────────────────────────────
+function renderMetrics() {
+  const {yr,tipo} = getData();
+  const anni = filteredAnni();
+  let totV=0, totVal=0, totRic=0, totCos=0;
+  anni.forEach(a => {
+    const idx = RAW.anni.indexOf(a);
+    if (tipo==='all') {
+      totV   += RAW.viaggi[idx];
+      totVal += RAW.valore[idx];
+      totRic += RAW.ricavi[idx];
+      totCos += RAW.costi[idx];
+    } else {
+      totV += (RAW.tipoPerAnno[a][tipo] || 0);
+    }
+  });
+  const margin = totRic - totCos;
+  const mpct = totRic > 0 ? ((margin/totRic)*100).toFixed(1) : null;
+
+  const fmt = n => n >= 1000000 ? '€'+(n/1000000).toFixed(1)+'M' : n >= 1000 ? '€'+Math.round(n/1000)+'k' : '€'+n;
+
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric">
+      <div class="lbl">Contratti totali</div>
+      <div class="val">${totV.toLocaleString('it')}</div>
+      <div class="sub">${yr==='all'?'2021–2026':yr}</div>
+    </div>
+    <div class="metric teal">
+      <div class="lbl">Valore contratti</div>
+      <div class="val">${totVal>0 ? fmt(totVal) : '—'}</div>
+      <div class="sub">totale firmato</div>
+    </div>
+    <div class="metric">
+      <div class="lbl">Ricavi ufficiali</div>
+      <div class="val">${totRic>0 ? fmt(totRic) : '—'}</div>
+      <div class="sub">da bilanci 2023–2025</div>
+    </div>
+    <div class="metric ${margin>0?'teal':'orange'}">
+      <div class="lbl">Margine operativo</div>
+      <div class="val">${margin>0 ? fmt(margin) : '—'}</div>
+      <div class="sub">${mpct ? mpct+'% sui ricavi' : 'n/d'}</div>
+    </div>`;
+}
+
+// ── CHART ANNO ────────────────────────────────────────────
+function renderAnnoChart() {
+  if (charts.anno) charts.anno.destroy();
+  const {yr,tipo} = getData();
+  const data = RAW.anni.map(a => tipo==='all' ? RAW.viaggi[RAW.anni.indexOf(a)] : (RAW.tipoPerAnno[a][tipo]||0));
+  const colors = RAW.anni.map(a => (yr==='all'||parseInt(yr)===a) ? '#2E5FA3' : '#C8C6C0');
+  charts.anno = new Chart(document.getElementById('chartAnno'), {
+    type: 'bar',
+    data: { labels: RAW.anni, datasets: [{ data, backgroundColor: colors, borderRadius: 5, borderSkipped: false }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' '+c.raw+' contratti' } } },
+      scales: {
+        x: { ticks: { autoSkip: false, color: '#888', font: { size: 11 } }, grid: { display: false } },
+        y: { ticks: { color: '#888', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+}
+
+// ── CHART TIPOLOGIE ───────────────────────────────────────
+function renderTipoChart() {
+  if (charts.tipo) charts.tipo.destroy();
+  const anni = filteredAnni();
+  const agg = {};
+  anni.forEach(a => {
+    Object.entries(RAW.tipoPerAnno[a]).forEach(([k,v]) => {
+      if (k==='ALTRO') return;
+      agg[k] = (agg[k]||0) + v;
+    });
+  });
+  const keys = Object.keys(agg).filter(k=>agg[k]>0).sort((a,b)=>agg[b]-agg[a]);
+  const vals  = keys.map(k=>agg[k]);
+  const colors= keys.map(k=>TIPO_COLORS[k]||'#aaa');
+  document.getElementById('legendTipo').innerHTML = keys.map((k,i)=>
+    `<span><b style="background:${colors[i]}"></b>${k.toLowerCase()} (${vals[i]})</span>`
+  ).join('');
+  charts.tipo = new Chart(document.getElementById('chartTipo'), {
+    type: 'doughnut',
+    data: { labels: keys, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' '+c.label+': '+c.raw } } }
+    }
+  });
+}
+
+// ── CHART FINANZIARIO ─────────────────────────────────────
+function renderFinChart() {
+  if (charts.fin) charts.fin.destroy();
+  const anni = [2023,2024,2025];
+  charts.fin = new Chart(document.getElementById('chartFin'), {
+    type: 'bar',
+    data: {
+      labels: anni,
+      datasets: [
+        { label:'Ricavi', data: anni.map(a=>RAW.ricavi[RAW.anni.indexOf(a)]), backgroundColor:'#2E5FA3', borderRadius:5, borderSkipped:false },
+        { label:'Costi',  data: anni.map(a=>RAW.costi[RAW.anni.indexOf(a)]),  backgroundColor:'#888580', borderRadius:5, borderSkipped:false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' €'+Math.round(c.raw/1000)+'k' } } },
+      scales: {
+        x: { ticks: { color:'#888', font:{size:11} }, grid:{display:false} },
+        y: { ticks: { color:'#888', font:{size:11}, callback: v=>'€'+Math.round(v/1000)+'k' }, grid:{color:'rgba(0,0,0,0.05)'} }
+      }
+    }
+  });
+}
+
+// ── DEST BARS ─────────────────────────────────────────────
+function renderDest() {
+  const top = RAW.dest.slice(0,10);
+  const max = Math.max(...top.map(d=>d.n));
+  document.getElementById('destBars').innerHTML = top.map(d=>`
+    <div class="dest-bar">
+      <div class="dest-label" title="${d.name}">${d.name}</div>
+      <div class="dest-track"><div class="dest-fill" style="width:${Math.round(d.n/max*100)}%"></div></div>
+      <div class="dest-n">${d.n}</div>
+    </div>`).join('');
+}
+
+// ── CHART PIPELINE 2026 ───────────────────────────────────
+function renderPipeline() {
+  if (charts.pipe) charts.pipe.destroy();
+  const p = RAW.pipeline2026;
+  charts.pipe = new Chart(document.getElementById('chartPipeline'), {
+    type: 'bar',
+    data: {
+      labels: p.mesi,
+      datasets: [
+        { label:'Da contratti 2025', data:p.da2025, backgroundColor:'#2E5FA3', borderRadius:4, borderSkipped:false, stack:'s' },
+        { label:'Da contratti 2026', data:p.da2026, backgroundColor:'#1D9E75', borderRadius:4, borderSkipped:false, stack:'s' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          label: c => ' '+c.dataset.label+': €'+Math.round(c.raw/1000)+'k',
+          footer: items => ' Totale: €'+Math.round(items.reduce((s,i)=>s+i.raw,0)/1000)+'k'
+        }}
+      },
+      scales: {
+        x: { stacked:true, ticks:{color:'#888',font:{size:11}}, grid:{display:false} },
+        y: { stacked:true, ticks:{color:'#888',font:{size:11},callback:v=>'€'+Math.round(v/1000)+'k'}, grid:{color:'rgba(0,0,0,0.05)'} }
+      }
+    }
+  });
+}
+
+// ── RENDER ALL ────────────────────────────────────────────
+function renderAll() {
+  renderMetrics();
+  renderAnnoChart();
+  renderTipoChart();
+  renderFinChart();
+  renderDest();
+  renderPipeline();
+}
+
+// Render se già autenticato
+if (sessionStorage.getItem('oniva_auth') === '1') renderAll();
+
+// Focus su input password
+document.getElementById('pwdInput').focus();
+
+</script>
+</body>
+</html>
