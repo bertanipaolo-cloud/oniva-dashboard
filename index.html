@@ -192,6 +192,22 @@
   .dest-n      { font-size: 11px; color: var(--muted); min-width: 28px; text-align: right; }
 
   /* ── FOOTER ── */
+  .op-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .op-table th { text-align: left; color: var(--muted); font-weight: 600; font-size: 10px;
+    text-transform: uppercase; letter-spacing: .04em; padding: 5px 8px;
+    border-bottom: 1px solid var(--border); }
+  .op-table td { padding: 7px 8px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text); }
+  .op-table tr:last-child td { border-bottom: none; }
+  .op-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .op-table .badge { display:inline-block; background: var(--navy); color:#fff;
+    border-radius: 10px; padding: 1px 8px; font-size: 10px; font-weight: 600; }
+  .op-table tr:hover td { background: var(--gray1); }
+  .op-anno-tabs { display:flex; gap:6px; margin-bottom:10px; }
+  .op-anno-tabs button {
+    padding: 4px 12px; border-radius: 20px; border: 1px solid var(--gray2);
+    background: #fff; color: var(--muted); font-size: 12px; cursor: pointer; transition: all .15s; }
+  .op-anno-tabs button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
   footer {
     text-align: center;
     font-size: 11px;
@@ -283,6 +299,48 @@
       <div class="chart-box">
         <div class="ctitle">Top destinazioni (2023–2025)</div>
         <div id="destBars" style="padding-top:4px"></div>
+      </div>
+    </div>
+
+    <!-- Operatrici booking -->
+    <div class="sec-title">Performance operatrici booking</div>
+    <div class="chart-row" style="grid-template-columns:1fr">
+      <div class="chart-box">
+        <div class="ctitle">Contratti, media valore e media fee per operatrice</div>
+        <div class="op-anno-tabs" id="opTabs"></div>
+        <table class="op-table">
+          <thead>
+            <tr>
+              <th>Operatrice</th>
+              <th class="num">Contratti</th>
+              <th class="num">Media valore</th>
+              <th class="num">Media fee</th>
+              <th class="num">Fee / Valore</th>
+            </tr>
+          </thead>
+          <tbody id="opTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Operatrici itinerari -->
+    <div class="sec-title">Performance operatrici itinerari</div>
+    <div class="chart-row" style="grid-template-columns:1fr">
+      <div class="chart-box">
+        <div class="ctitle">Contratti, media valore e media fee per operatrice</div>
+        <div class="op-anno-tabs" id="itTabs"></div>
+        <table class="op-table">
+          <thead>
+            <tr>
+              <th>Operatrice</th>
+              <th class="num">Contratti</th>
+              <th class="num">Media valore</th>
+              <th class="num">Media fee</th>
+              <th class="num">Fee / Valore</th>
+            </tr>
+          </thead>
+          <tbody id="itTableBody"></tbody>
+        </table>
       </div>
     </div>
 
@@ -386,6 +444,47 @@ const RAW = {
     2024: { valore: 8723,  fee: 1425, markup: 444  },
     2025: { valore: 10486, fee: 1568, markup: 499  },
     2026: { valore: 11821, fee: 1712, markup: null  }
+  },
+  operatrici: {
+    2024: [
+      { nome:'SARA P.', n:128, media_v:8175,  media_f:1337 },
+      { nome:'MARI',    n:120, media_v:10289, media_f:1671 },
+      { nome:'GAJA',    n:109, media_v:8830,  media_f:1459 }
+    ],
+    2025: [
+      { nome:'SARA P.',  n:125, media_v:10835, media_f:1632 },
+      { nome:'GAJA',     n:96,  media_v:9322,  media_f:1427 },
+      { nome:'BRENDA',   n:65,  media_v:11157, media_f:1650 },
+      { nome:'MARI',     n:58,  media_v:10059, media_f:1502 },
+      { nome:'CRISTINA', n:25,  media_v:13993, media_f:1966 }
+    ],
+    2026: [
+      { nome:'SARA P.',  n:50, media_v:11827, media_f:1655 },
+      { nome:'BRENDA',   n:45, media_v:13399, media_f:1937 },
+      { nome:'CRISTINA', n:30, media_v:10169, media_f:1526 },
+      { nome:'GAJA',     n:2,  media_v:6870,  media_f:968  }
+    ]
+  },
+  itinerari: {
+    2024: [
+      { nome:'FRA',    n:119, media_v:7343,  media_f:1208 },
+      { nome:'ANNA',   n:107, media_v:9530,  media_f:1596 },
+      { nome:'SARA',   n:83,  media_v:9291,  media_f:1467 },
+      { nome:'FLAVIA', n:66,  media_v:9190,  media_f:1487 }
+    ],
+    2025: [
+      { nome:'ANNA',    n:126, media_v:9279,  media_f:1404 },
+      { nome:'FRA',     n:90,  media_v:13049, media_f:1829 },
+      { nome:'FLAVIA',  n:75,  media_v:9448,  media_f:1473 },
+      { nome:'SARA',    n:71,  media_v:10926, media_f:1712 },
+      { nome:'CRISTINA',n:11,  media_v:7590,  media_f:1028 }
+    ],
+    2026: [
+      { nome:'ANNA',    n:53, media_v:9402,  media_f:1468 },
+      { nome:'FRA',     n:33, media_v:19188, media_f:2490 },
+      { nome:'FLAVIA',  n:29, media_v:9701,  media_f:1475 },
+      { nome:'CRISTINA',n:12, media_v:8358,  media_f:1202 }
+    ]
   }
 };
 
@@ -536,6 +635,82 @@ function renderDest() {
 }
 
 // ── CHART PIPELINE 2026 ───────────────────────────────────
+function renderOperatrici(anno) {
+  const anni_disp = Object.keys(RAW.operatrici).map(Number).sort((a,b)=>b-a);
+  const yr = anno || anni_disp[0];
+
+  // Tabs
+  document.getElementById('opTabs').innerHTML = anni_disp.map(a =>
+    `<button class="${a===yr?'active':''}" onclick="renderOperatrici(${a})">${a}</button>`
+  ).join('');
+
+  // Colori per operatrice
+  const COLORS = {'SARA P.':'#2E5FA3','GAJA':'#1D9E75','BRENDA':'#D85A30','MARI':'#BA7517','CRISTINA':'#7F77DD'};
+
+  const rows = RAW.operatrici[yr] || [];
+  const maxN = Math.max(...rows.map(r=>r.n));
+
+  document.getElementById('opTableBody').innerHTML = rows.map(r => {
+    const pct = (r.media_f / r.media_v * 100).toFixed(1);
+    const barW = Math.round(r.n / maxN * 100);
+    const col = COLORS[r.nome] || '#888';
+    return `<tr>
+      <td>
+        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${col};margin-right:6px;vertical-align:middle"></span>
+        <strong>${r.nome}</strong>
+      </td>
+      <td class="num">
+        <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+          <div style="width:60px;background:var(--gray1);border-radius:3px;height:8px;overflow:hidden">
+            <div style="width:${barW}%;height:100%;background:${col};border-radius:3px"></div>
+          </div>
+          <span>${r.n}</span>
+        </div>
+      </td>
+      <td class="num">€${r.media_v.toLocaleString('it')}</td>
+      <td class="num">€${r.media_f.toLocaleString('it')}</td>
+      <td class="num" style="color:var(--teal);font-weight:600">${pct}%</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderItinerari(anno) {
+  const anni_disp = Object.keys(RAW.itinerari).map(Number).sort((a,b)=>b-a);
+  const yr = anno || anni_disp[0];
+
+  document.getElementById('itTabs').innerHTML = anni_disp.map(a =>
+    `<button class="${a===yr?'active':''}" onclick="renderItinerari(${a})">${a}</button>`
+  ).join('');
+
+  const COLORS = {'ANNA':'#2E5FA3','FRA':'#D85A30','FLAVIA':'#1D9E75','SARA':'#BA7517','CRISTINA':'#7F77DD'};
+
+  const rows = RAW.itinerari[yr] || [];
+  const maxN = Math.max(...rows.map(r=>r.n));
+
+  document.getElementById('itTableBody').innerHTML = rows.map(r => {
+    const pct = (r.media_f / r.media_v * 100).toFixed(1);
+    const barW = Math.round(r.n / maxN * 100);
+    const col = COLORS[r.nome] || '#888';
+    return `<tr>
+      <td>
+        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${col};margin-right:6px;vertical-align:middle"></span>
+        <strong>${r.nome}</strong>
+      </td>
+      <td class="num">
+        <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+          <div style="width:60px;background:var(--gray1);border-radius:3px;height:8px;overflow:hidden">
+            <div style="width:${barW}%;height:100%;background:${col};border-radius:3px"></div>
+          </div>
+          <span>${r.n}</span>
+        </div>
+      </td>
+      <td class="num">€${r.media_v.toLocaleString('it')}</td>
+      <td class="num">€${r.media_f.toLocaleString('it')}</td>
+      <td class="num" style="color:var(--teal);font-weight:600">${pct}%</td>
+    </tr>`;
+  }).join('');
+}
+
 function renderPipeline() {
   if (charts.pipe) charts.pipe.destroy();
   const p = RAW.pipeline2026;
@@ -614,6 +789,8 @@ function renderAll() {
   renderFinChart();
   renderDest();
   renderPipeline();
+  renderOperatrici();
+  renderItinerari();
 }
 
 // Render se già autenticato
