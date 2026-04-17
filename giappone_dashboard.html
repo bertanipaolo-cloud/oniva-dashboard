@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇯🇵 ONIVA — Giappone Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --red: #c0392b;
+    --gold: #c8903a;
+    --cream: #f8f4ef;
+    --pale: #faf7f3;
+    --muted: #8c7b6e;
+    --border: #e0d5c8;
+    --tag-bg: #f0e8de;
+    --green: #2d6a4f;
+    --blue: #1d4e89;
+    --sidebar: 260px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--pale);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: var(--sidebar);
+    min-height: 100vh;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 28px 22px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sidebar-title {
+    font-family: 'Shippori Mincho', serif;
+    color: var(--gold);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-sub {
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    margin-top: 3px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .nav-section {
+    padding: 18px 0 8px;
+  }
+
+  .nav-label {
+    padding: 0 22px 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 22px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    transition: all 0.15s ease;
+    border-left: 3px solid transparent;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.06);
+    color: white;
+  }
+
+  .nav-btn.active {
+    color: var(--gold);
+    border-left-color: var(--gold);
+    background: rgba(200,144,58,0.1);
+  }
+
+  .nav-btn .icon { font-size: 16px; }
+
+  /* MAIN */
+  #main {
+    margin-left: var(--sidebar);
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* TOP BAR */
+  #topbar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 14px 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  #topbar h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  #search {
+    padding: 8px 14px 8px 36px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    width: 260px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #search:focus { border-color: var(--gold); }
+
+  .search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .stat-chip {
+    background: var(--tag-bg);
+    color: var(--muted);
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* CONTENT */
+  #content {
+    padding: 28px 30px;
+  }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--ink);
+  }
+
+  .filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-btn.active { background: var(--gold); border-color: var(--gold); color: white; font-weight: 500; }
+
+  /* SELECT */
+  select.city-select {
+    padding: 6px 30px 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238c7b6e' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* CARD */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(26,20,16,0.1);
+    transform: translateY(-1px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .card-name {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+
+  .badge-green { background: #d8f3dc; color: #2d6a4f; }
+  .badge-blue { background: #d0e8fc; color: #1d4e89; }
+  .badge-orange { background: #fff0de; color: #c8903a; }
+  .badge-red { background: #fde8e8; color: #c0392b; }
+  .badge-gray { background: var(--tag-bg); color: var(--muted); }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--muted);
+  }
+
+  .card-row {
+    display: flex;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    align-items: flex-start;
+  }
+
+  .card-row .label {
+    font-weight: 600;
+    color: var(--ink);
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+
+  .card-row .value { color: #555; flex: 1; }
+
+  .card-notes {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: var(--cream);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    border-left: 3px solid var(--gold);
+    font-style: italic;
+    max-height: 60px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-notes.expand { max-height: none; }
+
+  .card-feedback {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: #f0faf5;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #2d6a4f;
+    border-left: 3px solid var(--green);
+    font-style: italic;
+  }
+
+  /* MODAL */
+  #modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,20,16,0.55);
+    z-index: 200;
+    backdrop-filter: blur(3px);
+  }
+
+  #modal-overlay.show { display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+
+  #modal {
+    background: white;
+    border-radius: 14px;
+    max-width: 680px;
+    width: 100%;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    padding: 24px 28px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    border-radius: 14px 14px 0 0;
+  }
+
+  .modal-title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .modal-close {
+    background: var(--tag-bg);
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: var(--border); }
+
+  .modal-body { padding: 20px 28px 28px; }
+
+  .modal-section {
+    margin-bottom: 18px;
+  }
+
+  .modal-section-title {
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .modal-field { }
+
+  .modal-field-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .modal-field-value {
+    font-size: 13.5px;
+    color: var(--ink);
+    word-break: break-word;
+  }
+
+  .modal-field-value a {
+    color: var(--red);
+    text-decoration: none;
+  }
+
+  .note-block {
+    padding: 12px 14px;
+    background: var(--cream);
+    border-radius: 8px;
+    font-size: 13px;
+    color: #555;
+    border-left: 4px solid var(--gold);
+    line-height: 1.7;
+  }
+
+  .feedback-block {
+    padding: 12px 14px;
+    background: #f0faf5;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #2d6a4f;
+    border-left: 4px solid var(--green);
+    line-height: 1.7;
+  }
+
+  .warn-block {
+    padding: 12px 14px;
+    background: #fff8e1;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #8a6300;
+    border-left: 4px solid #f0c040;
+    line-height: 1.7;
+  }
+
+  /* TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    background: var(--cream);
+    color: var(--muted);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .data-table tr:hover td { background: var(--cream); cursor: pointer; }
+
+  /* OVERVIEW CARDS */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .overview-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .overview-card:hover { border-color: var(--gold); box-shadow: 0 2px 12px rgba(200,144,58,0.15); }
+
+  .ov-icon { font-size: 26px; margin-bottom: 4px; }
+  .ov-num { font-size: 28px; font-weight: 700; font-family: 'Shippori Mincho', serif; color: var(--ink); }
+  .ov-label { font-size: 12px; color: var(--muted); }
+
+  /* COST BADGES */
+  .cost-basso { color: #2d6a4f; font-weight: 600; }
+  .cost-medio { color: #c8903a; font-weight: 600; }
+  .cost-alto { color: #c0392b; font-weight: 600; }
+
+  /* EMPTY */
+  .empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+  /* COUNT */
+  .result-count {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .tab-btn {
+    padding: 10px 18px;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-btn:hover:not(.active) { color: var(--ink); }
+
+  /* SCROLL */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  @media (max-width: 700px) {
+    #sidebar { transform: translateX(-100%); }
+    #main { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">🇯🇵 GIAPPONE</div>
+    <div class="sidebar-sub">Database Viaggi · ONIVA</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Panoramica</div>
+    <button class="nav-btn active" onclick="showSection('overview')">
+      <span class="icon">🗾</span> Dashboard
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Fornitori</div>
+    <button class="nav-btn" onclick="showSection('enti')">
+      <span class="icon">🏛️</span> Enti del Turismo
+    </button>
+    <button class="nav-btn" onclick="showSection('fornitori')">
+      <span class="icon">🏢</span> Fornitori / DMC
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Destinazioni</div>
+    <button class="nav-btn" onclick="showSection('alloggi')">
+      <span class="icon">🏯</span> Alloggi
+    </button>
+    <button class="nav-btn" onclick="showSection('attivita')">
+      <span class="icon">🎌</span> Attività
+    </button>
+    <button class="nav-btn" onclick="showSection('trasporti')">
+      <span class="icon">🚅</span> Trasporti
+    </button>
+    <button class="nav-btn" onclick="showSection('guide')">
+      <span class="icon">🧭</span> Guide
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Riferimenti</div>
+    <button class="nav-btn" onclick="showSection('pass')">
+      <span class="icon">🎫</span> Pass Regionali
+    </button>
+    <button class="nav-btn" onclick="showSection('mustsee')">
+      <span class="icon">⭐</span> Must See / Do
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <h1 id="page-title">Dashboard</h1>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Cerca per nome, città, tipo…" oninput="doSearch()">
+    </div>
+    <span class="stat-chip" id="stat-chip">Caricamento…</span>
+  </div>
+
+  <div id="content">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="sec-overview">
+      <div class="overview-grid">
+        <div class="overview-card" onclick="showSection('enti')">
+          <div class="ov-icon">🏛️</div>
+          <div class="ov-num" id="ov-enti">10</div>
+          <div class="ov-label">Enti del Turismo</div>
+        </div>
+        <div class="overview-card" onclick="showSection('fornitori')">
+          <div class="ov-icon">🏢</div>
+          <div class="ov-num" id="ov-forn">19</div>
+          <div class="ov-label">Fornitori / DMC</div>
+        </div>
+        <div class="overview-card" onclick="showSection('alloggi')">
+          <div class="ov-icon">🏯</div>
+          <div class="ov-num" id="ov-allog">135</div>
+          <div class="ov-label">Strutture</div>
+        </div>
+        <div class="overview-card" onclick="showSection('attivita')">
+          <div class="ov-icon">🎌</div>
+          <div class="ov-num" id="ov-att">45</div>
+          <div class="ov-label">Attività</div>
+        </div>
+        <div class="overview-card" onclick="showSection('guide')">
+          <div class="ov-icon">🧭</div>
+          <div class="ov-num">12</div>
+          <div class="ov-label">Guide</div>
+        </div>
+        <div class="overview-card" onclick="showSection('pass')">
+          <div class="ov-icon">🎫</div>
+          <div class="ov-num">12</div>
+          <div class="ov-label">Pass Regionali</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div style="font-family:'Shippori Mincho',serif;font-size:16px;font-weight:700;margin-bottom:14px;">🗺️ Città con più strutture</div>
+          <div id="city-stats"></div>
+        </div>
+        <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div style="font-family:'Shippori Mincho',serif;font-size:16px;font-weight:700;margin-bottom:14px;">💡 Note rapide</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.9;">
+            <div>📶 Pocket WiFi → Japan Experience</div>
+            <div>🚄 JRP → Japan Experience / H.I.S.</div>
+            <div>🌸 Pass Hakone → sempre incluso</div>
+            <div>🏔️ Koyasan → prenotare shukubo in anticipo</div>
+            <div>🦌 Nara → guide: Reiko Nakano</div>
+            <div>⚠️ Ghibli → biglietti non disponibili via fornitori</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENTI -->
+    <div class="section" id="sec-enti">
+      <div class="filter-bar">
+        <span class="filter-label">Zona:</span>
+        <button class="filter-btn active" onclick="filterEnte('tutti',this)">Tutti</button>
+        <button class="filter-btn" onclick="filterEnte('giappone',this)">Tutto Giappone</button>
+        <button class="filter-btn" onclick="filterEnte('tokyo',this)">Tokyo</button>
+        <button class="filter-btn" onclick="filterEnte('kanazawa',this)">Kanazawa</button>
+        <button class="filter-btn" onclick="filterEnte('okinawa',this)">Okinawa</button>
+        <button class="filter-btn" onclick="filterEnte('hiroshima',this)">Hiroshima</button>
+        <button class="filter-btn" onclick="filterEnte('kyoto',this)">Altre</button>
+      </div>
+      <div class="result-count" id="enti-count"></div>
+      <div class="cards-grid" id="enti-grid"></div>
+    </div>
+
+    <!-- FORNITORI -->
+    <div class="section" id="sec-fornitori">
+      <div class="filter-bar">
+        <span class="filter-label">Tipo:</span>
+        <button class="filter-btn active" onclick="filterForn('tutti',this)">Tutti</button>
+        <button class="filter-btn" onclick="filterForn('dmc',this)">DMC</button>
+        <button class="filter-btn" onclick="filterForn('italiano',this)">🇮🇹 Italiano</button>
+        <button class="filter-btn" onclick="filterForn('singolo',this)">Servizi Singoli</button>
+        <button class="filter-btn" onclick="filterForn('lusso',this)">Luxury</button>
+      </div>
+      <div class="result-count" id="forn-count"></div>
+      <div class="cards-grid" id="forn-grid"></div>
+    </div>
+
+    <!-- ALLOGGI -->
+    <div class="section" id="sec-alloggi">
+      <div class="filter-bar">
+        <span class="filter-label">Città:</span>
+        <select class="city-select" id="alloggi-city" onchange="filterAlloggi()">
+          <option value="tutti">Tutte le città</option>
+        </select>
+        <select class="city-select" id="alloggi-costo" onchange="filterAlloggi()">
+          <option value="tutti">Qualsiasi costo</option>
+          <option value="BASSO">Basso</option>
+          <option value="MEDIO BASSO">Medio Basso</option>
+          <option value="MEDIO">Medio</option>
+          <option value="MEDIO ALTO">Medio Alto</option>
+          <option value="ALTO">Alto</option>
+          <option value="MOLTO ALTO">Molto Alto (Luxury)</option>
+        </select>
+        <select class="city-select" id="alloggi-tipo" onchange="filterAlloggi()">
+          <option value="tutti">Tutti i tipi</option>
+          <option value="ryokan">Ryokan</option>
+          <option value="hotel">Hotel</option>
+          <option value="tempio">Tempio / Shukubo</option>
+        </select>
+      </div>
+      <div class="result-count" id="alloggi-count"></div>
+      <div class="cards-grid" id="alloggi-grid"></div>
+    </div>
+
+    <!-- ATTIVITA -->
+    <div class="section" id="sec-attivita">
+      <div class="filter-bar">
+        <span class="filter-label">Città:</span>
+        <select class="city-select" id="att-city" onchange="filterAtt()">
+          <option value="tutti">Tutte le città</option>
+        </select>
+        <select class="city-select" id="att-cat" onchange="filterAtt()">
+          <option value="tutti">Tutte le categorie</option>
+          <option value="tour">Tour Guidato</option>
+          <option value="esperienza">Esperienza Culturale</option>
+          <option value="cooking">Cooking Class</option>
+          <option value="museo">Museo</option>
+          <option value="escursion">Escursionismo</option>
+          <option value="attrazione">Attrazione</option>
+        </select>
+      </div>
+      <div class="result-count" id="att-count"></div>
+      <div class="cards-grid" id="att-grid"></div>
+    </div>
+
+    <!-- TRASPORTI -->
+    <div class="section" id="sec-trasporti">
+      <div class="cards-grid" id="trasp-grid"></div>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="section" id="sec-guide">
+      <div class="filter-bar">
+        <span class="filter-label">Lingua:</span>
+        <button class="filter-btn active" onclick="filterGuide('tutti',this)">Tutte</button>
+        <button class="filter-btn" onclick="filterGuide('italiano',this)">🇮🇹 Italiano</button>
+        <button class="filter-btn" onclick="filterGuide('inglese',this)">🇬🇧 Inglese</button>
+      </div>
+      <div class="cards-grid" id="guide-grid"></div>
+    </div>
+
+    <!-- PASS -->
+    <div class="section" id="sec-pass">
+      <div class="filter-bar">
+        <span class="filter-label">Zona:</span>
+        <button class="filter-btn active" onclick="filterPass('tutti',this)">Tutti</button>
+        <button class="filter-btn" onclick="filterPass('tokyo',this)">🟥 Tokyo</button>
+        <button class="filter-btn" onclick="filterPass('hokuriku',this)">🟦 Hokuriku</button>
+        <button class="filter-btn" onclick="filterPass('kansai',this)">🟨 Kansai</button>
+        <button class="filter-btn" onclick="filterPass('hakone',this)">🗻 Hakone</button>
+      </div>
+      <div class="cards-grid" id="pass-grid"></div>
+    </div>
+
+    <!-- MUST SEE -->
+    <div class="section" id="sec-mustsee">
+      <div class="cards-grid" id="must-grid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" onclick="closeModal(event)">
+  <div id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title"></div>
+        <div id="modal-subtitle" style="font-size:12px;color:var(--muted);margin-top:3px;"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const DATA = {
+  enti: [
+    { nome:"JNTO", zona:"GIAPPONE", tipo:"Ente del Turismo Giapponese", referente:"Giulia Sismondo – Business Development Coordinator", mail:"giulia_sismondo@jnto.go.jp · jntorome@jnto.go.jp", tel:"39 06 9444 3492", note:"Ente nazionale turismo giapponese – ufficio di Roma" },
+    { nome:"Tokyo.Tokyo", zona:"TOKYO", tipo:"Rappresentanza turistica", referente:"Chigumo Miyamura – Promo Support", mail:"miyamura@psitalia.com · contact@psitalia.com", tel:"", note:"Tokyo Tourism Representative Office, Italy" },
+    { nome:"Tokyo Convention & Visitors Bureau", zona:"TOKYO", tipo:"Ufficio turismo Tokyo", referente:"Riena Hara · Masashi Imai", mail:"hara@tcvb.or.jp · imai@tcvb.or.jp", tel:"+81 70 1476 5109", note:"Promuove Tokyo come destinazione internazionale" },
+    { nome:"Visit Kanazawa", zona:"KANAZAWA", tipo:"Ente turismo Kanazawa", referente:"Tamami Fukaya – CMO", mail:"fukaya@kanazawa-kankoukyoukai.or.jp", tel:"+81-76-232-5555", note:"Incontrato al VJTM 2025. Night auction market, cerimonia del tè, Meet the geiko. Contattare quando si va a Kanazawa! Web: visitkanazawa.jp" },
+    { nome:"Kanazawa City Hall", zona:"KANAZAWA", tipo:"Municipio", referente:"Kay Mimura · Hide Haiya", mail:"haiya@city.kanazawa.lg.jp · mimura@city.kanazawa.lg.jp", tel:"+81(0)76-220-2194", note:"" },
+    { nome:"Visit Gifu", zona:"GIFU", tipo:"Gifu Prefectural Government", referente:"Ms Kumi Matsuno", mail:"customer@gifu-tj.jp", tel:"", note:"" },
+    { nome:"Okinawa e Isole Amami (RPI)", zona:"OKINAWA/AMAMI", tipo:"Ente turismo + DMC", referente:"Aiko Suzuki + team Okinawa", mail:"okiama-inbound@rpi.co.jp", tel:"", note:"Incontrato al VJTM 2025. Inviano file con clima e attività. Cartella disponibile." },
+    { nome:"Okinawa Convention & Visitors Bureau", zona:"OKINAWA", tipo:"Ente turismo Okinawa", referente:"Keito Shimabukuro", mail:"shimabuku.k@ocvb.or.jp", tel:"098-859-6127", note:"VJTM 2025. Brochure + social disponibili." },
+    { nome:"Visit Hiroshima", zona:"HIROSHIMA", tipo:"Ente turismo Hiroshima", referente:"Kazuhiro Tsuji · Akiyo Saiki", mail:"tsuji@hiroshimacvb.jp · saiki@hiroshimacvb.jp", tel:"+81-082-554-1812", note:"VJTM 2025. Cartella con info Cherry Blossom Spots." },
+    { nome:"Nagano Tourism Organization", zona:"NAGANO", tipo:"Ente turismo Nagano", referente:"Yoshie Sagawa", mail:"sagawa@nagano-tabi.net · naganotoc@nagano-tabi.net", tel:"+81 26 219 5274", note:"Zona Nakatsugawa, ottima in estate. Tour specializzati in zona Nagano." },
+    { nome:"Wakayama City Tourism Division", zona:"WAKAYAMA/KOYASAN", tipo:"Ente turismo", referente:"Jacob Teichrib", mail:"tourism@city.wakayama.lg.jp", tel:"", note:"Koyasan Shukubo + Cross-Cultural Communication Network (mail@koyasan-ccn.com). Consigliato half-day a Wakayama City: castello, ramen, treno Nankai → Osaka." },
+    { nome:"Hyogo Tourism Organization (DMO)", zona:"HYOGO", tipo:"DMO Hyogo", referente:"Kaoru Tsukamoto – Inbound Promotion Manager", mail:"tsukamoto@hyogo-tourism.jp", tel:"+81 78 361 7661", note:"Password Price List per agenti: ID hyogo | PW world. Webinar Japan meets Italy B2B disponibile." }
+  ],
+
+  fornitori: [
+    { nome:"JAPAN EXPERIENCE", zona:"GIAPPONE", tipo:"Portale B2B", ita:true, singolo:true, lusso:false, referente:"Juan Andres Faustinelli · Rosanna Suarez", mail:"b2b@japan-experience.com", tel:"+44 20 3514 6932", portale:"Portale (dati in accesso)", note:"⚠️ WiFi Pocket: dopo 3GB rallenta + batteria debole. NON disponibili biglietti Ghibli. Servizi: M&G aeroporto, biglietti attrazioni, transfer, attività, alloggi.", feedback:"A volte si riesce a risolvere se cancellano il tour, ma non sempre. Guida italiano difficile. Confermano inglese quasi subito.", conclusioni:"Usare per JRP, pass regionali, wifi pocket, sim card." },
+    { nome:"MTJ | The Japan Specialist", zona:"GIAPPONE", tipo:"Inbound DMC", ita:true, singolo:false, lusso:false, referente:"Sabrina – Corat", mail:"sabrina@corat.travel · italy@mtj-corp.com", tel:"+39 339176 2237", portale:"Piattaforma TO Inside Out Japan", note:"Cod. 5634. Walking tour Tokyo/Kyoto con Travel Story Teller. KOKORO & SUIKA 2025 a date fisse. Chat assistenza WhatsApp dalle 8-20. Da usare soprattutto per tour di gruppo in italiano. Referente Corat: Fabiana Cannizzaro.", feedback:"", conclusioni:"Ottimo per tour di gruppo in italiano." },
+    { nome:"TAS Co. (Tokyo Asean Service)", zona:"GIAPPONE", tipo:"DMC", ita:true, singolo:true, lusso:false, referente:"Simone Arcigni", mail:"simone@tas-japan.net · travel@tas-japan.net", tel:"81-3-6275-2788", portale:"Cartella tariffe 2026", note:"Servizi singoli: biglietti, treni, hotel, bus, guide. Tariffe 2026 = stesse del 2025.", feedback:"", conclusioni:"Usare per singoli servizi." },
+    { nome:"TRUE JAPAN TOUR", zona:"GIAPPONE", tipo:"DMC guide + esperienze", ita:false, singolo:false, lusso:false, referente:"Takashi Yokoyama · Kuniko Kikuchi · Ryozo Yonehara", mail:"yokoyama@truejapantours.com · info@truejapantours.com", tel:"03 6432 0195", portale:"Cartella disponibile", note:"VJTM 2025. Tantissime guide e tour! Corsi di sushi (a maggio ci vanno). Iti. con guide in più città. Tour guide service +10% IVA.", feedback:"", conclusioni:"Provare per itinerari con guide in più città." },
+    { nome:"Rakuten Travel Experiences", zona:"GIAPPONE", tipo:"Piattaforma B2B", ita:false, singolo:true, lusso:false, referente:"Manami Sato", mail:"manami.d.sato@rakuten.com · txp-b2b-team@mail.rakuten.com", tel:"", portale:"Rakuten Travel Xchange – Cartella", note:"Usato per Hakone Pass. Dashboard con pagamento via invoice, no prepay CC.", feedback:"", conclusioni:"Buono per biglietti singoli come Hakone Pass." },
+    { nome:"JAPONISME", zona:"GIAPPONE (Centro)", tipo:"Guide specializzate", ita:true, singolo:false, lusso:false, referente:"Mika Shiraishi · Alice Nakamura", mail:"mika@japonisme.jp · alice@japonisme.jp · booking@japonisme.jp", tel:"+81 90 4945 6616", portale:"Cartella 2026 guide fee", note:"VJTM 2025. Guide italiane, stessa fee. HD e FD. Zone: Takayama/Kanazawa/Osaka/Kyoto/Tokyo. Sake Tasting Tour in Takayama. ASSOLUTAMENTE SÌ.", feedback:"", conclusioni:"Ottime guide italiane per zona centrale." },
+    { nome:"Omakase Tour", zona:"GIAPPONE", tipo:"DMC italiano", ita:true, singolo:true, lusso:false, referente:"Monica · Eleonora Tolot", mail:"info@omakase-tour.com", tel:"+81 3-6231-6524", portale:"Cartella disponibile", note:"DMC con sede Tokyo. Fondata da italiane. Diretta con fornitori locali, sostenibilità, tutte le regioni. DA PROVARE.", feedback:"", conclusioni:"Interessante, italiane a Tokyo." },
+    { nome:"Go Central Japan DMO / Tourism Designers", zona:"GIAPPONE CENTRALE", tipo:"DMO + DMC", ita:false, singolo:false, lusso:false, referente:"Mayuko Terao Tremel", mail:"m-terao@tourismdesigners.com · info@tourismdesigners.com", tel:"", portale:"Cartella disponibile", note:"VJTM 2025. Tour nella zona centrale. Shared fino 8 pax, anche privati. Prezzi B2C + 15% agente. Guide EN. Cena speciale Nagoya honeymooners. Tour Ghibli Park da Nagoya.", feedback:"", conclusioni:"Provare per zona centrale Giappone." },
+    { nome:"TABI KIMONO", zona:"GIAPPONE", tipo:"Esperienze + tour", ita:true, singolo:false, lusso:false, referente:"Pietro Lamprati (IT) · Giovanni Zhang (GM)", mail:"pietro@lamprati.it · booking@tabikimono.co.jp", tel:"+39 320 2642108", portale:"In attesa più informazioni", note:"DA PROVARE. Rappresentante italiano Pietro Lamprati. Package tours, Educational tourism.", feedback:"", conclusioni:"Da approfondire." },
+    { nome:"JAPANISSIMO", zona:"GIAPPONE", tipo:"Servizi singoli", ita:true, singolo:true, lusso:false, referente:"Kaori", mail:"info@japanissimoviaggi.com", tel:"+81 3-6459-1715", portale:"Cartella con tariffario 2024", note:"Pacchetto assistenza aeroportuale + servizi singoli. No biglietti Ghibli. Pagamento solo bonifico anticipato. Spese bancarie ~45€ a bonifico.", feedback:"", conclusioni:"Per singoli servizi, ottimo per assistenza aeroportuale." },
+    { nome:"MIKI TRAVEL", zona:"GIAPPONE/EUROPA", tipo:"Wholesale TO", ita:false, singolo:false, lusso:false, referente:"", mail:"visitjapan.it@group-miki.com · a.antonini@group-miki.com", tel:"+39 0684 5711", portale:"Mikinet – Client: XYZ015 / Demo / crown23", note:"NON forniscono singoli servizi. Fondato 1967. FIT, gruppi, MICE. 24/7 emergency.", feedback:"", conclusioni:"Solo pacchetti completi." },
+    { nome:"JTB Global Marketing & Travel", zona:"GIAPPONE", tipo:"Inbound specialist", ita:false, singolo:false, lusso:false, referente:"LEUNG Christine", mail:"c_leung402@gmt.jtb.jp", tel:"+81-80-1009-2388", portale:"Listino a commissione (non rilascia %)", note:"VJTM 2025. Da giugno 2022 solo pacchetti, non singoli servizi. Group, FIT, Educational. Referenti IT: it@japanspecialist.com.", feedback:"", conclusioni:"Solo pacchetti." },
+    { nome:"EXO TRAVEL JAPAN", zona:"GIAPPONE + ASIA", tipo:"Wholesale DMC", ita:false, singolo:false, lusso:false, referente:"", mail:"go.japan@exotravel.com · inquire@exotravel.com", tel:"+81 3-4580-7450", portale:"Agent Hub (tariffari in accessi)", note:"NON singoli servizi. Destinazioni: Giappone, Vietnam, Laos, Thailandia, Cambogia, Indonesia, Malesia, Singapore, Arabia Saudita, Myanmar.", feedback:"", conclusioni:"Per tour di gruppo in più paesi asiatici." },
+    { nome:"H.I.S. Europe Italy", zona:"GIAPPONE", tipo:"TO specializzato Giappone", ita:false, singolo:false, lusso:false, referente:"Ornella", mail:"touroperator-it@his-world.com · roma@his-italy.net", tel:"3775484084", portale:"", note:"Solo pacchetti multi-servizio. JRP venduto anche singolo (no wifi). Hotel e ryokan disponibili.", feedback:"", conclusioni:"Solo pacchetti completi." },
+    { nome:"Tsunago Japan Travel (D2C X)", zona:"GIAPPONE", tipo:"DMC Italiano", ita:true, singolo:true, lusso:false, referente:"Stefania Sabia · Yasuiro Nakanishi", mail:"travel@d2cx.co.jp · yasuhiro.nakanishi@d2cx.co.jp", tel:"+81 80 1271 1896", portale:"Cartella disponibile", note:"VJTM 2025. Italiana bravissima. Tutto tailor made FIT/piccoli gruppi. Singoli servizi, hotel/ryokan, guide italiane, workshop tintura kimono, farmstays, ristoranti. Network vasto tutte le prefetture. Prezzi cari.", feedback:"", conclusioni:"Interessante, prezzi alti, ottimi servizi unici." },
+    { nome:"Keio Travel Agency", zona:"GIAPPONE", tipo:"DMC nel gruppo Keio", ita:false, singolo:false, lusso:false, referente:"Mr Slobodan Jajic", mail:"s.jajic@keio-kanko.co.jp · dmcjapan@keio-kanko.co.jp", tel:"", portale:"Cartella disponibile", note:"DA PROVARE. Gruppo Keio (49 aziende, ferrovie, bus). Webinar JNTO.", feedback:"", conclusioni:"Da valutare." },
+    { nome:"Attractive Japan", zona:"GIAPPONE", tipo:"DMC Asakusa", ita:false, singolo:true, lusso:false, referente:"Shino Saito", mail:"attractive-j@chibra.co.jp", tel:"+81-3-5246-4248", portale:"Cartella disponibile", note:"DA PROVARE. Itinerari personalizzati, hotel, guide, trasporto. Anche solo singoli servizi. Webinar JNTO.", feedback:"", conclusioni:"Da valutare." },
+    { nome:"Japan Private Tour", zona:"GIAPPONE", tipo:"Tour privati di lusso", ita:false, singolo:false, lusso:true, referente:"Ms Mai Kamii · Afra Rahman", mail:"mai.k@japanprivatetour.com · bd@japanprivatetour.com", tel:"", portale:"Cartella disponibile", note:"DA PROVARE. Luxury. Flotta auto/bus privata. Treni di lusso: Mizukake, Shiki-Shima, Seven Stars Kyushu. Webinar JNTO.", feedback:"", conclusioni:"Solo per clienti luxury." },
+    { nome:"HANATOUR JAPAN", zona:"GIAPPONE", tipo:"TO + DMC", ita:false, singolo:true, lusso:false, referente:"Sae-Bom Lee · Suyean Choe", mail:"saebom@hanatourjapan.jp · suyean@hanatourjapan.jp", tel:"+81-3-6629-4754", portale:"GORILLA – ID: oniva / PW: oniva123", note:"Visite guidate in italiano disponibili ma richiedono 6 mesi anticipo. Vendevano biglietti Ghibli. Piattaforma GORILLA per day trips, tickets, esperienze.", feedback:"", conclusioni:"Per singole visite guidate, prenotare con molto anticipo." }
+  ],
+
+  alloggi: [
+    { citta:"HAKONE", nome:"Gora Kansuiro", costo:"ALTO", tipo:"ryokan", colazione:"Kaiseki", note:"Booking sito/ratehawk.", feedback:"⚠️ 3249 BUZZI: struttura vecchia, mal tenuta, muffa. Non proporzionata al prezzo. DA ELIMINARE. ✅ 5275 LUPIA: PAZZESCA, esperienza unica.", mail:"info@gourakansuirou.co.jp", tel:"0460-82-3141" },
+    { citta:"HAKONE", nome:"Balinese Onsen Ryokan Hakone Airu", costo:"ALTO", tipo:"ryokan", colazione:"Fusion Balinese/Giapponese", note:"⚠️ TATUAGGI: no onsen pubblica (privata in camera ok). ⚠️ GLUTEN FREE problemi. No cena vegetariana/vegana. Check-in entro 18:30 per cena. Bus da Hakone Yumoto 100¥.", feedback:"3132 BAGAROLO: OK", mail:"hakoneairu@ybb.ne.jp", tel:"+81-460-85-3300" },
+    { citta:"HAKONE", nome:"Hakone Kowakien Mikawaya Ryokan", costo:"MEDIO ALTO", tipo:"ryokan", colazione:"Tradizionale", note:"SÌ cena vegetariana. Vicino Museo all'aperto Hakone.", feedback:"4399 GARASTO", mail:"", tel:"+81 465-43-8541" },
+    { citta:"HAKONE", nome:"Hakone Onsen Ryokan Yaeikan", costo:"MEDIO", tipo:"ryokan", colazione:"Tradizionale", note:"Varie tipologie camere con onsen privata.", feedback:"4445 FONTANOT", mail:"", tel:"+81 460-85-5536" },
+    { citta:"HAKONE", nome:"Hakone Pax Yoshino", costo:"MEDIO", tipo:"ryokan", colazione:"Buffet occidentale/giapponese", note:"12 min a piedi da Hakone Yumoto.", feedback:"5294 MIRENDA", mail:"info@pax-yoshino.com", tel:"+81 460-85-8111" },
+    { citta:"HAKONE", nome:"Suiun", costo:"MEDIO ALTO", tipo:"ryokan", colazione:"Tradizionale", note:"Per chi vuole esperienza ryokan con stile occidentale. 200m dal Parco Hakone Gora.", feedback:"4402 CAPASSO: Stupenda! Pace totale. Kimono incluso. Cena super!", mail:"", tel:"0460-85-5489" },
+    { citta:"HAKONE", nome:"Hakone Suimeisou", costo:"ALTO", tipo:"ryokan", colazione:"Tradizionale", note:"⚠️ NO opzioni: vegane/gluten free/grano/uovo. 3 min a piedi da Hakone-Yumoto.", feedback:"6466 PAOLINI/VISCONTI. Flavia: ⭐ molto bello, vicino stazione.", mail:"reserve@suimeisou.com", tel:"+81 460-85-5381" },
+    { citta:"HAKONE", nome:"Yoshiike Ryokan", costo:"MEDIO", tipo:"ryokan", colazione:"Tradizionale", note:"⭐ Con parcheggio. Navetta a pagamento.", feedback:"6604 GABBANA", mail:"", tel:"" },
+    { citta:"HAKONE", nome:"Senkei", costo:"ALTO", tipo:"ryokan", colazione:"Tradizionale", note:"Solo 15 camere. Camere da 2 a 8 pax. 10 min a piedi da Hakone Yumoto.", feedback:"5925 CAGNANI", mail:"hakone@senkei.net", tel:"0460-85-5500" },
+    { citta:"HAKONE", nome:"Hakone Gora Byakudan", costo:"ALTO", tipo:"ryokan", colazione:"Tradizionale", note:"VJTM 2025. 16 camere con onsen esterna. Pick up da Kowakidani.", feedback:"", mail:"info@byakudan.co.jp", tel:"0460-87-0010" },
+    { citta:"HAKONE", nome:"Gen Hakone", costo:"MOLTO ALTO", tipo:"ryokan", colazione:"Tradizionale", note:"18 camere premium (115→60m²). Bagno esterno diretto da sorgente. Pick up da Gora.", feedback:"", mail:"info@gen-hakone.com", tel:"0460-82-2229" },
+    { citta:"KANAZAWA", nome:"The Square Hotel Kanazawa", costo:"MEDIO", tipo:"hotel", colazione:"Buffet occidentale", note:"Centrale. Solare Hotels.", feedback:"3249 BUZZI", mail:"square-skz@solarehotels.com", tel:"+81 76-221-2611" },
+    { citta:"KANAZAWA", nome:"Nakayasu Ryokan", costo:"MEDIO BASSO", tipo:"ryokan", colazione:"", note:"F&K ok. 10 min a piedi da Kenrokuen.", feedback:"5336 DIGENA: ⭐⭐ Ospitalità familiare graditissima! Ciabatte con personaggi preferiti figlio. 4750 ORSOLINI: semplice e carino. Flavia: alto posto del 💚", mail:"", tel:"" },
+    { citta:"KANAZAWA", nome:"Tokyu Stay Kanazawa", costo:"MEDIO", tipo:"hotel", colazione:"", note:"⭐ 700m dal Castello di Kanazawa.", feedback:"4054 CUCCHI", mail:"webform", tel:"+81 76-223-8109" },
+    { citta:"KANAZAWA", nome:"Machi no Odoriba", costo:"ALTO", tipo:"ryokan", colazione:"", note:"Ryokan con giardino bellissimo.", feedback:"6377 IVUL", mail:"info@odoriba.net", tel:"076-208-3676" },
+    { citta:"KANAZAWA", nome:"Hyatt Centric Kanazawa", costo:"MEDIO", tipo:"hotel", colazione:"", note:"Centrale.", feedback:"3800 CARASSITI", mail:"", tel:"+81 76-256-1234" },
+    { citta:"KANAZAWA", nome:"KUMU Kanazawa by The Share Hotels", costo:"MEDIO", tipo:"hotel", colazione:"", note:"Catena THE SHARE HOTELS. 20 min a piedi dalla stazione.", feedback:"4333 GAZZI", mail:"kumu@thesharehotels.com", tel:"+81 76-282-9600" },
+    { citta:"TAKAYAMA", nome:"THE MACHIYA HOTEL TAKAYAMA", costo:"MEDIO", tipo:"hotel", colazione:"", note:"Centrale. Sala da tè inclusa.", feedback:"3053 GUALERZI", mail:"", tel:"0577-57-7000" },
+    { citta:"TAKAYAMA", nome:"eph TAKAYAMA", costo:"MEDIO", tipo:"hotel", colazione:"Prevista", note:"Centrale. Bagno in cipresso in tutte le camere.", feedback:"3800 CARASSITI", mail:"webform", tel:"+81-577-37-6555" },
+    { citta:"TAKAYAMA", nome:"Oyado Koto No Yume", costo:"MEDIO BASSO", tipo:"ryokan", colazione:"Prevista", note:"⭐ Centrale, vicino stazione.", feedback:"4320 POLISHCHUK", mail:"", tel:"+81 577-32-0427" },
+    { citta:"TAKAYAMA", nome:"Ryokan Tanabe", costo:"ALTO", tipo:"ryokan", colazione:"Kaiseki (inclusa)", note:"Centrale. Colazione e cena incluse. 4 tipologie camere con cipresso.", feedback:"5624 BOCANELLI", mail:"", tel:"+81 577-32-0529" },
+    { citta:"TAKAYAMA", nome:"MACHIYADO ICHIRYU", costo:"MEDIO ALTO", tipo:"ryokan", colazione:"Prevista", note:"Camere grandi (50-85m²). Onsen privato prenotabile.", feedback:"5923 CANNATA", mail:"", tel:"+81-577-32-0448" },
+    { citta:"TAKAYAMA", nome:"JAPONICA TAKAYAMA (Ville private)", costo:"MOLTO ALTO", tipo:"ryokan", colazione:"Disponibile", note:"VJTM 2025. Due ville private TANIYA + Villa Sense of Wonder. Da €700/notte per 4 pax. Attività nella campagna circostante. Contattare FraD.", feedback:"FraD: molto impressionate da Onivà e dall'arca!", mail:"contact@taniya-hida.com", tel:"+81 80-2450-6222" },
+    { citta:"KOYASAN", nome:"Koyasan Saizenin", costo:"MEDIO ALTO", tipo:"tempio", colazione:"Inclusa (colazione + cena)", note:"⭐ 15 camere. Cena alle 17/17:30. Colazione 7:30. Attività: shakyo, meditazione, tour guidato cimitero. Coprifuoco 21:00 (eccezione tour cimitero). Pagamento anticipato via bonifico.", feedback:"3249 BUZZI · 3523 ZOTTA", mail:"koyasansaizenin.english@gmail.com", tel:"+81 736-56-2411" },
+    { citta:"KOYASAN", nome:"Ryokan Sojiin", costo:"ALTO", tipo:"tempio", colazione:"Inclusa (colazione + cena)", note:"⭐ Al centro del Monte Koya.", feedback:"3206 BIAGI · 4238 MARIANI: ⭐⭐ tempio fighissimo!", mail:"", tel:"+81 736-56-2111" },
+    { citta:"KOYASAN", nome:"Rengejoin", costo:"ALTO", tipo:"tempio", colazione:"Inclusa (colazione + cena)", note:"⚠️ Cena solo 18-19, NON si riesce a fare tour cimitero.", feedback:"2613 GIUNTOLI", mail:"", tel:"+81 736-56-2231" },
+    { citta:"KOYASAN", nome:"Koyasan Shukubo Fudoin", costo:"MEDIO ALTO", tipo:"tempio", colazione:"Prevista", note:"✅ Cena dalle 17:30 alle 19 MAX → OK per tour cimitero!", feedback:"3325 SCAVELLI", mail:"", tel:"0736-56-2414" },
+    { citta:"KOYASAN", nome:"Eko-in Temple", costo:"MEDIO", tipo:"tempio", colazione:"Prevista", note:"⭐ Vicino al cimitero. Cena 17:30 → OK tour cimitero. Consigliato da Flavia.", feedback:"4553 FAUSTI", mail:"", tel:"+81(0)736-56-2514" },
+    { citta:"HIROSHIMA", nome:"Mitsui Garden Hotel Hiroshima", costo:"MEDIO", tipo:"hotel", colazione:"Prevista", note:"⭐ Centrale. Sky Restaurant.", feedback:"2986 TROTTA", mail:"", tel:"+81 82-240-1131" },
+    { citta:"HIROSHIMA", nome:"Hiroshima Washington Hotel", costo:"MEDIO", tipo:"hotel", colazione:"Prevista", note:"⭐ Centrale. Ristorante.", feedback:"", mail:"", tel:"+81 82-553-2222" },
+    { citta:"MIYAJIMA", nome:"Miyajima Seaside Hotel", costo:"MEDIO ALTO", tipo:"hotel", colazione:"Prevista", note:"Vista mare. Navetta gratuita. 5 min in auto dal porto traghetti.", feedback:"4180 BRUNELLI · 5831 LORENZO: ⭐ strutture stupende", mail:"", tel:"+81 829-44-0118" },
+    { citta:"OKINAWA", nome:"Okuma Private Beach & Resort", costo:"MEDIO BASSO", tipo:"hotel", colazione:"Prevista", note:"⚠️ Navetta GRATIS ma orari fissi – incastrare con voli! 2 piscine, 3 ristoranti.", feedback:"4928 LAVINI", mail:"", tel:"+81-980-41-2222" },
+    { citta:"OKINAWA", nome:"Hotel Nikko Alivila", costo:"ALTO", tipo:"hotel", colazione:"Prevista", note:"1h da Naha Airport. 2 piscine, 6 ristoranti. Spiaggia privata.", feedback:"4169 RUSSINO", mail:"", tel:"+81-(0)98-982-9612" },
+    { citta:"NAGOYA", nome:"Nagoya Marriott Associa Hotel", costo:"MEDIO", tipo:"hotel", colazione:"Prevista", note:"10 min auto dal Castello di Nagoya. Piscina coperta.", feedback:"3800 CARASSITI", mail:"", tel:"+81-52-584-1113" },
+    { citta:"NAGOYA", nome:"Lamp Light Books Hotel", costo:"MEDIO BASSO", tipo:"hotel", colazione:"2 burger + drink", note:"3 min metro Fushimi. Books Cafe 24h. Anche a Fukuoka e Sapporo.", feedback:"3249 BUZZI", mail:"lbh@solarehotels.com", tel:"052-231-7011" },
+    { citta:"NARA", nome:"Hotel New Wakasa", costo:"MEDIO", tipo:"hotel", colazione:"Prevista", note:"12 min da Kintetsu Nara. 2 ristoranti, spa.", feedback:"6963 TIROGO", mail:"info@seawoodhotel.jp", tel:"+81-742-23-5858" },
+    { citta:"NARA", nome:"MIROKU NARA by The Share Hotels", costo:"MEDIO BASSO", tipo:"hotel", colazione:"Prevista", note:"Vicino al parco. Catena The Share Hotels.", feedback:"", mail:"miroku@thesharehotels.com", tel:"" },
+    { citta:"NAOSHIMA", nome:"Naoshima Ryokan Roka", costo:"MEDIO ALTO", tipo:"ryokan", colazione:"Prevista", note:"11 suite (56-106m²). 500m da Ando Museum. Ristorante.", feedback:"3313 GATTI", mail:"", tel:"+81 87-899-2356" },
+    { citta:"ISHIGAKI", nome:"Ishigaki Seaside Hotel", costo:"ALTO", tipo:"hotel", colazione:"Prevista", note:"⭐ Auto a noleggio sempre consigliata. 10 min da Kabira Bay. Spiaggia privata.", feedback:"4804 FRASCARIA", mail:"", tel:"0980-88-2421" },
+    { citta:"MIYAKOJIMA", nome:"The Rescape", costo:"MEDIO ALTO", tipo:"hotel", colazione:"Prevista", note:"⭐ Auto a noleggio sempre consigliata. Ville da 66-112m². Fronte spiaggia.", feedback:"", mail:"webform", tel:"" },
+    { citta:"LAGO KAWAGUCHI", nome:"Fuji View Hotel", costo:"MEDIO", tipo:"hotel", colazione:"Prevista", note:"Vista Monte Fuji. 2 ristoranti, onsen.", feedback:"6141 MASSARO", mail:"", tel:"" },
+    { citta:"KOYASAN", nome:"Koyasan Sanadabo Rengejoin", costo:"MOLTO ALTO", tipo:"tempio", colazione:"Prevista", note:"Luxury shukubo. Suite ~33m².", feedback:"6344 ROSSI", mail:"shukubo@rengejoin.jp", tel:"" },
+    { citta:"NIKKO", nome:"Hatcho-no-Yu", costo:"MEDIO BASSO", tipo:"ryokan", colazione:"Buffet semplice (riso, uova, natto)", note:"Hidden Onsen raggiungibile solo con navetta. Costumi non permessi, asciugamano OK. Facile evitare glutine.", feedback:"", mail:"", tel:"+81-288-96-0306" },
+    { citta:"SHIRAKAWA GO", nome:"ONNYADO YUINOSYOU", costo:"MEDIO ALTO", tipo:"ryokan", colazione:"Buffet semi-assistito", note:"Centrale. Onsen pubblico e privato.", feedback:"2613 GIUNTOLI", mail:"", tel:"05769-6-2005" },
+    { citta:"MAGOME", nome:"Tajimaya", costo:"MEDIO", tipo:"ryokan", colazione:"Inclusa (colazione+cena)", note:"⚠️ Bagni in comune. 5 min dalla fermata bus.", feedback:"4238 MARIANI: ⭐ troppo carino. Flavia ✅", mail:"", tel:"0573-69-2048" }
+  ],
+
+  attivita: [
+    { citta:"KOYASAN", nome:"Okunoin Cemetery Night Tour", cat:"tour", fornitore:"Awesome Tours Inc.", costo:"37.85€ (adulti) / 25.24€ (bambini)", lingua:"Inglese", durata:"~1h20 (19:00-20:20)", note:"⭐⭐ Tour notturno nel cimitero. Meeting Ekoin 19:00. ~3km totale. ⚠️ Dal 26 agosto modifiche – leggere file.", feedback:"3249 BUZZI", mail:"info@awesome-tours.com", tel:"+81-736-267311" },
+    { citta:"HIROSHIMA", nome:"Hiroshima Peace Memorial Museum", cat:"museo", fornitore:"In loco", costo:"200¥ adulti / 100¥ liceali / gratis under 14", lingua:"Multi (incluso IT)", durata:"Mar-Lug 8:30-18:00 / Ago 8:30-19:00", note:"SOLO IN LOCO. Audio guide 400¥ (IT disponibile).", feedback:"", mail:"", tel:"+81-82-241-4004" },
+    { citta:"HIROSHIMA", nome:"Hiroshima Peace Cycling Tour", cat:"tour", fornitore:"Sokoiko! Cycling guide tour", costo:"54.93€ adulti / 27.46€ bambini (2h) – 79.34€ / 39.67€ (3h)", lingua:"Inglese", durata:"2 ore o 3 ore", note:"E-bike. Max 10 pax. F&K ok (rimorchi). Meeting: Rest House Parco Memoriale. In caso di pioggia → tour a piedi.", feedback:"", mail:"info@sokoiko-mint.com", tel:"+81 090-4804-7477" },
+    { citta:"HIROSHIMA", nome:"Lezioni di Kyūdō (tiro con l'arco)", cat:"esperienza", fornitore:"Sharaku", costo:"1.000¥ (10 frecce) / 6.500¥ (60 min illimitato)", lingua:"Inglese", durata:"60 minuti", note:"Unica struttura dentro castello giapponese. 10:00-17:00. Adatto a bambini.", feedback:"", mail:"sharaku910@gmail.com", tel:"" },
+    { citta:"HIROSHIMA", nome:"Full Day Hiroshima + Miyajima", cat:"tour", fornitore:"Omakase Tour", costo:"73.42€+ (1 adulto 269€)", lingua:"Inglese", durata:"~7.5 ore", note:"Privato. Accessibile in sedia a rotelle. Incluso: guida EN, trasporti, ingressi Museo e Itsukushima. Pick-up hotel.", feedback:"", mail:"info@omakase-tour.com", tel:"+81 3-6231-6524" },
+    { citta:"HIROSHIMA", nome:"Onomichi Walking Tour con Master Guide", cat:"tour", fornitore:"Beauty of Japan", costo:"214.51€ a persona (min 6+)", lingua:"Inglese", durata:"4 ore", note:"Tour privato con guida locale esperta. Sentiero templi, panorama, lunch okonomiyaki incluso.", feedback:"", mail:"noguchi@bojinc.com", tel:"+81-3-6222-9696" },
+    { citta:"KANAZAWA", nome:"Kintsugi Workshop", cat:"esperienza", fornitore:"Kanazawa Kintsugi Experience Workshop + Kitamura Kayo (interprete)", costo:"58.000¥ (2 pax) → 114.000¥ (6 pax)", lingua:"Inglese (con interprete italiano Kitamura)", durata:"2.5 ore", note:"Autentica lacca urushi. Gruppo privato max 6 pax. Si porta a casa il pezzo. Cancellazione entro 7 giorni.", feedback:"6344 ROSSI", mail:"kae94baru55@gmail.com", tel:"+81 90-2834-5123" },
+    { citta:"KANAZAWA", nome:"Kinpaku (foglia d'oro) Experience", cat:"esperienza", fornitore:"Japan Experience", costo:"24€ a persona", lingua:"Inglese", durata:"1 ora", note:"Laboratorio con foglia d'oro su oggetti quotidiani. Gelato dorato incluso! 10% sconto su shop.", feedback:"7229 MERCURI", mail:"contact@japan-experience.com", tel:"+44 20 3514 6932" },
+    { citta:"KANAZAWA", nome:"Kutani Ware Painting Experience (Etsuke)", cat:"esperienza", fornitore:"Kutani Kosen Kiln", costo:"15€-46€ (+ spedizione ~2 mesi)", lingua:"Inglese", durata:"~1 ora (9:30-15:30)", note:"Fino 60 pax. Bambini sopra 5 anni. Spedizione inclusa ma ~2 mesi attesa. Commissioni bancarie +25€.", feedback:"7168 CIANETTI", mail:"info@kutanikosen.com", tel:"+81-76-241-0902" },
+    { citta:"KANAZAWA", nome:"Kenrokuen Garden", cat:"attrazione", fornitore:"In loco", costo:"320¥ adulti / 100¥ bambini 6-17", lingua:"", durata:"Mar-Ott 7:00-18:00 / Nov-Feb 8:00-17:00", note:"SOLO IN LOCO. Casa da tè all'interno. Solo contanti.", feedback:"", mail:"", tel:"+81 76-234-3800" },
+    { citta:"KANAZAWA", nome:"Nomura Samurai House", cat:"attrazione", fornitore:"In loco", costo:"550¥ adulti / 440¥ 15-17 / 250¥ 7-14", lingua:"", durata:"8:30-17:30 (Apr-Set) / 8:30-16:30 (Ott-Mar)", note:"SOLO IN LOCO. Solo contanti.", feedback:"2613 GIUNTOLI", mail:"", tel:"076 221 3553" },
+    { citta:"NAGOYA", nome:"Tokugawa Art Museum", cat:"museo", fornitore:"In biglietteria", costo:"1.600¥ adulti / 800¥ universitari / 500¥ bambini", lingua:"IT, EN, JP e altre", durata:"10:00-17:00, chiuso lunedì", note:"9 Tesori Nazionali. Collezione 10.000+ oggetti famiglia Tokugawa. Solo carta di credito (VISA/MC/JCB).", feedback:"2613 GIUNTOLI", mail:"", tel:"052-935-6262" },
+    { citta:"NAGOYA", nome:"Meiji Mura (Museo Meiji)", cat:"attrazione", fornitore:"In biglietteria", costo:"17€ adulti / 10€ liceali / 5€ bambini", lingua:"JP + EN parziale", durata:"9:30-17:00 (stagionale)", note:"Museum all'aperto 60+ edifici storici. Treno a vapore (extra). Mezza giornata minimo.", feedback:"7537 GORTIGO/BORTOLUTTI", mail:"", tel:"+81 568-67-0314" },
+    { citta:"NARA", nome:"Ceramica Akahada-yaki", cat:"esperienza", fornitore:"Airbnb", costo:"Da 36€ a persona", lingua:"Inglese", durata:"2 ore", note:"Max 8 pax. Età 3+. Ruota del vasaio. Spedizione ~6.500¥ extra.", feedback:"", mail:"", tel:"" },
+    { citta:"NARA", nome:"Wagashi e tè matcha (Toraya)", cat:"esperienza", fornitore:"Airbnb", costo:"Da 26€ a persona", lingua:"Inglese", durata:"1.5 ore", note:"Max 6 pax. Età 6+. Negozio Toraya fondato 60 anni fa vicino Parco Nara. 3 wagashi stagionali + matcha.", feedback:"", mail:"", tel:"" },
+    { citta:"MT. FUJI", nome:"Climbing Mount Fuji (2 giorni)", cat:"escursionismo", fornitore:"Explore Share", costo:"~650€ a persona", lingua:"Inglese", durata:"2 giorni (1 notte in rifugio)", note:"Guida alpina certificata JMGA/IFMGA. 6 pax per guida. Buona condizione fisica richiesta. Pernottamento in rifugio extra.", feedback:"5510 GUALANDI: ⭐⭐ Andato benissimo, da riutilizzare!", mail:"bookings@explore-share.com", tel:"+1 970-236-6075" },
+    { citta:"MIYAKOJIMA", nome:"Snorkeling con tartarughe marine", cat:"tour", fornitore:"Klook", costo:"Da 30€ a persona", lingua:"Inglese", durata:"2-3 ore", note:"F&K (1-75 anni). ⚠️ No mute grandi misure. Prob. incontro tartarughe >90%. Foto/video gratuiti.", feedback:"", mail:"", tel:"" },
+    { citta:"YOKOHAMA", nome:"Shin-Yokohama Ramen Museum", cat:"museo", fornitore:"Klook", costo:"450¥ adulti / 100¥ bambini", lingua:"EN, JP, CN, KR, TH", durata:"11:00-21:00 (lun-ven) / 10:30-21:00 (sab-dom)", note:"Ramen making class disponibile (4.000¥). Ricostruzione Tokyo 1958. Mini-ramen per assaggiare più varietà.", feedback:"", mail:"", tel:"+81 45-471-0503" },
+    { citta:"TUTTO IL GIAPPONE", nome:"Pocket WiFi Japan Experience", cat:"trasporto", fornitore:"Japan Experience", costo:"Da 42€ (7g 49€, 15g 81€)", lingua:"", durata:"Min 5 giorni", note:"⚠️ Dopo 3GB/giorno rallenta. Batteria 8-10 ore. Max 5 device. Restituire in busta prepagata aeroporto.", feedback:"", mail:"b2b@japan-experience.com", tel:"+44 20 3514 6932" }
+  ],
+
+  trasporti: [
+    { citta:"TUTTO IL GIAPPONE", nome:"Shinkansen Ticket", tipo:"Treni", fornitore:"JR", note:"Prenotazione dal sito.", mail:"webform", tel:"" },
+    { citta:"TUTTO IL GIAPPONE", nome:"Japan Bus Online", tipo:"Bus", fornitore:"Japan Bus Online", note:"Shuttle aeroportuali, sightseeing bus, express bus. CC: VISA/MC/JCB/AMEX. Dopo prenotazione gestire su 'Manage my Booking'. Attenzione policy bagagli!", mail:"", tel:"" },
+    { citta:"TUTTO IL GIAPPONE", nome:"Orix Rent-a-Car", tipo:"Auto noleggio", fornitore:"Orix", note:"Permette drop-off in località diversa da pick-up.", mail:"", tel:"" },
+    { citta:"TUTTO IL GIAPPONE", nome:"Hinomaru Limousine", tipo:"NCC Lusso", fornitore:"Hinomaru", note:"Cartella con info. Sito + webform.", mail:"webform", tel:"+813-6458-4163" },
+    { citta:"VARIE AREE", nome:"Hire Taxi Japan", tipo:"Transfer + Tour privati", fornitore:"Hire Taxi Japan", note:"Quotazione richiesta ogni volta. Zone: Tokyo, Kansai, Nagoya, Fukuoka, Hokkaido.", mail:"info@hiretaxijapan.com", tel:"+81-70-1265-4460" },
+    { citta:"VARIE AREE", nome:"MK GROUP", tipo:"Transfer + Tour", fornitore:"MK Group", note:"Zone: Kyoto, Osaka, Shiga, Kobe, Sapporo, Nagoya, Tokyo, Fukuoka. NO PREPAY, solo in loco.", mail:"", tel:"" },
+    { citta:"VARIE AREE", nome:"nearMe.airport", tipo:"Shuttle aeroportuale", fornitore:"nearMe", note:"Aeroporti: Haneda, Narita, Kansai, New Chitose, Chubu, Fukuoka, Naha. COSTO BASSO. ⚠️ Conferma entro 24h, finale il giorno prima.", mail:"CHAT", tel:"" },
+    { citta:"TOYAMA/ALPI", nome:"Nohi Bus", tipo:"Bus espresso + Tour", fornitore:"Nohi Bus", note:"Rotta principale: Takayama → Shirakawa-go. Prenotare in anticipo in alta stagione!", mail:"", tel:"" },
+    { citta:"MIYAKOJIMA", nome:"Maruchiku Taxi (Tour isola)", tipo:"Taxi turistico", fornitore:"Maruchiku Taxi", note:"Disponibile 24h. Prenotare via form (risposta ~2gg). Pagamento contanti in loco o CC anticipato.", mail:"", tel:"050-3188-0427" },
+    { citta:"HIROSHIMA", nome:"T&H Travel (Tsubame)", tipo:"Taxi, limousine, bus, tour VR", fornitore:"Tsubame Transportation", note:"Base Hiroshima. Tour VR Peace Memorial Park. Cruise, charter bus.", mail:"global@tsubame.co.jp", tel:"082-221-1955" },
+    { citta:"HAKONE", nome:"Odakyu Hakone", tipo:"Tutti i trasporti Hakone", fornitore:"Odakyu", note:"Info su tutti i trasporti pubblici e privati ad Hakone.", mail:"", tel:"" }
+  ],
+
+  guide: [
+    { zona:"TUTTO IL PAESE", nome:"Japan Experience", lingua:"ITALIANO/INGLESE", tipo:"TO", prenotazione:"Sito", mail:"b2b@japan-experience.com", tel:"+44 20 3514 6932", costi:"", note:"" },
+    { zona:"TUTTO IL PAESE", nome:"Sono In Viaggio", lingua:"ITALIANO", tipo:"TO", prenotazione:"Mail", mail:"tour@sonoinviaggio.com", tel:"", costi:"~250-270€ a guida", note:"Non sono TO, ma portfolio guide. Ref: Rudy." },
+    { zona:"TUTTO IL PAESE", nome:"MTJ | The Japan Specialist", lingua:"ITALIANO", tipo:"TO", prenotazione:"Piattaforma / mail", mail:"sabrina@corat.travel · italy@mtj-corp.com", tel:"+39 339176 2237", costi:"Cartella prezzi 2025", note:"Ref: Sabrina – Corat" },
+    { zona:"TUTTO IL PAESE", nome:"TAS Co. (Tokyo Asean Service)", lingua:"ITALIANO", tipo:"TO", prenotazione:"Mail", mail:"simone@tas-japan.net", tel:"81-3-6275-2788", costi:"Cartella tariffe 2026", note:"Ref: Simone Arcigni. FIT packages." },
+    { zona:"NARA + KANSAI", nome:"Reiko NAKANO", lingua:"ITALIANO", tipo:"Guida", prenotazione:"Mail", mail:"nakano500@gmail.com", tel:"+81-70-1760-0099", costi:"Cartella prezzi 2026", note:"⭐ Ottima (AM: per me ottimi Dario, Mina e Reiko). Fondato Travel Giappone Co. Pagamento 6 settimane prima via Paypal/banca JP. Biglietti e trasporti esclusi." },
+    { zona:"KANSAI + NARA + HIMEJI", nome:"Emilia", lingua:"ITALIANO", tipo:"Accompagnatrice", prenotazione:"Mail/WhatsApp", mail:"emilia988@libero.it", tel:"+81 90-6747-3382", costi:"FD 40.000¥ (≤4 pax) / 50.000¥ (5-8 pax). HD 4h 25.000¥", note:"⭐ DA PROVARE, sembra brava. Orari: 9:30-17:00 (fino 17 max). Bambini <10 anni non contati. Itinerari personalizzati." },
+    { zona:"KANAZAWA", nome:"Kitamura Kayo", lingua:"ITALIANO", tipo:"Guida + Interprete", prenotazione:"Mail/WhatsApp", mail:"kaiocha@outlook.jp", tel:"+81 90-2834-5123", costi:"Cartella tariffe 2026", note:"Servizi: guida turistica, interprete kintsugi, insegnante tè giapponese, maestra senchadō, wagashi nerikiri, calligrafia (con madre). Pagamento bonifico bancario." },
+    { zona:"HIROSHIMA/MIYAJIMA", nome:"Dario Degli Agostini", lingua:"ITALIANO", tipo:"Accompagnatore", prenotazione:"Mail/WhatsApp", mail:"deephiroshima@gmail.com", tel:"+81 8091371985", costi:"Cartella disponibile", note:"⭐ DA PROVARE. Facebook/Instagram/Youtube: POLENTONE IN GIAPPONE." }
+  ],
+
+  pass: [
+    { zona:"TOKYO 🟥", nome:"Metro 24-48-72h", quando:"Di solito 72h (minimo 3 giorni)", incluso:"Metro area urbana Tokyo", escluso:"JR e linee private extraurbane", note:"" },
+    { zona:"TOKYO 🟥", nome:"Skyliner Narita-Ueno", quando:"Se arrivano su Narita. Esiste combo con metro.", incluso:"Treno aeroportuale + metro (combo)", escluso:"", note:"Acquistare sul sito ufficiale" },
+    { zona:"NIKKO 🟥", nome:"Nikko Heritage Pass", quando:"Conviene soprattutto in alta stagione per express", incluso:"Tobu Bus nel World Heritage. Tobu Railway: Shimo-Imaichi → Tobu-Nikko → Shin-Fujiwara", escluso:"", note:"" },
+    { zona:"HAKONE/KAMAKURA 🟥", nome:"Kamakura-Hakone Pass", quando:"Per andare sia a Kamakura che Hakone. 3 giorni da Tokyo Shinjuku.", incluso:"Viaggi illimitati Hakone + Kamakura/Enoshima. Linee Odakyu 3 giorni.", escluso:"Linee JR", note:"Ha costo del Hakone Free Pass ma copre anche Kamakura" },
+    { zona:"HAKONE 🟥", nome:"Hakone Free Pass", quando:"⭐ SEMPRE quando vanno a Hakone. 1 notte → 2 giorni; 2 notti → 3 giorni", incluso:"Linee Odakyu illimitato. Hakone + Kamakura/Enoshima. Sconti attrazioni.", escluso:"Linee JR", note:"" },
+    { zona:"HOKURIKU 🟦", nome:"Osaka-Tokyo Hokuriku Arch Pass", quando:"Se non si va a Takayama e itinerario: Tokyo→Kanazawa→Kyoto/Osaka (o contrario)", incluso:"Hokuriku Shinkansen (Tokyo↔Kanazawa). Monorotaia Tokyo (Haneda). Linee IR Ishikawa + Ainokaze Toyama + Noto.", escluso:"Tokaido/Sanyo Shinkansen. Linee non JR (tranne eccezioni). Bus Shirakawa-go.", note:"" },
+    { zona:"HOKURIKU/ALPI 🟦", nome:"Takayama-Hokuriku Pass", quando:"Per zona Alpi da Nagoya a Osaka, passando per Takayama e Kanazawa. Contrario anche possibile.", incluso:"Bus Shirakawa-go (da Takayama e Kanazawa). Treni express Nagoya↔Takayama↔Toyama. Thunderbird, Hida Wide View. Hokuriku Shinkansen Toyama→Tsuruga.", escluso:"Linee non JR. Nara.", note:"" },
+    { zona:"KANSAI 🟨", nome:"Kansai Area Pass", quando:"Se ≥4 giorni nel Kansai e partenza da KIX. Copre: Osaka, Kyoto, Kobe, Nara, Himeji", incluso:"Treni JR locali/rapidi Kansai. Haruka Express KIX→Kyoto (fino 2 posti riservati). Metro Kyoto (Karasuma+Tozai). Bus Kyoto (Takao/Shuzan). Bici Ekirin Kun.", escluso:"Shinkansen. Alcune linee JR.", note:"" },
+    { zona:"KANSAI 🟨", nome:"Kansai-Hiroshima Pass", quando:"Se fanno giorni nel Kansai + vogliono Hiroshima + ripartono da KIX", incluso:"Sanyo Shinkansen (Shin-Osaka→Hiroshima, Hikari+Kodama). Traghetto JR Miyajima. Bus regionali JR Kyoto+Hiroshima. Kyoto Tango Ry. Wakayama Ry. Bici Ekirin Kun.", escluso:"Nozomi/Mizuho. Super Hakuto express.", note:"JRP da 7gg conviene se effettivamente 6 notti in giro per Kansai" },
+    { zona:"KOYASAN 🟨", nome:"Koyasan World Heritage Pass", quando:"⭐ SEMPRE quando dormono sul Koyasan", incluso:"Linee locali (non express) da Osaka Namba e Shin-Imamiya + loop.", escluso:"Linee JR", note:"" },
+    { zona:"HAKONE + FUJI 🗻", nome:"Fuji-Hakone Pass", quando:"Per chi vuole visitare zona Fuji Q, Kawaguchiko e 5 laghi + Hakone", incluso:"Zona Fuji-Q + Kawaguchiko + 5 laghi + area Hakone (come Hakone Free Pass)", escluso:"", note:"" },
+    { zona:"KANSAI WIDE 🟨", nome:"Kansai WIDE Area Pass", quando:"Non vale la pena A MENO CHE non abbiano almeno Tottori + Wakayama insieme", incluso:"Sanyo Shinkansen Shin-Osaka→Okayama (incluso Nozomi/Mizuho)", escluso:"", note:"" }
+  ],
+
+  mustsee: [
+    { citta:"TOKYO", zona:"Odaiba", nome:"Team Lab Planets", tipo:"Museo multisensoriale", costo:"4.000¥ adulti / 2.800¥ liceali / 1.500¥ 4-12 / gratis -3", prepagamento:"Sì", livello:"⭐", note:"Si va a piedi nudi. Per bambini piccoli può essere difficile ma ammessi." },
+    { citta:"TOKYO", zona:"Roppongi", nome:"Tokyo Tower", tipo:"Torre/Belvedere", costo:"3.300¥ adulti / 3.100¥ liceali / 2.100¥ 7-15 / 1.500¥ 4-6", prepagamento:"Sì", livello:"⭐", note:"TOP DECK TOUR." },
+    { citta:"TOKYO", zona:"Asakusa", nome:"Tokyo Skytree", tipo:"Torre/Belvedere", costo:"3.100¥ adulti / 2.150¥ 12-17 / 1.300¥ 6-11", prepagamento:"Sì", livello:"⭐⭐", note:"Combo Galleria (450m) + Deck (350m)." },
+    { citta:"TOKYO", zona:"Vari", nome:"Private Kimono Tea Ceremony", tipo:"Esperienza cerimonia del tè", costo:"35.000¥ pp (2 adulti)", prepagamento:"Sì", livello:"⭐⭐", note:"Dai 7 anni in su. Maikoya." },
+    { citta:"TOKYO", zona:"Vari", nome:"Watch Sumo Practice", tipo:"Esperienza sumo", costo:"9.000¥ adulti/bambini ≥4 anni", prepagamento:"Sì", livello:"⭐⭐", note:"Alternative: allenamento mattutino o Challenge Sumo + pranzo." },
+    { citta:"TOKYO", zona:"Akihabara", nome:"Sake Tasting Omakase (Beauty of Japan)", tipo:"Degustazione", costo:"11.990¥", prepagamento:"Sì", livello:"⭐⭐", note:"Solo nel weekend! Solo adulti." }
+  ]
+};
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function costColor(c) {
+  if (!c) return '';
+  const l = c.toUpperCase();
+  if (l.includes('BASSO') || l.includes('LOW')) return 'cost-basso';
+  if (l.includes('ALTO') || l.includes('HIGH') || l.includes('LUXURY') || l.includes('MOLTO')) return 'cost-alto';
+  return 'cost-medio';
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.substring(0, n) + '…' : str;
+}
+
+function renderEnti(filter='tutti') {
+  const grid = document.getElementById('enti-grid');
+  let items = DATA.enti;
+  if (filter !== 'tutti') {
+    if (filter === 'giappone') items = items.filter(e => e.zona.toUpperCase().includes('GIAPPONE'));
+    else if (filter === 'kyoto') items = items.filter(e => !['GIAPPONE','TOKYO','KANAZAWA','OKINAWA','HIROSHIMA','OSAKA'].some(z => e.zona.toUpperCase().includes(z)));
+    else items = items.filter(e => e.zona.toUpperCase().includes(filter.toUpperCase()));
+  }
+  document.getElementById('enti-count').textContent = items.length + ' enti';
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+  grid.innerHTML = items.map((e, i) => `
+    <div class="card" onclick="openModal('enti',${DATA.enti.indexOf(e)})">
+      <div class="card-header">
+        <div class="card-name">${e.nome}</div>
+        <span class="badge badge-blue">${e.zona}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">🏛️ ${e.tipo}</span>
+      </div>
+      <div class="card-row"><span class="label">Referente</span><span class="value">${truncate(e.referente, 60)}</span></div>
+      <div class="card-row"><span class="label">Mail</span><span class="value">${truncate(e.mail, 50)}</span></div>
+      ${e.note ? `<div class="card-notes">${truncate(e.note, 120)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderFornitori(filter='tutti') {
+  const grid = document.getElementById('forn-grid');
+  let items = DATA.fornitori;
+  if (filter === 'dmc') items = items.filter(f => f.tipo.toLowerCase().includes('dmc') || f.tipo.toLowerCase().includes('inbound'));
+  else if (filter === 'italiano') items = items.filter(f => f.ita);
+  else if (filter === 'singolo') items = items.filter(f => f.singolo);
+  else if (filter === 'lusso') items = items.filter(f => f.lusso);
+  document.getElementById('forn-count').textContent = items.length + ' fornitori';
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+  grid.innerHTML = items.map((f) => `
+    <div class="card" onclick="openModal('fornitori',${DATA.fornitori.indexOf(f)})">
+      <div class="card-header">
+        <div class="card-name">${f.nome}</div>
+        <span class="badge ${f.ita ? 'badge-green' : 'badge-gray'}">${f.ita ? '🇮🇹 IT' : f.lusso ? '💎 Luxury' : f.singolo ? '🔹 Singolo' : 'EN'}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">${f.tipo}</span>
+        <span class="tag">${f.zona}</span>
+      </div>
+      <div class="card-row"><span class="label">Referente</span><span class="value">${truncate(f.referente, 55)}</span></div>
+      <div class="card-row"><span class="label">Mail</span><span class="value">${truncate(f.mail, 50)}</span></div>
+      ${f.note ? `<div class="card-notes">${truncate(f.note, 110)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderAlloggi() {
+  const cityEl = document.getElementById('alloggi-city');
+  const costoEl = document.getElementById('alloggi-costo');
+  const tipoEl = document.getElementById('alloggi-tipo');
+  const searchVal = document.getElementById('search').value.toLowerCase();
+  const cityVal = cityEl.value;
+  const costoVal = costoEl.value;
+  const tipoVal = tipoEl.value;
+  let items = DATA.alloggi;
+  if (cityVal !== 'tutti') items = items.filter(a => a.citta === cityVal);
+  if (costoVal !== 'tutti') items = items.filter(a => a.costo === costoVal);
+  if (tipoVal !== 'tutti') items = items.filter(a => a.tipo === tipoVal);
+  if (searchVal) items = items.filter(a => (a.nome+a.citta+a.note+a.feedback).toLowerCase().includes(searchVal));
+  document.getElementById('alloggi-count').textContent = items.length + ' strutture';
+  const grid = document.getElementById('alloggi-grid');
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+  grid.innerHTML = items.map((a) => `
+    <div class="card" onclick="openModal('alloggi',${DATA.alloggi.indexOf(a)})">
+      <div class="card-header">
+        <div class="card-name">${a.nome}</div>
+        <span class="badge ${a.costo.includes('ALTO') || a.costo.includes('MOLTO') ? 'badge-red' : a.costo.includes('BASSO') ? 'badge-green' : 'badge-orange'}">${a.costo}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${a.citta}</span>
+        <span class="tag">${a.tipo === 'tempio' ? '⛩️ Tempio' : a.tipo === 'ryokan' ? '🛁 Ryokan' : '🏨 Hotel'}</span>
+        ${a.colazione ? `<span class="tag">🍵 ${truncate(a.colazione, 25)}</span>` : ''}
+      </div>
+      ${a.note ? `<div class="card-notes">${truncate(a.note, 110)}</div>` : ''}
+      ${a.feedback ? `<div class="card-feedback">💬 ${truncate(a.feedback, 100)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderAttivita() {
+  const cityEl = document.getElementById('att-city');
+  const catEl = document.getElementById('att-cat');
+  const searchVal = document.getElementById('search').value.toLowerCase();
+  const cityVal = cityEl.value;
+  const catVal = catEl.value;
+  let items = DATA.attivita;
+  if (cityVal !== 'tutti') items = items.filter(a => a.citta === cityVal);
+  if (catVal !== 'tutti') items = items.filter(a => a.cat.includes(catVal));
+  if (searchVal) items = items.filter(a => (a.nome+a.citta+a.note).toLowerCase().includes(searchVal));
+  document.getElementById('att-count').textContent = items.length + ' attività';
+  const grid = document.getElementById('att-grid');
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+  grid.innerHTML = items.map((a) => `
+    <div class="card" onclick="openModal('attivita',${DATA.attivita.indexOf(a)})">
+      <div class="card-header">
+        <div class="card-name">${a.nome}</div>
+        <span class="badge badge-orange">${catBadge(a.cat)}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${a.citta}</span>
+        ${a.lingua ? `<span class="tag">🗣️ ${a.lingua}</span>` : ''}
+        ${a.fornitore ? `<span class="tag">🏢 ${truncate(a.fornitore, 25)}</span>` : ''}
+      </div>
+      <div class="card-row"><span class="label">Costo</span><span class="value">${a.costo || 'N/D'}</span></div>
+      <div class="card-row"><span class="label">Durata</span><span class="value">${a.durata || 'N/D'}</span></div>
+      ${a.feedback ? `<div class="card-feedback">💬 ${truncate(a.feedback, 90)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function catBadge(cat) {
+  const m = {tour:'🗺️ Tour', esperienza:'🎨 Esperienza', cooking:'🍱 Cooking', museo:'🏛️ Museo', escursionismo:'🥾 Escursione', attrazione:'⭐ Attrazione', trasporto:'📱 Logistica'};
+  return m[cat] || cat;
+}
+
+function renderTrasporti() {
+  const grid = document.getElementById('trasp-grid');
+  grid.innerHTML = DATA.trasporti.map((t) => `
+    <div class="card" onclick="openModal('trasporti',${DATA.trasporti.indexOf(t)})">
+      <div class="card-header">
+        <div class="card-name">${t.nome}</div>
+        <span class="badge badge-blue">${t.tipo}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${t.citta}</span>
+        <span class="tag">🏢 ${t.fornitore}</span>
+      </div>
+      ${t.note ? `<div class="card-notes">${truncate(t.note, 120)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderGuide(filter='tutti') {
+  const grid = document.getElementById('guide-grid');
+  let items = DATA.guide;
+  if (filter === 'italiano') items = items.filter(g => g.lingua.toLowerCase().includes('italiano'));
+  else if (filter === 'inglese') items = items.filter(g => g.lingua.toLowerCase().includes('inglese'));
+  grid.innerHTML = items.map((g) => `
+    <div class="card" onclick="openModal('guide',${DATA.guide.indexOf(g)})">
+      <div class="card-header">
+        <div class="card-name">${g.nome}</div>
+        <span class="badge ${g.lingua.includes('ITALIANO') ? 'badge-green' : 'badge-gray'}">${g.lingua.includes('ITALIANO') ? '🇮🇹 IT' : '🇬🇧 EN'}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${g.zona}</span>
+        <span class="tag">${g.tipo}</span>
+      </div>
+      <div class="card-row"><span class="label">Prenotazione</span><span class="value">${g.prenotazione}</span></div>
+      ${g.costi ? `<div class="card-row"><span class="label">Costi</span><span class="value">${truncate(g.costi, 60)}</span></div>` : ''}
+      ${g.note ? `<div class="card-notes">${truncate(g.note, 100)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderPass(filter='tutti') {
+  const grid = document.getElementById('pass-grid');
+  let items = DATA.pass;
+  if (filter !== 'tutti') {
+    if (filter === 'tokyo') items = items.filter(p => p.zona.toLowerCase().includes('tokyo') || p.zona.toLowerCase().includes('nikko') || p.zona.toLowerCase().includes('hakone') || p.zona.toLowerCase().includes('kamakura'));
+    else if (filter === 'hokuriku') items = items.filter(p => p.zona.toLowerCase().includes('hokuriku'));
+    else if (filter === 'kansai') items = items.filter(p => p.zona.toLowerCase().includes('kansai') || p.zona.toLowerCase().includes('koyasan'));
+    else if (filter === 'hakone') items = items.filter(p => p.zona.toLowerCase().includes('hakone') || p.zona.toLowerCase().includes('fuji'));
+  }
+  grid.innerHTML = items.map((p) => `
+    <div class="card" onclick="openModal('pass',${DATA.pass.indexOf(p)})">
+      <div class="card-header">
+        <div class="card-name">${p.nome}</div>
+        <span class="badge badge-orange">${p.zona.split(' ')[0]} ${p.zona.includes('🟥') ? '🟥' : p.zona.includes('🟦') ? '🟦' : p.zona.includes('🟨') ? '🟨' : '🗻'}</span>
+      </div>
+      <div class="card-row"><span class="label">Quando</span><span class="value">${truncate(p.quando, 80)}</span></div>
+      <div class="card-row"><span class="label">Include</span><span class="value">${truncate(p.incluso, 80)}</span></div>
+      ${p.escluso ? `<div class="card-row"><span class="label">Escluso</span><span class="value">${truncate(p.escluso, 60)}</span></div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderMustSee() {
+  const grid = document.getElementById('must-grid');
+  grid.innerHTML = DATA.mustsee.map((m) => `
+    <div class="card" onclick="openModal('mustsee',${DATA.mustsee.indexOf(m)})">
+      <div class="card-header">
+        <div class="card-name">${m.nome}</div>
+        <span class="badge badge-orange">${m.livello}</span>
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${m.citta}</span>
+        <span class="tag">🗺️ ${m.zona}</span>
+      </div>
+      <div class="card-row"><span class="label">Tipo</span><span class="value">${m.tipo}</span></div>
+      <div class="card-row"><span class="label">Costo</span><span class="value">${m.costo}</span></div>
+      <div class="card-row"><span class="label">Prepagamento</span><span class="value">${m.prepagamento}</span></div>
+      ${m.note ? `<div class="card-notes">${m.note}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CITY STATS
+// ============================================================
+function renderCityStats() {
+  const counts = {};
+  DATA.alloggi.forEach(a => { counts[a.citta] = (counts[a.citta]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 8);
+  const max = sorted[0][1];
+  document.getElementById('city-stats').innerHTML = sorted.map(([city, count]) => `
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">
+        <span style="font-weight:500;">${city}</span>
+        <span style="color:var(--muted);">${count}</span>
+      </div>
+      <div style="background:var(--border);border-radius:4px;height:5px;">
+        <div style="background:var(--gold);border-radius:4px;height:5px;width:${(count/max*100).toFixed(0)}%;transition:width 0.5s;"></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// DROPDOWN OPTIONS
+// ============================================================
+function populateDropdowns() {
+  const alCities = [...new Set(DATA.alloggi.map(a => a.citta))].sort();
+  const sel = document.getElementById('alloggi-city');
+  alCities.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+
+  const attCities = [...new Set(DATA.attivita.map(a => a.citta))].sort();
+  const sel2 = document.getElementById('att-city');
+  attCities.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel2.appendChild(o); });
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(type, idx) {
+  const overlay = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const subtitle = document.getElementById('modal-subtitle');
+  const body = document.getElementById('modal-body');
+  let item, html = '';
+
+  if (type === 'enti') {
+    item = DATA.enti[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.zona + ' · ' + item.tipo;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Contatti</div>
+        <div class="modal-grid">
+          ${field('Referente', item.referente)}
+          ${field('Telefono', item.tel)}
+          ${field('Mail', item.mail)}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+    `;
+  } else if (type === 'fornitori') {
+    item = DATA.fornitori[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.zona + ' · ' + item.tipo;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Lingua guide', item.ita ? '🇮🇹 Italiano disponibile' : 'Inglese')}
+          ${field('Servizi singoli', item.singolo ? '✅ Sì' : '❌ No')}
+          ${field('Luxury', item.lusso ? '💎 Sì' : '—')}
+          ${field('Portale/Piattaforma', item.portale||'—')}
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Contatti</div>
+        <div class="modal-grid">
+          ${field('Referente', item.referente)}
+          ${field('Mail', item.mail)}
+          ${field('Telefono', item.tel)}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note operative</div><div class="note-block">${item.note}</div></div>` : ''}
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">Feedback clienti</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+      ${item.conclusioni ? `<div class="modal-section"><div class="modal-section-title">🎯 Conclusioni</div><div class="feedback-block">${item.conclusioni}</div></div>` : ''}
+    `;
+  } else if (type === 'alloggi') {
+    item = DATA.alloggi[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.citta;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Tipo', item.tipo)}
+          ${field('Costo', `<span class="${costColor(item.costo)}">${item.costo}</span>`)}
+          ${field('Colazione', item.colazione||'N/D')}
+          ${field('Mail', item.mail||'—')}
+          ${field('Telefono', item.tel||'—')}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Informazioni importanti</div><div class="${item.note.includes('⚠️') || item.note.includes('ATTENZIONE') ? 'warn-block' : 'note-block'}">${item.note}</div></div>` : ''}
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">Feedback clienti</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+    `;
+  } else if (type === 'attivita') {
+    item = DATA.attivita[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.citta + ' · ' + catBadge(item.cat);
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Fornitore', item.fornitore||'—')}
+          ${field('Costo', item.costo||'N/D')}
+          ${field('Durata / Orari', item.durata||'N/D')}
+          ${field('Lingua', item.lingua||'N/D')}
+          ${field('Mail', item.mail||'—')}
+          ${field('Telefono', item.tel||'—')}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">Feedback clienti</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+    `;
+  } else if (type === 'trasporti') {
+    item = DATA.trasporti[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.citta + ' · ' + item.tipo;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Fornitore', item.fornitore)}
+          ${field('Mail', item.mail||'—')}
+          ${field('Telefono', item.tel||'—')}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+    `;
+  } else if (type === 'guide') {
+    item = DATA.guide[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.zona + ' · ' + item.lingua;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Tipo', item.tipo)}
+          ${field('Lingua', item.lingua)}
+          ${field('Prenotazione', item.prenotazione)}
+          ${field('Costi', item.costi||'N/D')}
+          ${field('Mail', item.mail||'—')}
+          ${field('Telefono', item.tel||'—')}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+    `;
+  } else if (type === 'pass') {
+    item = DATA.pass[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.zona;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Quando usarlo</div>
+        <div class="note-block">${item.quando}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">✅ Incluso</div>
+        <div class="feedback-block">${item.incluso}</div>
+      </div>
+      ${item.escluso ? `<div class="modal-section"><div class="modal-section-title">❌ Escluso</div><div class="warn-block">${item.escluso}</div></div>` : ''}
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+    `;
+  } else if (type === 'mustsee') {
+    item = DATA.mustsee[idx];
+    title.textContent = item.nome;
+    subtitle.textContent = item.citta + ' · ' + item.zona;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Tipo', item.tipo)}
+          ${field('Costo', item.costo)}
+          ${field('Prepagamento', item.prepagamento)}
+          ${field('Livello', item.livello)}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+    `;
+  }
+
+  body.innerHTML = html;
+  overlay.classList.add('show');
+}
+
+function field(label, value) {
+  if (!value || value === '—' || value === '') return '';
+  return `<div class="modal-field"><div class="modal-field-label">${label}</div><div class="modal-field-value">${value}</div></div>`;
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('show');
+  }
+}
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const sectionMap = { overview:'sec-overview', enti:'sec-enti', fornitori:'sec-fornitori', alloggi:'sec-alloggi', attivita:'sec-attivita', trasporti:'sec-trasporti', guide:'sec-guide', pass:'sec-pass', mustsee:'sec-mustsee' };
+const titleMap = { overview:'Dashboard', enti:'Enti del Turismo', fornitori:'Fornitori / DMC', alloggi:'Alloggi', attivita:'Attività', trasporti:'Trasporti', guide:'Guide', pass:'Pass Regionali', mustsee:'Must See / Do' };
+
+let currentSection = 'overview';
+
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(sectionMap[sec]).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => { if (b.getAttribute('onclick').includes(`'${sec}'`)) b.classList.add('active'); });
+  document.getElementById('page-title').textContent = titleMap[sec];
+  currentSection = sec;
+  updateStatChip(sec);
+}
+
+function updateStatChip(sec) {
+  const counts = { overview: DATA.enti.length + DATA.fornitori.length + DATA.alloggi.length + DATA.attivita.length, enti: DATA.enti.length, fornitori: DATA.fornitori.length, alloggi: DATA.alloggi.length, attivita: DATA.attivita.length, trasporti: DATA.trasporti.length, guide: DATA.guide.length, pass: DATA.pass.length, mustsee: DATA.mustsee.length };
+  document.getElementById('stat-chip').textContent = (counts[sec]||0) + ' elementi';
+}
+
+// ============================================================
+// FILTERS
+// ============================================================
+function filterEnte(v, btn) {
+  document.querySelectorAll('#sec-enti .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderEnti(v);
+}
+
+function filterForn(v, btn) {
+  document.querySelectorAll('#sec-fornitori .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFornitori(v);
+}
+
+function filterAlloggi() { renderAlloggi(); }
+function filterAtt() { renderAttivita(); }
+
+function filterGuide(v, btn) {
+  document.querySelectorAll('#sec-guide .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGuide(v);
+}
+
+function filterPass(v, btn) {
+  document.querySelectorAll('#sec-pass .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPass(v);
+}
+
+function doSearch() {
+  if (currentSection === 'alloggi') renderAlloggi();
+  else if (currentSection === 'attivita') renderAttivita();
+}
+
+function emptyHTML() {
+  return `<div class="empty" style="grid-column:1/-1;"><div class="empty-icon">🔍</div>Nessun risultato trovato.</div>`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  populateDropdowns();
+  renderEnti();
+  renderFornitori();
+  renderAlloggi();
+  renderAttivita();
+  renderTrasporti();
+  renderGuide();
+  renderPass();
+  renderMustSee();
+  renderCityStats();
+  updateStatChip('overview');
+}
+
+init();
+</script>
+</body>
+</html>
