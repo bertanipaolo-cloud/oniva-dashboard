@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌺 ONIVA — Polinesia Francese Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d2a3a;
+    --deep: #0a1f2e;
+    --coral: #e87461;
+    --sand: #f5ebd9;
+    --ocean: #1b5a7a;
+    --lagoon: #5ba8bf;
+    --pale: #faf6ef;
+    --cream: #f7f1e3;
+    --white: #ffffff;
+    --muted: #7d8c94;
+    --muted-dark: #556a74;
+    --border: #d9cdb7;
+    --border-light: #eae0c9;
+    --tag-bg: #ede3ce;
+    --green: #2d7a5f;
+    --sidebar: 280px;
+    --shadow-sm: 0 1px 3px rgba(13,42,58,0.06);
+    --shadow-md: 0 4px 16px rgba(13,42,58,0.08);
+    --shadow-lg: 0 10px 40px rgba(13,42,58,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--pale);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  a { color: var(--coral); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: var(--sidebar);
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--deep) 0%, var(--ocean) 100%);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 100;
+    overflow-y: auto;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+  }
+
+  .sidebar-header {
+    padding: 30px 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+  }
+
+  .sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, var(--coral) 0%, transparent 70%);
+    opacity: 0.3;
+    border-radius: 50%;
+    filter: blur(8px);
+  }
+
+  .sidebar-title {
+    font-family: 'Fraunces', serif;
+    color: var(--sand);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .sidebar-title em {
+    color: var(--coral);
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .sidebar-sub {
+    color: rgba(255,255,255,0.4);
+    font-size: 10.5px;
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .nav-section { padding: 14px 0 6px; }
+
+  .nav-label {
+    padding: 0 24px 8px;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    font-weight: 600;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 24px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+    position: relative;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: white;
+  }
+
+  .nav-btn.active {
+    color: var(--sand);
+    border-left-color: var(--coral);
+    background: rgba(232,116,97,0.12);
+    font-weight: 500;
+  }
+
+  .nav-btn .icon { font-size: 17px; width: 20px; text-align: center; }
+
+  .nav-btn .count {
+    margin-left: auto;
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.06);
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  .nav-btn.active .count { background: rgba(232,116,97,0.2); color: var(--coral); }
+
+  /* MAIN */
+  #main {
+    margin-left: var(--sidebar);
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* TOPBAR */
+  #topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border-light);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.92);
+  }
+
+  #topbar h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1;
+    letter-spacing: -0.5px;
+  }
+
+  #topbar h1 .section-sub {
+    color: var(--muted);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 15px;
+    margin-left: 8px;
+  }
+
+  .search-wrap { position: relative; }
+
+  #search {
+    padding: 9px 14px 9px 38px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: var(--cream);
+    font-family: inherit;
+    font-size: 13px;
+    width: 280px;
+    outline: none;
+    transition: all 0.2s;
+    color: var(--ink);
+  }
+
+  #search:focus {
+    border-color: var(--coral);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(232,116,97,0.12);
+    width: 320px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* CONTENT */
+  #content {
+    padding: 30px 36px 60px;
+    max-width: 1600px;
+  }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding-bottom: 18px;
+    border-bottom: 1px dashed var(--border-light);
+  }
+
+  .filter-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: white;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { border-color: var(--coral); color: var(--coral); }
+  .filter-btn.active {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: white;
+    font-weight: 600;
+  }
+
+  select.city-select {
+    padding: 7px 34px 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    background: white;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--ink);
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    font-weight: 500;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%237d8c94' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+
+  select.city-select:focus { border-color: var(--coral); }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 18px;
+  }
+
+  /* CARD */
+  .card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 20px;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--coral);
+    transform: scaleY(0);
+    transition: transform 0.25s;
+    transform-origin: top;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--border);
+  }
+
+  .card:hover::before { transform: scaleY(1); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .card-name {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  .badge-coral { background: #fde6e1; color: var(--coral); }
+  .badge-ocean { background: #d6eef5; color: var(--ocean); }
+  .badge-lagoon { background: #e0f0f5; color: #3a7a8f; }
+  .badge-sand { background: var(--sand); color: #8a6d2e; }
+  .badge-green { background: #d8ecdf; color: var(--green); }
+  .badge-gray { background: var(--tag-bg); color: var(--muted-dark); }
+  .badge-gold { background: #fce9bf; color: #8a5f0f; }
+  .badge-red { background: #fde3e0; color: #b94c3f; }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: var(--cream);
+    color: var(--muted-dark);
+    font-weight: 500;
+  }
+
+  .card-row {
+    display: flex;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--muted-dark);
+    margin-bottom: 5px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .card-row .label {
+    font-weight: 600;
+    color: var(--ink);
+    min-width: 72px;
+    flex-shrink: 0;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .card-row .value { flex: 1; color: #4a5a63; }
+
+  .card-notes {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--cream);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--muted-dark);
+    border-left: 3px solid var(--coral);
+    font-style: italic;
+    line-height: 1.55;
+    max-height: 70px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-feedback {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #f0f7f3;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--green);
+    border-left: 3px solid var(--green);
+    line-height: 1.55;
+    max-height: 60px;
+    overflow: hidden;
+  }
+
+  .card-warn {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fcf4e0;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #8a6300;
+    border-left: 3px solid #e0b238;
+    line-height: 1.55;
+  }
+
+  /* MODAL */
+  #modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,31,46,0.65);
+    z-index: 200;
+    backdrop-filter: blur(4px);
+    animation: overlayIn 0.2s ease;
+  }
+  @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+  #modal-overlay.show { display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+
+  #modal {
+    background: white;
+    border-radius: 18px;
+    max-width: 760px;
+    width: 100%;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+  .modal-header {
+    padding: 26px 30px 18px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .modal-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .modal-subtitle {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .modal-close {
+    background: var(--cream);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .modal-close:hover { background: var(--coral); color: white; }
+
+  .modal-body { padding: 22px 30px 32px; }
+
+  .modal-section { margin-bottom: 22px; }
+
+  .modal-section-title {
+    font-size: 10.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
+  }
+
+  .modal-field-label {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .modal-field-value {
+    font-size: 13.5px;
+    color: var(--ink);
+    word-break: break-word;
+    line-height: 1.5;
+  }
+
+  .modal-field-value a {
+    color: var(--ocean);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--lagoon);
+    padding-bottom: 1px;
+  }
+  .modal-field-value a:hover { color: var(--coral); border-color: var(--coral); text-decoration: none; }
+
+  .note-block, .feedback-block, .warn-block {
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .note-block { background: var(--cream); color: var(--muted-dark); border-left: 4px solid var(--coral); }
+  .feedback-block { background: #f0f7f3; color: var(--green); border-left: 4px solid var(--green); }
+  .warn-block { background: #fcf4e0; color: #8a6300; border-left: 4px solid #e0b238; }
+
+  /* LINK BUTTONS */
+  .link-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12.5px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+
+  .link-btn:hover {
+    background: var(--coral);
+    border-color: var(--coral);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .link-btn .icon { font-size: 13px; }
+
+  /* RELATED */
+  .related-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .related-item {
+    padding: 10px 14px;
+    background: var(--cream);
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .related-item:hover {
+    background: white;
+    border-color: var(--coral);
+    color: var(--coral);
+  }
+
+  .related-item .arrow { color: var(--muted); font-size: 14px; }
+  .related-item:hover .arrow { color: var(--coral); }
+
+  /* OVERVIEW */
+  .hero-banner {
+    background: linear-gradient(135deg, var(--ocean) 0%, var(--lagoon) 100%);
+    border-radius: 20px;
+    padding: 40px 36px;
+    color: white;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-banner::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -30px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, var(--coral) 0%, transparent 70%);
+    opacity: 0.3;
+    border-radius: 50%;
+    filter: blur(40px);
+  }
+
+  .hero-banner h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .hero-banner h2 em { font-style: italic; color: var(--sand); font-weight: 400; }
+
+  .hero-banner p {
+    color: rgba(255,255,255,0.8);
+    font-size: 15px;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .overview-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .overview-card:hover {
+    border-color: var(--coral);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+
+  .ov-icon { font-size: 28px; margin-bottom: 8px; }
+  .ov-num { font-size: 32px; font-weight: 600; font-family: 'Fraunces', serif; color: var(--ink); letter-spacing: -1px; }
+  .ov-label { font-size: 12.5px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 24px;
+  }
+
+  .info-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 24px;
+  }
+
+  .info-card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  .stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+  }
+
+  .stat-label .name { font-weight: 500; color: var(--ink); }
+  .stat-label .num { color: var(--muted); font-weight: 500; }
+
+  .stat-bar {
+    background: var(--border-light);
+    height: 5px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    background: linear-gradient(90deg, var(--coral) 0%, var(--lagoon) 100%);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.6s ease;
+  }
+
+  .quick-tip {
+    padding: 10px 14px;
+    background: var(--cream);
+    border-radius: 8px;
+    font-size: 12.5px;
+    margin-bottom: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--muted-dark);
+  }
+
+  .quick-tip .emoji { font-size: 16px; flex-shrink: 0; }
+
+  /* COST */
+  .cost-low { color: var(--green); font-weight: 600; }
+  .cost-mid { color: #8a6d2e; font-weight: 600; }
+  .cost-high { color: var(--coral); font-weight: 600; }
+  .cost-lux { color: #8a0e4c; font-weight: 600; }
+
+  /* EMPTY */
+  .empty {
+    padding: 80px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .empty-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.5; }
+
+  .result-count {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .result-count strong { color: var(--coral); font-weight: 600; }
+
+  /* FEEDBACK section special */
+  .feedback-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+  }
+
+  .feedback-card:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border);
+  }
+
+  .fb-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .fb-client {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  .fb-link {
+    font-size: 12px;
+    color: var(--ocean);
+    cursor: pointer;
+    padding: 2px 8px;
+    background: var(--cream);
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  .fb-link:hover { background: var(--coral); color: white; }
+
+  .fb-type {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--muted-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  .fb-body {
+    font-size: 13px;
+    color: var(--muted-dark);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .fb-positive { border-left: 4px solid var(--green); }
+  .fb-negative { border-left: 4px solid var(--coral); }
+  .fb-neutral { border-left: 4px solid var(--muted); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  @media (max-width: 900px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .modal-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 700px) {
+    #sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+    #sidebar.open { transform: translateX(0); }
+    #main { margin-left: 0; }
+    #search { width: 160px; }
+    #search:focus { width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Polinesia<br><em>Francese</em></div>
+    <div class="sidebar-sub">Database · ONIVA</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Panoramica</div>
+    <button class="nav-btn active" data-section="overview">
+      <span class="icon">🌺</span> Dashboard
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Catalogo</div>
+    <button class="nav-btn" data-section="fornitori">
+      <span class="icon">🏢</span> Fornitori / DMC <span class="count" id="c-forn"></span>
+    </button>
+    <button class="nav-btn" data-section="alloggi">
+      <span class="icon">🏝️</span> Alloggi <span class="count" id="c-all"></span>
+    </button>
+    <button class="nav-btn" data-section="attivita">
+      <span class="icon">🐚</span> Attività <span class="count" id="c-att"></span>
+    </button>
+    <button class="nav-btn" data-section="trasporti">
+      <span class="icon">⛴️</span> Trasporti <span class="count" id="c-tra"></span>
+    </button>
+    <button class="nav-btn" data-section="cruise">
+      <span class="icon">⚓</span> Crociere <span class="count" id="c-cru"></span>
+    </button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Insights</div>
+    <button class="nav-btn" data-section="feedback">
+      <span class="icon">💬</span> Feedback Clienti <span class="count" id="c-fb"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <h1 id="page-title">Dashboard <span class="section-sub">panoramica generale</span></h1>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Cerca…" oninput="doSearch()">
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- OVERVIEW -->
+    <div class="section active" id="sec-overview">
+      <div class="hero-banner">
+        <h2>Tahiti <em>& Her Islands</em></h2>
+        <p>Database consolidato di fornitori, alloggi, attività e feedback dei clienti. Clicca su qualsiasi scheda per vedere i dettagli; le voci cliccabili (fornitori, mail, siti web) sono sempre interattive.</p>
+      </div>
+
+      <div class="overview-grid">
+        <div class="overview-card" onclick="showSection('fornitori')">
+          <div class="ov-icon">🏢</div>
+          <div class="ov-num" id="ov-forn">—</div>
+          <div class="ov-label">Fornitori / DMC</div>
+        </div>
+        <div class="overview-card" onclick="showSection('alloggi')">
+          <div class="ov-icon">🏝️</div>
+          <div class="ov-num" id="ov-all">—</div>
+          <div class="ov-label">Alloggi</div>
+        </div>
+        <div class="overview-card" onclick="showSection('attivita')">
+          <div class="ov-icon">🐚</div>
+          <div class="ov-num" id="ov-att">—</div>
+          <div class="ov-label">Attività</div>
+        </div>
+        <div class="overview-card" onclick="showSection('feedback')">
+          <div class="ov-icon">💬</div>
+          <div class="ov-num" id="ov-fb">—</div>
+          <div class="ov-label">Feedback</div>
+        </div>
+        <div class="overview-card" onclick="showSection('trasporti')">
+          <div class="ov-icon">⛴️</div>
+          <div class="ov-num" id="ov-tra">—</div>
+          <div class="ov-label">Trasporti</div>
+        </div>
+        <div class="overview-card" onclick="showSection('cruise')">
+          <div class="ov-icon">⚓</div>
+          <div class="ov-num" id="ov-cru">—</div>
+          <div class="ov-label">Crociere</div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-title">🏝️ Isole per numero di strutture</div>
+          <div id="island-stats"></div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title">💡 Note operative rapide</div>
+          <div class="quick-tip"><span class="emoji">🥇</span><span><strong>Tahiti Tours</strong> è al momento la prima scelta per DMC</span></div>
+          <div class="quick-tip"><span class="emoji">⚠️</span><span><strong>Tekura</strong> → feedback FraD: lenti, imprecisi, poco collaborativi</span></div>
+          <div class="quick-tip"><span class="emoji">📡</span><span>Meglio <strong>Tekura WiFi Box</strong> (30GB, 72€) del Tahiti WiFi (8GB, fino 90€)</span></div>
+          <div class="quick-tip"><span class="emoji">🌧️</span><span>Evitare <strong>Gennaio-Febbraio</strong> (piogge sulle Society Islands)</span></div>
+          <div class="quick-tip"><span class="emoji">💰</span><span>Markup consigliato: <strong>15-17%</strong> massimo sui net rates</span></div>
+          <div class="quick-tip"><span class="emoji">🐋</span><span>Whale watching a Moorea: <strong>metà agosto - ottobre</strong> (picco settembre)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORNITORI -->
+    <div class="section" id="sec-fornitori">
+      <div class="filter-bar">
+        <span class="filter-label">Status</span>
+        <button class="filter-btn active" data-filter-forn="tutti">Tutti</button>
+        <button class="filter-btn" data-filter-forn="prima-scelta">🥇 Prima scelta</button>
+        <button class="filter-btn" data-filter-forn="da-provare">🆕 Da provare</button>
+        <button class="filter-btn" data-filter-forn="italiano">🇮🇹 Italiano</button>
+      </div>
+      <div class="result-count" id="forn-count"></div>
+      <div class="cards-grid" id="forn-grid"></div>
+    </div>
+
+    <!-- ALLOGGI -->
+    <div class="section" id="sec-alloggi">
+      <div class="filter-bar">
+        <span class="filter-label">Isola</span>
+        <select class="city-select" id="all-island" onchange="filterAlloggi()">
+          <option value="tutti">Tutte le isole</option>
+        </select>
+        <select class="city-select" id="all-cost" onchange="filterAlloggi()">
+          <option value="tutti">Qualsiasi costo</option>
+          <option value="BASSO">Basso</option>
+          <option value="MEDIO BASSO">Medio Basso</option>
+          <option value="MEDIO">Medio</option>
+          <option value="MEDIO ALTO">Medio Alto</option>
+          <option value="ALTO">Alto</option>
+          <option value="MOLTO ALTO">Molto Alto (Luxury)</option>
+        </select>
+      </div>
+      <div class="result-count" id="all-count"></div>
+      <div class="cards-grid" id="all-grid"></div>
+    </div>
+
+    <!-- ATTIVITA -->
+    <div class="section" id="sec-attivita">
+      <div class="filter-bar">
+        <span class="filter-label">Isola</span>
+        <select class="city-select" id="att-island" onchange="filterAttivita()">
+          <option value="tutti">Tutte le isole</option>
+        </select>
+      </div>
+      <div class="result-count" id="att-count"></div>
+      <div class="cards-grid" id="att-grid"></div>
+    </div>
+
+    <!-- TRASPORTI -->
+    <div class="section" id="sec-trasporti">
+      <div class="cards-grid" id="tra-grid"></div>
+    </div>
+
+    <!-- CRUISE -->
+    <div class="section" id="sec-cruise">
+      <div class="cards-grid" id="cru-grid"></div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="section" id="sec-feedback">
+      <div class="filter-bar">
+        <span class="filter-label">Tipo</span>
+        <button class="filter-btn active" data-filter-fb="tutti">Tutti</button>
+        <button class="filter-btn" data-filter-fb="positivo">✅ Positivi</button>
+        <button class="filter-btn" data-filter-fb="negativo">⚠️ Negativi</button>
+        <button class="filter-btn" data-filter-fb="alloggio">🏝️ Alloggi</button>
+        <button class="filter-btn" data-filter-fb="fornitore">🏢 Fornitori</button>
+      </div>
+      <div class="result-count" id="fb-count"></div>
+      <div id="fb-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" onclick="onOverlayClick(event)">
+  <div id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-subtitle" id="modal-subtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA — Polinesia Francese
+// ============================================================
+
+const DATA = {
+  fornitori: [
+    {
+      id: 'tahititourisme',
+      nome: "Tourism Hub × Tahiti Tourisme Italy",
+      tipo: "Rappresentanza Ente Turismo",
+      zona: "Polinesia Francese",
+      primaScelta: false,
+      daProvare: false,
+      italiano: true,
+      referente: "Valentina SOGGIU",
+      mail: "vsoggiu@tahititourisme.it",
+      tel: "+39 320 7212 874",
+      sito: "https://tahititourisme.it",
+      lingua: "Italiano",
+      servizi: "Rappresentanti Ente Turismo polinesiano in Italia.",
+      note: "Contatto diretto con Tourism Hub.",
+      fonte: "Tourism Hub",
+      brandCenter: "https://tahititourisme.it (US: francesca@oniva.it — pw oniva2024)"
+    },
+    {
+      id: 'tahititours',
+      nome: "Tahiti Tours",
+      tipo: "Inbound DMC",
+      zona: "Polinesia Francese",
+      primaScelta: true,
+      daProvare: false,
+      italiano: false,
+      referente: "Valerie LIS (owner) · Gaia CAMPANELLI (IT) · Laure (booking)",
+      mail: "sales@tahititours.pf · gaia.campanelli@tahititours.pf",
+      mailExtra: "valerie.lis@tahititours.pf · marketing@tahititours.pf · Anais.EICHHORN@tahititours.pf",
+      tel: "+689 40 46 40 69 · +689 87 73 38 78 (fuori orario) · +689 87 24 42 32 (Gaia IT) · +689 87 77 85 88 (Laure)",
+      sito: "https://www.tahititours.pf",
+      lingua: "Inglese, Italiano (Gaia)",
+      servizi: "Tailor-made · Accommodation · Domestic Flights · Excursions · Ferries · Cruises",
+      pagamenti: "Due conti (Francia + Polinesia). Booking confirmation alla prenotazione. Saldo a 45 gg dall'arrivo.",
+      note: "Fondata nel 1963. Reservations Department multi-lingua, conferme entro 24h lavorative. Offerte speciali scaricabili da SOBT_ITALY.JAN23. Hotel di catena con tariffe dinamiche.",
+      conclusioni: "🥇 AL MOMENTO È LA PRIMA SCELTA.",
+      fonte: "Internet + ITB Berlin 2023"
+    },
+    {
+      id: 'tekura',
+      nome: "Tekura Tahiti Travel",
+      tipo: "Inbound DMC",
+      zona: "Polinesia Francese",
+      primaScelta: false,
+      daProvare: false,
+      italiano: false,
+      referente: "Viviane STRIPPOLI · Patty LUSSAN (Directrice) · Giacomo (emergency)",
+      mail: "reservations@tekuratahititravel.pf · Viviane.STRIPPOLI@tekuratahititravel.pf · Patty.LUSSAN@tekuratahititravel.pf",
+      mailExtra: "marketing@tekuratahititravel.pf · duty@tekuratahititravel.pf",
+      tel: "+689 40 46 44 00 · +689 40 46 44 58 (direct) · +689 87 71 64 10 (WhatsApp emergency - Giacomo)",
+      sito: "https://www.tekuratahititravel.pf",
+      lingua: "Inglese",
+      servizi: "Accommodations · Flights · Assistance · Shuttles · Online Tools (Web Connect)",
+      portale: "Web Connect: quotazioni online con net rates, allotment hotel, fact sheets & immagini",
+      note: "⚠️ MEGLIO USARE TAHITI TOURS AL POSTO LORO. Stesso gruppo di Tahiti Tours. Potenzialmente interessante per quotazioni online rapide. Per i nuovi fornitori in Polinesia (Tekura e Tahiti Tours) salvare: conferma + invoice finale.",
+      feedback: "FraD: lenti e imprecisi; Patty e Viviane non collaborative. Alexandra manda quotazioni senza motivare le scelte. Vaihi (TIT) era il TOP.",
+      conclusioni: "Usare solo se Tahiti Tours non disponibile o per dividere le richieste in alta stagione.",
+      fonte: "FraD tramite Tahiti Tours"
+    },
+    {
+      id: 'tit',
+      nome: "Tahiti Island Travel (TIT)",
+      tipo: "Inbound DMC",
+      zona: "Polinesia Francese",
+      primaScelta: false,
+      daProvare: false,
+      italiano: false,
+      sostituito: true,
+      referente: "Vaihi CHARLES · Anick MASQUEFA · Ludivine",
+      mail: "vcharles@tahitiislandstravel.com · amasquefa@tahitiislandstravel.com · produits@tahitiislandstravel.com",
+      tel: "+689 40 50 88 16 · +689 87 74 28 70 (Emergency 24/7) · +689 40 50 88 10",
+      sito: "https://www.tahitiislandstravel.com",
+      lingua: "Inglese",
+      servizi: "Accommodations · Private Islands · Private Yachts · Catamarans · Cruises · Inter islands transportation · Meet & Greet · Private transfers · TIT signature services (private dance show…)",
+      pagamenti: "Markup consigliato 15-17% massimo per restare competitivi",
+      note: "⚠️ SOSTITUITI DA TAHITI TOURS E TEKURA. Creata nel 2015, primo DMC dedicato a tour privati su misura. Vaihi = il TOP. Link con prezzi escursioni 2025-2026 disponibile.",
+      feedback: "Ottimo AM. Ottimo riscontro da FraD. Sempre top, al primo posto. Vaihi a volte va guidata (fuso orario) — Ludivine più pronta.",
+      conclusioni: "Resta la scelta n°1 storica (ora sostituiti).",
+      fonte: "Internet"
+    },
+    {
+      id: 'etahiti',
+      nome: "E-Tahiti Travel",
+      tipo: "Inbound DMC online",
+      zona: "Polinesia Francese",
+      primaScelta: false,
+      daProvare: true,
+      italiano: false,
+      referente: "Marieke Chataigner",
+      mail: "info@etahititravel.com · marieke@tahititravelexperts.com",
+      tel: "+689 40 83 51 60 · Toll Free 1 800-961-8362",
+      sito: "https://www.etahititravel.com",
+      lingua: "Inglese",
+      servizi: "24/7 Assistance · Honeymoon & Romance · Luxury · Tahitian Guesthouses · Diving · Cruises · Family · Off the beaten tracks",
+      pagamenti: "Travel agency license con bank guarantee. Pagamenti CC su gateway 3D-Secure.",
+      note: "⚠️ DA PROVARE PER ITINERARI INTERI. FraD ha chiesto quotazione (in attesa feedback). Esperti locali + internazionali. 15+ anni di track record online.",
+      feedback: "A volte quotazioni più basse di TIT ma preventivi confusi. Buono quando TIT non ha soluzioni in budget (guesthouse economiche).",
+      conclusioni: "Continuerei con Vaihi & co. Usare come alternativa per budget limitati.",
+      fonte: "Internet"
+    },
+    {
+      id: 'oceania',
+      nome: "Oceania Cruises",
+      tipo: "Compagnia Crociere",
+      zona: "Polinesia + Mondo",
+      primaScelta: false,
+      daProvare: false,
+      italiano: true,
+      referente: "Alessandra Cabella",
+      mail: "acabella@oceaniacruises.com",
+      tel: "+39 345 364 1634 · Reservations: France +33 17 670 1040 · Sweden +46 8 121 185 71 · Netherlands 0800 0203 617 · Belgium 0800 389 40",
+      sito: "https://www.oceaniacruises.com",
+      lingua: "Italiano",
+      servizi: "Crociere Polinesia 2025/2026 e worldwide. Itinerario iconico Bali → Papeete (23 Jun 2025).",
+      note: "Cartella disponibile con programmazione 2025/2026.",
+      fonte: "Contatto diretto"
+    },
+    {
+      id: 'huaine',
+      nome: "Huaine Tahiti Adventures",
+      tipo: "Tour Operator",
+      zona: "Polinesia + mondo",
+      primaScelta: false,
+      daProvare: false,
+      italiano: false,
+      referente: "",
+      mail: "res@aonuiadventures.com",
+      tel: "+1 (951) 286-6738",
+      sito: "",
+      lingua: "Inglese",
+      servizi: "Huahine, Raiatea, Taha'a, Bora Bora, Moorea · Land and Blue Lagoon · Sandals Hotel/Resort",
+      note: "Hanno solo Tahiti nella Polinesia Francese ma utilizzabile per emergenze. Operano anche in altre destinazioni mondiali.",
+      conclusioni: "Da usare solo per emergenze."
+    }
+  ],
+
+  alloggi: [
+    // MOOREA
+    { id:'moo1', isola:'Moorea', nome:"Moorea Beach Villas", costo:"", prenotazione:"Cartella", mail:"", tel:"", sito:"", posizione:"Moorea", servizi:"", note:"", feedback:"" },
+    { id:'moo2', isola:'Moorea', nome:"Haere Mai I Te Fare", costo:"MEDIO BASSO", prenotazione:"Booking/RateHawk", mail:"", tel:"+689 87 71 48 25", sito:"", posizione:"1,4 km dalla spiaggia di Temae", camere:"Family Bungalow · Family Room · Superior Family Room", servizi:"Colazione · WiFi gratuita · Camere non fumatori · Ristorante · Camere familiari · Culle/lettini · Parcheggio privato gratuito", note:"", feedback:"3009 - ANGELA MASSAFRA" },
+    { id:'moo3', isola:'Moorea', nome:"Manava Beach Resort & Spa", costo:"", prenotazione:"Cartella (SPM Hotels)", mail:"res@spmhotels.pf", tel:"+689 40 50 84 45 · +33 6 52 92 17 31", sito:"", posizione:"Lato orientale · 10 min auto da aeroporto", camere:"Garden View · Garden Pool Bungalow · Beach Bungalow · Overwater · Premium Overwater · Family Duplex", servizi:"Colazione · Piscina · Spa · Fronte spiaggia · Accessibilità · Bar · Parcheggio", note:"Vero resort. Soft refurbishment in corso fino a inizio marzo 2026 (4 bungalow/settimana, senza disagi). Parte di South Pacific Management (Reva Tahiti, Niu Beach, Motu Nao Nao, Villa Oro Paraoa).", feedback:"2327 - ELEONORA VACCARI", fornitoreCollegato:"tahititours", suggerimentoVaihi:"Alternativa ideale per budget. La spiaggia non è come Moorea Island Beach o Moorea Beach Lodge. Garden Pool Bungalow più economici del Beach Bungalow ma più privati." },
+    { id:'moo4', isola:'Moorea', nome:"Moorea Beach Lodge", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk", mail:"mooreabeachlodge.booking@gmail.com", tel:"+689 87 23 33 25", sito:"https://mooreabeachlodge.com", posizione:"Temae Airport 16 km", camere:"Bungalow Garden · Beach · Honeymoon · Family House", servizi:"WiFi gratuita · Fronte spiaggia · Parcheggio · Spiaggia privata · Frigo + bollitore", note:"E-bike e kayak gratuiti per gli ospiti.", feedback:"3734 - Lorenza Curinga" },
+    { id:'moo5', isola:'Moorea', nome:"Green Lodge Moorea ⭐", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"info@greenlodgemoorea.com", tel:"+689 40 56 31 00 · +689 89 77 07 86", sito:"https://greenlodgemoorea.com", posizione:"1 km da Temae Airport · NE", camere:"Lodge 30m² Kahaia · 2 beachfront bungalow (Tahinu, Tamanu) 40m² · 3 garden bungalow (Fara, Miki Miki, Vine) 30m²", servizi:"Colazione · Piscina · WiFi · Fronte spiaggia · Ristorante · Bar · Spiaggia privata", note:"💚 CUORE ONIVA. Noleggio bici ed escursioni a pagamento.", feedback:"" },
+    { id:'moo6', isola:'Moorea', nome:"Niu Beach Moorea", costo:"", prenotazione:"Cartella (SPM Hotels)", mail:"direction@niubeachmoorea.com · res@spmhotels.pf", tel:"+689 40 50 84 45 · +33 6 52 92 17 31", sito:"", posizione:"1 km da Plage de Tiahura", camere:"Beach Bungalow · Garden Bungalow · Duplex Garden Bungalow", servizi:"Colazione · WiFi · Parcheggio · Accessibilità · Fronte spiaggia · Camere familiari", note:"⚡ Nuovissima, gestita da signora italiana (Silvia). Bungalow spaziosi con cucine attrezzate. Spiaggia tra le più belle dell'isola. 👉 Dopo prenotazione inviare mail a Silvia (direction@niubeachmoorea.com): provvederà a mettere gli ospiti nel bungalow migliore. Le foto sono ancora render perché nuovissima.", feedback:"6223 - FRANCESCA PETRILLO · FraB: parlando col fornitore confermata validità (nuovissima, foto render)" },
+    { id:'moo7', isola:'Moorea', nome:"Sofitel Kia Ora Moorea Beach Resort", costo:"ALTO", prenotazione:"Booking/RateHawk (con Tekura)", mail:"H0566@sofitel.com", tel:"+689 40 55 12 12", sito:"https://www.sofitel-moorea.com", posizione:"5 min da aeroporto", camere:"Bungalow Luxury fronte spiaggia · Garden · Overwater Luxury/Superior · Ocean View · King size", servizi:"Colazione · Piscina · WiFi · Spa · Concierge · Cambio valuta · Reception 24h · Fronte spiaggia · Spiaggia privata", note:"⚠️ Non prevede tariffa ECI: prenotare notte prima. Clienti possono usare servizi fino a check-in (3 docce + spogliatoi in lobby). Ristrutturazione in corso (vedi pdf cartella Tekura).", feedback:"6242 - FRANCESCA BENETTONI", fornitoreCollegato:"tekura", suggerimentoVaihi:"Location eccezionale su spiaggia bianca davanti al panorama di Tahiti. Perfetto per attività (jet-ski, diving con squali tigre, snorkeling coral gardens, sunset cruise, delfini). Belvedere con panorama sulle baie di Opunohu e Cook. 4WD safaris nell'interno." },
+    { id:'moo8', isola:'Moorea', nome:"Moorea Sunset Beach", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"reception@mooreasunsetbeach.com", tel:"+689 40 55 00 00", sito:"", posizione:"A pochi passi dalla spiaggia", camere:"Suite piano superiore · Garden · Bungalow Deluxe · Beach · Family", servizi:"WiFi · Accessibilità · Parcheggio · Camere familiari · Fronte spiaggia", note:"Servono auto per esplorare + primo villaggio (50 min a piedi / pochi min in auto).", feedback:"6434 - ARIANNA TECCHIOLLI/MARGONI" },
+    { id:'moo9', isola:'Moorea', nome:"Cottage Manua", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk", mail:"", tel:"", sito:"", posizione:"Motu Temae", camere:"Casa vacanze 3 camere + cucina + 1 bagno", servizi:"AC · Giardino · Cucina completa con BBQ · Terrazza · Portineria · Accesso spiaggia/laguna · Vista oceano/balene (stagione)", note:"Opzione conveniente in zona residenziale. Molto più spazio e libertà rispetto ad hotel. Doccia esterna. Lavatrice + asciugatrice.", feedback:"" },
+    { id:'moo10', isola:'Moorea', nome:"Hotel Hibiscus", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"hibiscus@hotel-hibiscus.pf", tel:"+689 40 56 12 20 · +689 40 56 26 00 (resto)", sito:"", posizione:"35 min auto dal molo", camere:"Camere AC double/triple · Studios 4-5 pax · Garden bungalow · Lagoon view · Superior · Suite · Family", servizi:"Colazione · Piscina · Parcheggio · WiFi · Fronte spiaggia · Ristorante · Bar", note:"", feedback:"7096 - MARIA CORTI" },
+    { id:'moo11', isola:'Moorea', nome:"Moorea Island Beach Hotel", costo:"MEDIO", prenotazione:"Booking/RateHawk (con Tekura)", mail:"mooreaislandbeach.booking@gmail.com", tel:"+689 87 74 33 07", sito:"", servizi:"Colazione · WiFi · Parcheggio · Fronte spiaggia · Camere familiari · Spiaggia privata", note:"", feedback:"6744 - LUIGI CAMPANARI", fornitoreCollegato:"tekura" },
+    { id:'moo12', isola:'Moorea', nome:"Hotel Cook's Bay Resort & Suite", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk (con Tekura)", mail:"reservation@mooreacooksbay.com", tel:"+689 40 55 22 00", sito:"", servizi:"Colazione · Piscina · WiFi · Parcheggio · Spiaggia privata · Accessibilità · Ristorante · Bar", note:"", feedback:"6909 - PIERFRANCESCO RIZZI", fornitoreCollegato:"tekura" },
+    { id:'moo13', isola:'Moorea', nome:"Hotel Kaveka", costo:"", feedback:"6972 - FRANCESCA FALLICA/SABINO SAVIO LEONETTI" },
+    { id:'moo14', isola:'Moorea', nome:"Tiki Beach", costo:"", feedback:"7630 - SARA GERMINARIO / VILLA" },
+    { id:'moo15', isola:'Moorea', nome:"Oro Paraoa Private Villa", costo:"", prenotazione:"Cartella (SPM Hotels)", mail:"res@spmhotels.pf", tel:"+689 40 50 84 45 · +33 6 52 92 17 31", note:"Parte di South Pacific Management hotels. Villa privata 5* luxury. Contatto: Perrin Ozyetis (perrin.ozyetis@groupexpression.fr) · Virginie Moulin.", feedback:"" },
+    { id:'moo16', isola:'Moorea', nome:"Fare Taina Dream", costo:"MEDIO ALTO", prenotazione:"Booking (con Stayinn)", mail:"", tel:"+689 40 42 97 53", sito:"", posizione:"NORD OVEST", camere:"Bungalow Fronte Spiaggia · Intera casa 75 m²", servizi:"Cucina · Giardino · WiFi · Terrazza · AC · Bagno privato · Parcheggio gratuito", note:"⚠️ Non veramente fronte spiaggia.", feedback:"3200 - MARTINA LUPO", feedbackNegativo:"Non è piaciuto, non riusare. NON è veramente fronte spiaggia." },
+    { id:'moo17', isola:'Moorea', nome:"Fare Tiaia Beach", costo:"", prenotazione:"Booking/RateHawk" },
+
+    // TAHA'A
+    { id:'tah1', isola:"Taha'a", nome:"Le Taha'a by Pearl Resort", costo:"CARTELLA", prenotazione:"Sito", mail:"enquiries@letahaabooking.com · reservations@pearlresorts.com", tel:"+689 40 50 76 01 · +689 40 60 84 00 (resort) · +689 40 60 84 27 (activities)", sito:"https://letahaa.com", camere:"Pool Beach Villa · Premium Pool Beach Villa · Overwater Suite · Premium Overwater · Sunset · Bora Bora View · End Of Pontoon · Royal Pool Beach", servizi:"Colazione · Spa · Palestra · Fronte spiaggia · Room service · Accessibilità · WiFi · Spiaggia privata · Navetta aeroportuale", note:"Cartella con tutti i Pearl Resorts. Referente Europa: Maurizio MAGGI (+33 6 83 40 62 82, maurizio.maggi@pearlresortsoftahiti.com).", feedback:"3200 - MARTINA LUPO" },
+    { id:'tah2', isola:"Taha'a", nome:"Pension Anahata", costo:"MEDIO", prenotazione:"Sito/RateHawk", feedback:"6814 - STEFANIA FALSO" },
+    { id:'tah3', isola:"Taha'a", nome:"Pension L'Hibiscus", costo:"", feedback:"7630 - SARA GERMINARIO / VILLA" },
+
+    // BORA BORA
+    { id:'bor1', isola:'Bora Bora', nome:"MaiTai Bora Bora", costo:"MEDIO", prenotazione:"Booking/Sito (net rates richieste, non rispondono)", mail:"c.gomet@hms.hotelsmaitai.com · fom@bora.hotelsmaitai.com · gm@bora.hotelsmaitai.com", tel:"+689 40 86 51 46", sito:"https://hotelsmaitai.com", posizione:"Matira Point · SUD", camere:"King Garden View · King Ocean View · Premium Overwater Bungalow", servizi:"Colazione · WiFi · Fronte spiaggia · Accessibilità · Camere familiari · Bar/Ristorante · Navetta a pagamento", note:"", feedback:"3200 - MARTINA LUPO" },
+    { id:'bor2', isola:'Bora Bora', nome:"InterContinental Le Moana Resort Bora Bora", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk", mail:"reservation.tahitiregion@ihg.com", tel:"+689 40 60 49 00", sito:"https://ihg.com", posizione:"Matira Beach", camere:"63 Bungalows: 12 Beach 55m² · 51 Overwater 63m² (21 Lagoon + 24 Horizon + 5 end-of-pontoon + 1 Poevai Horizon Suite)", servizi:"Pasti · Piscina · Nora Nora restaurant · WiFi · Fronte spiaggia · Accessibilità · Room service · Vini Vini Bar · Spiaggia privata", transfer:"7 partenze/giorno, 08:15-22:00, 3.390 XPF (~28€) pp return, gratuito in alcuni casi", note:"", feedback:"3009 - ANGELA MASSAFRA" },
+    { id:'bor3', isola:'Bora Bora', nome:"Le Bora Bora Pearl Resort", costo:"CARTELLA", prenotazione:"Booking/RateHawk", mail:"enquiries@boraborapearlbookings.com", tel:"+689 40 507 601 · +689 40 60 52 00 (resort) · +689 40 60 52 09 (activities)", sito:"https://letahaa.com", servizi:"HB include buffet + spettacolo polinesiano (lunedì). Serate polinesiane con menu buffet al ristorante Otemanu. Serata romantica direttamente in spiaggia (ma ⚠️ vedi feedback). Wine bar raffinato. HB non obbligatoria, acquistabile per 1-2 notti.", note:"Referente: Maurizio MAGGI (+33 6 83 40 62 82). Cartella con tutti i Pearl Resorts.", feedback:"6434 - ARIANNA TECCHIOLLI/MARGONI", feedbackNegativo:"⚠️ Gaetano Pero: nelle giornate di lunedì e venerdì la cena romantica in spiaggia viene spostata nel giardino di una villa sfitta (per la serata polinesiana con show). Noi ci siamo trovati MALISSIMO: posto buio, mal riparato, menu pessimo (pochissima scelta, poca qualità), bevande escluse, nessun intrattenimento. Spesa ~320€. Se mai doveste avere richieste simili: accertatevi che non ci sia serata polinesiana concomitante o sconsigliate!" },
+    { id:'bor4', isola:'Bora Bora', nome:"Hotel Maitai Polynesia", costo:"MEDIO", prenotazione:"Booking/RateHawk (con Tekura)", mail:"webform", tel:"+689 60 30 00", sito:"https://hotelsmaitai.com", servizi:"Colazione · WiFi · Accessibilità · Ristorante · Fronte spiaggia · Camere familiari · Bar · Spiaggia privata · Navetta a pagamento", note:"", feedback:"6744 - LUIGI CAMPANARI", fornitoreCollegato:"tekura" },
+    { id:'bor5', isola:'Bora Bora', nome:"Hotel Royal Bora Bora", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"resa@royalbora.pf", tel:"+689 40 60 86 86", sito:"", camere:"Standard room", servizi:"Colazione · Piscina · Spa · WiFi · Parcheggio · Accessibilità · Fronte spiaggia · Ristorante · Bar", note:"", feedback:"6899 - FABIO MACCIOCCHI/MURGIA" },
+    { id:'bor6', isola:'Bora Bora', nome:"InterContinental Bora Bora Resort Thalasso Spa", costo:"ALTO", prenotazione:"Booking/RateHawk", mail:"", tel:"800 872 070", sito:"https://ihg.com", posizione:"Motu Piti Aau", camere:"84 Overwater Villas: 1-bedroom 95m² · 1-bedroom with pool 140m² · 2-bedroom Teremoana with pool 322m² (incluso mini bar refill, colazione camera, ingresso Deep Ocean Spa, free transfer, regalo addio)", servizi:"Pasti · 3 ristoranti · 3 bar · Infinity Pool 400m² · Deep Ocean Spa 400m² · Blue Lagoon Chapel (matrimoni) · Kids Program · Fronte spiaggia", transfer:"7 partenze/giorno, 08:15-22:00, 3.390 XPF (~28€) pp return", note:"", feedback:"" },
+    { id:'bor7', isola:'Bora Bora', nome:"Westin Bora Bora Resort & Spa ⭐", costo:"CARTELLA (con foto)", prenotazione:"Booking/RateHawk", mail:"", tel:"+689 40 606 0151 · Carolina (IT): +39 324 892 0774 · +33 613 98 25 40", referente:"CAROLINA PICONE (Managing Director Authentic Experience) — carolina@authenticexpe.com", camere:"Lagoon View Beach Villa · Plunge Pool Beach Villa · Overwater Bungalow · Lagoon View · Island View · Otemanu View · Otemanu w/Pool · Suite Lagoon Beach Villa · Lagoon Bungalow w/Pool · Otemanu Villa w/Pool · Premium Otemanu · 2-Bed Lagoon Beach Villa · Royal Villa w/Plunge Pool", servizi:"Colazione · Piscina · WiFi · Fronte spiaggia · 6 ristoranti · Room service · Bar · Spiaggia privata · Concierge · Cambio valuta · Reception 24h · Navetta a pagamento", note:"FAM TRIP FraD. 💰 RESORT FEE 11.550 XPF (~97€) per camera/notte (obbligatoria).", feedback:"7143 - CATERINA GUARNIERI/ANDREA LORINI" },
+    { id:'bor8', isola:'Bora Bora', nome:"Hotel Conrad Bora Bora Nui", costo:"", feedback:"7527 - MARTINA SBAFFI" },
+    { id:'bor9', isola:'Bora Bora', nome:"Mareta Studio AHURU 10", costo:"", feedback:"7660 - SIMONA GRILLI/A.C.M. SAS" },
+    { id:'bor10', isola:'Bora Bora', nome:"St. Regis Resort Bora Bora", costo:"MOLTO ALTO", prenotazione:"Booking/RateHawk", mail:"", tel:"+689 406 078 88 · Carolina (IT): +39 324 892 0774", referente:"CAROLINA PICONE (Authentic Experience) — carolina@authenticexpe.com", posizione:"15 min in barca da aeroporto", camere:"Overwater Superior/Deluxe/Otemanu/Premier · Overwater Villa w/Pool · Royal w/Pool · Reefside Garden Villa · Beachside Villa · The Royal Estate Villa", servizi:"Colazione · 2 piscine · WiFi · Concierge · Cambio valuta · 5 ristoranti · Room service · Spa · Bar · Spiaggia privata · Navetta aeroportuale a pagamento", note:"💎 Luxury. Cartella con foto e immagini.", feedback:"" },
+    { id:'bor11', isola:'Bora Bora', nome:"Matira", costo:"", note:"⚠️ SI SCONSIGLIA ASSOLUTAMENTE per clientela italiana. Peccato perché ben posizionato sulla spiaggia di Matira ma la struttura lascia a desiderare.", feedbackNegativo:"Sconsigliato per clientela italiana." },
+
+    // RANGIROA
+    { id:'ran1', isola:'Rangiroa', nome:"Kia Ora Bungalow", costo:"MEDIO", prenotazione:"Sito/RateHawk", mail:"resa@hotelkiaora.pf", tel:"+689 40 93 11 11", sito:"https://hotelkiaora.com", camere:"17 Beach · 3 Beach Duplex · 3 Beach Deluxe · 20 Villas w/pool · 4 Junior Suites w/pool · 10 Overwater · 1 Executive Suite", servizi:"Colazione · Ristorante · Bar · Spa & Fitness · Attività", note:"💡 L'unica spiaggia non rocciosa di Rangiroa è quella dell'hotel Kia Ora Rangiroa.", feedback:"3200 - MARTINA LUPO" },
+    { id:'ran2', isola:'Rangiroa', nome:"Hotel Kia Ora Resort & Spa", costo:"ALTO", prenotazione:"Booking/RateHawk", mail:"resa@hotelkiaora.pf", tel:"+689 40 93 11 11", sito:"https://hotelkiaora.com", camere:"Beach · Beach Duplex · Beach Deluxe · Villa w/pool · Junior Suite w/pool · Family Suite w/pool · Overwater", servizi:"Colazione · Piscina · Navetta aeroportuale · Spa · WiFi · Parcheggio · Accessibilità · Fronte spiaggia · Bar · Concierge · Cambio valuta", note:"", feedback:"6965 - MORENA LOSETO" },
+    { id:'ran3', isola:'Rangiroa', nome:"Hotel Maitai Rangiroa", costo:"ALTO", prenotazione:"Booking/RateHawk (con Tekura)", mail:"webform", tel:"+689 40 93 13 50", sito:"https://hotelsmaitai.com", posizione:"Laguna tra Avatoru e Tiputa · Volo 1h da Bora Bora/Tahiti · 5 min da aeroporto", camere:"34 bungalows: 6 lagoon 34m² · 10 premium garden 34m² · 18 twin garden 25m²", servizi:"Colazione · Ristorante · Bar · Piscina · WiFi · Fronte spiaggia · Accessibilità · Parcheggio gratuito", note:"⭐ OTTIMO per lo snorkeling.", feedback:"6944 - CHIARA CINIERO", fornitoreCollegato:"tekura" },
+    { id:'ran4', isola:'Rangiroa', nome:"Tihimani Lodge", costo:"MEDIO", prenotazione:"Booking/RateHawk (con Tahiti Tours)", feedback:"7397 - ANDREA MASINI", fornitoreCollegato:"tahititours" },
+    { id:'ran5', isola:'Rangiroa', nome:"Le Coconut Lodge", costo:"", feedback:"7131 - GIOVANNI MANFRINATO" },
+    { id:'ran6', isola:'Rangiroa', nome:"Relais Josephine", costo:"MEDIO ALTO", camere:"7 bungalow 35m² (vista Tiputa pass o giardino). Bagno + toilet separato, frigo, fan, safe. King size + singolo. Fino 3 pax (+extra bed)", servizi:"Ristoranti · Terrazza con vista", note:"⚠️ FraD: non c'è accesso alla laguna, ma luogo noto per ammirare delfini tra le onde. Giardino più piccolo con molti alberi (ombra quando sole alto)." },
+    { id:'ran7', isola:'Rangiroa', nome:"Tevahine Dream", costo:"MEDIO BASSO", prenotazione:"Booking/Sito/RateHawk", mail:"tevahinedream.norbert@gmail.com", tel:"+689 87 32 91 87", sito:"", camere:"Beach Bungalow · Bungalow Honeymoon · Garden Bungalow", servizi:"Colazione · WiFi · Parcheggio · Bollitore · Navetta aeroportuale gratuita", note:"Accesso alla laguna ma spiaggia rocciosa (visibile dal sito). Bungalow in giardino molto grazioso.", feedback:"6985 - MICHELA JENCINELLA" },
+    { id:'ran8', isola:'Rangiroa', nome:"Aotera Guest House", costo:"", prenotazione:"Booking/RateHawk", feedback:"2386 - ALICE FERRARI", feedbackNegativo:"⚠️ Non è piaciuto ai clienti, troppo vento." },
+
+    // TAHITI
+    { id:'tah10', isola:'Tahiti', nome:"Tahiti Airport Motel", costo:"MEDIO BASSO", prenotazione:"Booking/RateHawk", mail:"webform", tel:"+689 40 50 40 00", sito:"", posizione:"Aeroporto", camere:"Standard Double · Twin · Family · Accessible", servizi:"Colazione · WiFi · Accessibilità · Camere familiari · Bollitore · Deposito bagagli · Reception 24h · Parcheggio gratuito", note:"Non è un gran che. Da usare solo per 1 notte all'arrivo o alla partenza (costa poco, serve solo per dormire).", feedback:"3200 - MARTINA LUPO" },
+    { id:'tah11', isola:'Tahiti', nome:"Little Studios Ferry", costo:"MEDIO BASSO", prenotazione:"Sito", mail:"marevalocations@gmail.com", tel:"+689 87 30 13 56", sito:"", posizione:"2 min a piedi dal ferry", camere:"3 studios: Fenua 22m² · Maeva 19m² · Taina 23m²", servizi:"AC · WiFi · TV · Accesso comune sicuro", feedback:"2258 - Claudia Federici" },
+    { id:'tah12', isola:'Tahiti', nome:"Vanira Lodge", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"vaniralodge@mail.pf", tel:"+689 40 57 70 18 · +689 87 72 69 62", sito:"", posizione:"Teahupoo", servizi:"Colazione · 2 piscine · WiFi · Parcheggio · Ristorante · Camere familiari · Culle/lettini", feedback:"3734 - Lorenza Curinga" },
+    { id:'tah13', isola:'Tahiti', nome:"Fare Suisse Tahiti - Guesthouse", costo:"BASSO", prenotazione:"Booking (Tahiti Tours)", mail:"", tel:"", sito:"", camere:"Matrimoniale Standard · Tripla Basic · Matrimoniale Familiare", servizi:"Colazione · WiFi · Camere familiari · Navetta · Concierge · Deposito bagagli · Parcheggio gratuito", note:"20 min a piedi dalla Gare Maritime.", fornitoreCollegato:"tahititours" },
+    { id:'tah14', isola:'Tahiti', nome:"Maitai Express Tahiti", costo:"MEDIO ALTO", prenotazione:"Con Vaihi/Tekura", mail:"", tel:"+689 40 80 36 00", sito:"https://hotelsmaitai.com", posizione:"Davanti al terminal ferry · 5 min dal market", camere:"63 rooms: 55 standard 17,5m² · 4 Prince Hinoi Suite 35m² · 4 Prince Signature Suite 36m²+6m² balcony", servizi:"Solo colazione · Deposito bagagli · Reception 24h · Tour desk · WiFi gratuito · Parcheggio pubblico (CFP 3.000/giorno)", note:"⚡ Aperta a clienti internazionali nel luglio 2024. Camere sound proof con colori polinesiani. Accanto al porto (non inserire transfer).", feedback:"6223 - FRANCESCA PETRILLO", fornitoreCollegato:"tit" },
+    { id:'tah15', isola:'Tahiti', nome:"Boutique Hôtel Kon Tiki Tahiti", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"info@kontikitahiti.com", tel:"+689 40 540 300", sito:"", posizione:"1,2 km da Plage Hokule'a · 1,4 km da Paofai Gardens", camere:"Tropical Patio · Polynesian Cabins · Tahitian Rooms · Tahitian Homes", servizi:"Colazione · WiFi · Deposito bagagli · Reception 24h · Camere familiari · Parcheggio (CFP 2.000/giorno)", note:"", feedback:"6242 - FRANCESCA BENETTONI" },
+    { id:'tah16', isola:'Tahiti', nome:"InterContinental Tahiti Resort and Spa", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk", mail:"reservation.tahitiregion@ihg.com", tel:"+689 40 86 51 78 · +689 40 86 51 10 (resort)", sito:"https://ihg.com", posizione:"2 km da aeroporto e centro Papeete", camere:"50 Standard 33m² · 110 Superior 47m² · 60 Panoramic · 13 Overwater Lagoon 39m² · 2 Superior Overwater 54m² · 8 Overwater Motu 69m²", servizi:"Pasti · 2 piscine · Lagoonario · Diving centre · Whale watching · Spa · Fitness · Tennis · 2 ristoranti · 3 bar · Polynesian dinner show", note:"⚠️ Renovation work should be finished by end of September.", feedback:"5400 - VITTORIA PAROLAI" },
+    { id:'tah17', isola:'Tahiti', nome:"Le Tahiti by Pearl Resorts", costo:"CARTELLA", prenotazione:"Booking/RateHawk", mail:"enquiries@letahitibookings.com · welcome@letahiti.com · activities@letahiti.com", tel:"+689 40 507 601 · +689 40 48 88 00 (resort) · +689 40 48 88 13 (activities)", sito:"https://letahiti.com", posizione:"10 min auto dal centro Papeete", servizi:"Colazione · Piscina · WiFi · Fronte spiaggia · Parcheggio · Ristorante · Spa · Bar", note:"💰 RESORT FEE 1.950 XPF (~16,34€) per camera/notte. Referente: Maurizio Maggi.", feedback:"6426 - VIRGINIA LOMBARDO" },
+    { id:'tah18', isola:'Tahiti', nome:"Te Moana Tahiti Resort", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk", mail:"contact@temoana.pf", tel:"+689 40 47 31 00", sito:"", posizione:"10 min auto dal centro Papeete", camere:"Standard 30m² · Garden/Ocean view Studio 41m² · Suite 59m² · Duplex 77-139m² · Apartment 47-107m²", servizi:"Colazione · Piscina · WiFi · Parcheggio · Spa · Palestra · Room service · Accessibilità · Concierge · Cambio valuta · Reception 24h", note:"⚠️ HOTEL CHIUSO FINO A DICEMBRE 2026. 💰 Resort fee 2.100 XPF/notte/camera (~17,60€).", feedback:"6434 - ARIANNA TECCHIOLLI/MARGONI" },
+    { id:'tah19', isola:'Tahiti', nome:"Hotel Tahiti Nui", costo:"MEDIO", prenotazione:"Booking/RateHawk", mail:"info@hoteltahitinui.pf", tel:"+689 40 46 38 99", sito:"", posizione:"5 min a piedi da Piazza Vaiete e lungomare", camere:"Double 30m² (3 pax) · Standard Twin 32m² (3 pax) · Deluxe Suite 38m² (4 pax) · Junior Suite 60m² (4 pax) · Executive Suite 86m² (6 pax)", servizi:"2 piscine · WiFi · Parcheggio · Ristorante · Spa · Palestra · Bar · Deposito bagagli · Reception 24h", feedback:"6899 - FABIO MACCIOCCHI/MURGIA" },
+    { id:'tah20', isola:'Tahiti', nome:"Hotel Reva Tahiti (novità 2026)", costo:"", prenotazione:"Cartella (SPM)", mail:"res@spmhotels.pf", tel:"+689 40 50 84 45", sito:"", posizione:"Centrale, vicino mercato Papeete + waterfront", camere:"43 rooms/studios/junior suites + 1 apartment (2-6 pax). Tutti con kitchenette tranne 6 standard. No TWIN bed.", note:"⚡ 2026 - NEW. Possibile alternativa al Kon Tiki (suggerita da Vaihi). Da usare insieme al Maitai (combo con Niu di Moorea). Open for bookings from July per soggiorni November 2025+.", feedback:"" },
+    { id:'tah21', isola:'Tahiti', nome:"Sublime Tahiti Beach Retreat", costo:"MEDIO", prenotazione:"Booking/Sito", mail:"sublimetahitibeachretreat@gmail.com", tel:"+689 40 573 733 · +689 8778 6518", sito:"", camere:"Deluxe Ocean/Pool/Garden Bungalow 38m² (alcuni con kitchenette)", servizi:"Colazione · Piscina · WiFi · Parcheggio · Fronte spiaggia · Ristorante · Camere familiari · Spiaggia privata · Concierge · Deposito bagagli · Banco escursioni", note:"" },
+    { id:'tah22', isola:'Tahiti', nome:"Leili Home - Papeete", costo:"MEDIO BASSO", prenotazione:"Booking", posizione:"500m da Paofai Gardens", camere:"1-bedroom apartment: living + cucina attrezzata (oven+microwave) + bagno. Non fumatori.", servizi:"WiFi · Navetta aeroportuale a pagamento" },
+    { id:'tah23', isola:'Tahiti', nome:"Blue Lagoon Apt in Papeete w/Pool & Ocean View", costo:"", prenotazione:"Solo AirBNB (non più su Booking)", feedback:"1749 - CAROLINA MATTIONI" },
+
+    // TETIAROA
+    { id:'tet1', isola:'Tetiaroa', nome:"The Brando", costo:"MOLTO ALTO", prenotazione:"Sito o Tahiti Tours", mail:"info@thebrando.com · reservation@thebrando.com", tel:"+689 40 866 300 · +689 40 866 366", sito:"https://thebrando.com", posizione:"Ovest", camere:"One Bedroom Villa · Family One Bedroom Villa · Two Bedroom · Three Bedroom · Teremoana Residence", servizi:"Colazione · Spa · Ristorante · Bar · Attività", note:"💎 LUXURY. Minimo 2 notti. Possono organizzare trf con jet privato.", feedback:"", fornitoreCollegato:"tahititours" },
+
+    // HUAHINE
+    { id:'hua1', isola:'Huahine', nome:"Hotel Le Mahana", costo:"CARTELLA", prenotazione:"Con Vaihi", mail:"booking@lemahanahotel.com", tel:"+689 40 45 04 00 (prenotazioni) · +689 40 60 60 40 (reception/ristorante weekend)", sito:"", posizione:"30 min in auto da Huahine Fare Airport e Huahine Pearl Farm", camere:"Bungalow bifamiliare sul bordo della laguna · Deluxe sulla spiaggia · Deluxe vista laguna · Bifamiliare con giardino", servizi:"Colazione · Piscina · WiFi · Fronte spiaggia · Banco escursioni · Autonoleggio · Ristorante · Bar · Spiaggia privata · Parcheggio · Navetta a pagamento", note:"", feedback:"6747 - CRISTINA MANSUTTI", fornitoreCollegato:"tit" },
+    { id:'hua2', isola:'Huahine', nome:"Maitai Lapita Village Huahine", costo:"ALTO", prenotazione:"Booking/RateHawk", mail:"webform", tel:"+689 40 68 80 80", sito:"https://hotelsmaitai.com", posizione:"5-10 min a piedi dal villaggio Fare · Volo 35 min da Tahiti / 20 min da Bora Bora · Transfer 10 min da aeroporto", camere:"32 bungalows: 14 premium lake 80m² · 5 pool premium garden 80m² · 9 pool garden + 3 garden 52m²", servizi:"Colazione · Ristorante · Bar · Piscina · Attività · WiFi · Camere familiari · Fronte spiaggia · Parcheggio gratuito", feedback:"" },
+
+    // TIKEHAU
+    { id:'tik1', isola:'Tikehau', nome:"Le Tikehau by Pearl Resorts", costo:"CARTELLA", prenotazione:"Con Vaihi", mail:"enquiries@tikehaubookings.com", tel:"+689 40 96 23 00", sito:"https://letahaa.com", note:"Meglio la mezza pensione. Referente: Maurizio Maggi. Overwater Suites ora fino 3 adulti o 2A+2B (aggiornamento recente).", feedback:"6426 - VIRGINIA LOMBARDO", fornitoreCollegato:"tit" },
+    { id:'tik2', isola:'Tikehau', nome:"Ninamu Resort", costo:"CARTELLA (vecchie rates)", prenotazione:"Booking/RateHawk (con Tekura)", mail:"WEBFORM", tel:"+689 87 28 56 88 · +689 87 71 00 37", servizi:"Colazione · WiFi · Fronte spiaggia · Accessibilità · Camere familiari · Ristorante · Bar · Spiaggia privata · Deposito bagagli · Banco escursioni · Navetta aeroportuale gratuita", note:"Era giallo.", feedback:"6965 - MORENA LOSETO", fornitoreCollegato:"tekura" },
+    { id:'tik3', isola:'Tikehau', nome:"Tikehau Fafarua Lodge", costo:"CARTELLA (vecchie rates)" },
+
+    // RAIATEA
+    { id:'rai1', isola:'Raiatea', nome:"APATOA Beach & Garden Village", costo:"ALTO", prenotazione:"Booking/RateHawk", mail:"reservation@apatoa.pf", tel:"+689 87 00 04 56", sito:"", posizione:"All'estremo sud-ovest dell'isola", camere:"Deluxe Beach Bungalow & Pool · Deluxe Garden Bungalow & Pool · Troca Garden · Troca Bungalow", servizi:"Colazione · Piscina · WiFi · Spa · Bollitore · Bar · Fronte spiaggia · Spiaggia privata · Navetta a pagamento", note:"FraD: glamping tendaggio ispirato al clima polinesiano, fusione lusso/natura/consapevolezza ambientale. Esperienza unica e rigenerante a contatto con la natura.", feedback:"6434 - ARIANNA TECCHIOLLI/MARGONI" },
+    { id:'rai2', isola:'Raiatea', nome:"Raiatea Lodge", costo:"MEDIO ALTO", prenotazione:"Booking/RateHawk", mail:"contact@raiateahotel.com", tel:"+689 40 66 20 00", sito:"", posizione:"5 min auto da aeroporto Raiatea", camere:"Standard · Lagoon View · Family Suite · Double Bungalow · Family Bungalow", servizi:"Colazione · Piscina · WiFi · Navetta aeroportuale · Parcheggio · Ristorante · Camere familiari · Bar · Concierge · Deposito bagagli · Banco escursioni · Navetta a pagamento", feedback:"6747 - CRISTINA MANSUTTI" },
+    { id:'rai3', isola:'Raiatea', nome:"Opoa Beach Hotel", costo:"", prenotazione:"Booking/RateHawk (con Tekura)", mail:"resa@opoabeach.com", tel:"+689 40 600 510", servizi:"Colazione · Piscina · Spa · Navetta aeroportuale · WiFi · Parcheggio · Fronte spiaggia · Bar · Spiaggia privata · Concierge · Deposito bagagli · Banco escursioni · Navetta a pagamento", feedback:"6744 - LUIGI CAMPANARI", fornitoreCollegato:"tekura" },
+
+    // FAKARAVA
+    { id:'fak1', isola:'Fakarava', nome:"Pension Tokerau Village", costo:"", feedback:"7536 - FRANCESCA LORENZETTO/ALESSANDRO LEONI" },
+
+    // NUKU HIVA
+    { id:'nuk1', isola:'Nuku Hiva', nome:"Le Nuku Hiva by Pearl Resorts", costo:"CARTELLA", prenotazione:"", mail:"welcome@lenukuhiva.com · reservations@lenukuhiva.com", tel:"+689 40 920 710 · +689 40 920 709 (booking)", sito:"https://letahaa.com", camere:"4 Garden Bungalows · 12 Bay View · 4 Bay View Premium", servizi:"Ristorante · Bar · Lounge · Infinity pool · Gift shop · Biciclette gratuite · Reception 7am-10pm · Laundry · WiFi gratuito · Escursioni/massaggi/carving classes", note:"Referente: Maurizio Maggi." },
+
+    // MOTU NAO NAO
+    { id:'mot1', isola:'Motu Nao Nao', nome:"Motu Nao Nao Private Island", costo:"", prenotazione:"Cartella (SPM Hotels)", mail:"res@spmhotels.pf", tel:"+689 40 50 84 45", note:"Parte di South Pacific Management hotels. Private Island 5* Luxury. Referenti: Perrin Ozyetis · Virginie Moulin." }
+  ],
+
+  attivita: [
+    // TUTTO IL PAESE
+    { id:'a1', isola:'Tutto il paese', fornitore:"StayInn", nome:"Prenotazione alloggi + attività", prenotazione:"Sito o mail", mail:"contact@stayinn.vacations · Laurine@stayinn.travel", tel:"+689 40 429 753", sito:"", note:"Fanno anche attività (lista Moorea).", feedback:"" },
+    { id:'a2', isola:'Tutto il paese', fornitore:"Vodafone", nome:"Travel Sim Card", note:"Negozio Vodafone all'aeroporto internazionale di Tahiti. Possibilità di parlare con customer advisor prima di caricare la SIM (Vaihi). Il Tahiti WiFi office è nello stesso shop (a sinistra appena entrati nella hall arrivi)." },
+    { id:'a3', isola:'Tutto il paese', fornitore:"Tekura Tahiti Travel", nome:"BOX WiFi", mail:"reservations@tekuratahititravel.pf · Viviane.STRIPPOLI@tekuratahititravel.pf", tel:"+689 40 46 44 00 · +689 87 71 64 10 (WhatsApp emergency)", note:"⭐ 30GB inclusi vs 8GB del Tahiti WiFi. Prezzo fisso 72€. FraD: da considerare per i preventivi con budget.", feedback:"", costi:"72€ fisso", fornitoreCollegato:"tekura" },
+    { id:'a4', isola:'Tutto il paese', fornitore:"Tahiti WiFi", nome:"Tahiti WiFi Box", note:"Copre 65 isole con internet (segnale migliore di Vodafone ma più debole in isole remote). SIM card locale per chiamate/sms se il telefono accetta seconda SIM (Vaihi). Ufficio: stesso shop Vodafone in aeroporto, a sinistra in hall arrivi." },
+    { id:'a5', isola:'Tutto il paese', fornitore:"Tahiti Yacht Charter", nome:"Noleggio yacht", note:"Cartella con vecchie rates." },
+    { id:'a6', isola:'Tutto il paese', fornitore:"Paul Gauguin Cruises", nome:"Crociere all over the world", mail:"PaulGauguin@ponant.com · paulgauguinbookings@ponant.com", tel:"+33 4 91 229 299 · +1 (800) 848-6172", sito:"https://www.ponant.com/paul-gauguin", note:"European Reservation team (French/English office €). In caso fare account." },
+    // MOOREA
+    { id:'a7', isola:'Moorea', fornitore:"Moorea Miti Tours", nome:"3-hour Lagoon Snorkeling Tour", prenotazione:"Sito o mail", mail:"mooreamititours@gmail.com", tel:"+689 87 23 43 02", sito:"", costi:"Adulto 12+: 73,74€ · Bambino <12: 36,87€", lingua:"Inglese", durata:"3 ore · Daily", pickup:"Hotel (gratuito con min. 2 persone)", incluso:"Pick-up da hotel/ferry · Asciugamani · Max 12 persone", escluso:"Maschere, snorkel, pinne (consigliati di portarli) · Giacca pioggia (consigliata)", note:"Stingrays + squali black-tip + snorkeling su reef. Break con frutta fresca e drink.", feedback:"3200 - MARTINA LUPO", cancel:"100% refund con >48h preavviso · No refund con <48h" },
+    { id:'a8', isola:'Moorea', fornitore:"Moorea Miti Tours", nome:"6-hour Snorkeling & Lunch Tour", prenotazione:"Sito o mail", mail:"mooreamititours@gmail.com", tel:"+689 87 23 43 02", costi:"Adulto 12+: 110,62€ · Bambino <12: 55,31€", lingua:"Inglese", durata:"6 ore · Daily", pickup:"Hotel (gratuito con min. 2 persone)", note:"Visita Cook's/Opunohu Bay. Stingrays + black-tip sharks + snorkeling. Cooking class su motu (poisson cru). Demonstration braiding, medicinal plants, come legare il pareo. Noodles disponibili sotto sedili.", feedback:"2258 - Claudia Federici", cancel:"100% refund con >48h · No refund con <48h" },
+    { id:'a9', isola:'Moorea', fornitore:"Safari Mario Moorea", nome:"Safari 4x4 (italiano)", prenotazione:"Cartella", mail:"mario@safarimario.com", tel:"+689 87 217 436", sito:"", costi:"👥 In hotel: 55€/pax · 🎯 T.O. diretto: 35€/pax · Privato: 250€", lingua:"Italiano", durata:"4 ore", pickup:"Hotel", note:"⭐ Mario vive in Polinesia da 15 anni, stabilito a Moorea. Tour con 4 Jeep (8 pax) + mini van Staria. Baia di Cook + Baia di Opunohu + Montagna Magica + caldera di Moorea + campi di ananas + distilleria di Moorea + Belvedere. Portare: crema solare, repellente zanzare, acqua, macchina fotografica.", feedback:"5519 - JESSICA TIMONCINI" },
+    { id:'a10', isola:'Moorea', fornitore:"AtunuMai", nome:"The Cooking Class", prenotazione:"Mail", mail:"mooreaculinary@gmail.com", tel:"+689 87 76 76 04", costi:"125€", lingua:"Inglese", durata:"2h30 · 10:30 AM - 1:00 PM", note:"Max 16 pax. Menu: Coconut Milk · Raw Fish Salad · Pōe · Uru · Vanilla Punch." },
+    // RANGIROA
+    { id:'a11', isola:'Rangiroa', fornitore:"Rangiroa Excursion", nome:"Blue Lagoon Tour", prenotazione:"Sito o mail", mail:"rangiroaexcursion@gmail.com", tel:"+689 87 79 24 66", sito:"", costi:"Adulto: 100€ (12.000 XPF) · Bambini 3-11: 50€ · <3 gratis", lingua:"Inglese", durata:"Full day 8:30-16:30", pickup:"Hotel", incluso:"Pick-up/drop off · Snacks, lunch locale, drink · Attrezzatura snorkeling (maschera + snorkel)", daPortare:"Protezione sole (cappello, crema, lycra) · Scarpe per camminare in acqua · Snorkel personale (se disponibile)", note:"⭐ UNMISSABLE. Snorkeling nel Blue Lagoon (UNESCO). Visita Green Lagoon + reef island + triangle + drift snorkeling in the pass. Lunch tradizionale BBQ. Snorkeling in Avatoru pass con guida (in base al current).", feedback:"3200 - MARTINA LUPO" },
+    { id:'a12', isola:'Rangiroa', fornitore:"Rangiroa Excursion", nome:"Green Lagoon Tour (paddle + kayak)", prenotazione:"Sito o mail", mail:"rangiroaexcursion@gmail.com", tel:"+689 87 79 24 66", costi:"Adulto: 60€ · Bambino 3-11: 30€ · Combinato green+snorkeling: 120€ adulti · 85€ bambini", lingua:"Inglese", incluso:"Pick-up/drop off · Lunch + drink · Canoe + Stand Up Paddle", note:"🧘 5 min in barca da Avatoru Village. Acqua emerald green. Ideale famiglie. Paddle e kayak gratuiti. Disponibile anche con maltempo. Lunch: pesce, cocco, pollo, pane di cocco, riso." },
+    // BORA BORA
+    { id:'a13', isola:'Bora Bora', fornitore:"Tahiti Tours", nome:"Ultimate Shark & Ray Watching - Full day (motu lunch incluso)", prenotazione:"Mail", mail:"Janie.CLARK-TEFAU@tahititours.pf · gaia.campanelli@tahititours.pf", tel:"+689 40 46 40 69 · +689 87 73 38 78", costi:"Adulto: 137,50€ · Bambino 4-12: 69€", lingua:"Inglese/Francese", durata:"Tutti i giorni", pickup:"Four Seasons · Conrad · St Regis · IC Thalasso · IC Moana · Maitai · Le Bora Bora · Royal Bora", note:"Outrigger boat motorizzata · 2-12 pax/boat (più boats disponibili) · Pesci colorati + stingrays + black tip sharks · Lunch grills + piatti tahitiani tipici.", feedback:"", fornitoreCollegato:"tahititours" },
+    // TAHITI
+    { id:'a14', isola:'Tahiti', fornitore:"Te Mana o Te Moana", nome:"Turtle Experience", prenotazione:"Sito", mail:"info@temanaotemoana.org", tel:"+689 87 71 53 44", sito:"" },
+    // HUAHINE
+    { id:'a15', isola:'Huahine', fornitore:"Tour con Henri", nome:"Tour privato con Henri", note:"⭐ SUPER FEEDBACK DI MANSUTTI. FraD ha chiesto a Valerie se possiamo inserirlo o prenotarlo noi a parte.", feedback:"Super feedback da Mansutti" },
+    // PAPEETE
+    { id:'a16', isola:'Papeete', fornitore:"Kea Kua Art Gallery & Museum", nome:"Visita", mail:"contact@arts-polynesiens.com", tel:"+689 89 79 70 09", pickup:"179 Av. Georges Clémenceau, Papeete" },
+    // MARQUESAS & AUSTRALI
+    { id:'a17', isola:'The Marquesas', fornitore:"Aranui Cruises", nome:"Crociera Marquesas (UNESCO heritage)", mail:"cptm@aranui.com (USA) · info@aranuicruises.com.au (AU)", tel:"1-800-972-7268 (USA) · +613 9449 3778 (AU)", sito:"https://www.aranui.com", note:"Presentation Aranui Cruises - ENG disponibile." },
+    { id:'a18', isola:'Isole Australi', fornitore:"Aranui Cruises", nome:"Aranoa Cruises", mail:"cptm@aranui.com · info@aranuicruises.com.au", tel:"1-800-972-7268 · +613 9449 3778", sito:"https://www.aranui.com", note:"Destinazioni: Tahiti · Marquesas (UNESCO) · Austral · Cook · Pitcairn · Society · Bora Bora · Tuamotu · Gambier islands." },
+    // TAHITI ITI
+    { id:'a19', isola:'Tahiti Iti', fornitore:"Descrizione zona", nome:"Tahiti Iti (Sud)", note:"🌊 L'onda Teahupoo (surfisti da tutto il mondo). Scorci incredibili, atmosfera di una Tahiti antica (pesca, perle nere). Tour della zona sud da esplorare con auto a noleggio." }
+  ],
+
+  trasporti: [
+    { id:'t1', zona:"Voli", fornitore:"Air Tahiti Nui", servizi:"Collegamenti internazionali", note:"🛫 Dall'Italia: via Parigi con Air Tahiti Nui (6 giorni/settimana) o Air France (5 volte/settimana) · Via San Francisco con United (5 volte/settimana) · Via Los Angeles con American Airlines (giornalieri). Air Tahiti Nui riapre volo da Tokyo-Narita (ottobre).", sito:"https://www.airtahitinui.com" },
+    { id:'t2', zona:"Traghetti", fornitore:"Aremiti", servizi:"Collegamenti inter-isole", note:"📅 Dopo i molti cambi di schedule nel 2025, orari fissi stabiliti per il 2026 (disponibili in Rate Manual). Transfer non privati da prioritizzare su queste partenze." },
+    { id:'t3', zona:"Traghetti", fornitore:"Vaeara'i", servizi:"Tahiti-Moorea · Leeward islands", prenotazione:"Sito", mail:"reservation@vaearai.pf", tel:"+689 40 46 11 63 · +689 40 46 11 60", sito:"", note:"" },
+    { id:'t4', zona:"Traghetti", fornitore:"Apetahi Express", servizi:"Bora Bora / Maupiti", note:"📅 Schedule aggiornato. Stop a Taiarapu Peninsula rimosso, priorità alla rotta Bora Bora/Maupiti. Transitional schedule dal 1 novembre 2025. Schedule finale dal 2 gennaio 2026 disponibile. Nessun ulteriore aggiustamento durante il 2026." }
+  ],
+
+  cruise: [
+    { id:'c1', nome:"Dream Yacht Catamarano", rivenditoreIT:"Albatross (Dario) · Dyc-albatross · +39 393 908 8229 · info@albatross.it · 02 48 02 71 22", rivenditorePF:"Tahiti Tours (listino)", note:"🛥️ Crociere a bordo di comodi catamarani con equipaggio. Cabine con bagno privato, pensione completa, consumi inclusi. Partenze settimanali garantite. Solo 6 cabine ospiti + zona equipaggio + ampi spazi per privacy/relax. Skipper + cuoco. Calette esclusive, baie non affollate per nuotate/snorkeling. Crociere 4-7-10 notti con partenza settimanale.", materiale:"Disponibilità live · Materiale foto e video" }
+  ]
+};
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function costClass(c) {
+  if (!c) return '';
+  const u = c.toUpperCase();
+  if (u.includes('MOLTO ALTO') || u.includes('LUXURY')) return 'cost-lux';
+  if (u.includes('BASSO')) return 'cost-low';
+  if (u.includes('ALTO')) return 'cost-high';
+  return 'cost-mid';
+}
+
+function costBadgeClass(c) {
+  if (!c) return 'badge-gray';
+  const u = c.toUpperCase();
+  if (u.includes('MOLTO ALTO') || u.includes('LUXURY')) return 'badge-coral';
+  if (u === 'BASSO' || u.includes('MEDIO BASSO')) return 'badge-green';
+  if (u.includes('ALTO')) return 'badge-gold';
+  return 'badge-sand';
+}
+
+function truncate(s, n) {
+  if (!s) return '';
+  return s.length > n ? s.substring(0, n).trim() + '…' : s;
+}
+
+function linkify(text, type) {
+  // Convert comma-separated emails to clickable links
+  if (!text) return '';
+  if (type === 'mail') {
+    return text.split(/[·;]/).map(s => {
+      const email = s.trim();
+      const match = email.match(/[\w.-]+@[\w.-]+/);
+      if (match) return `<a href="mailto:${match[0]}">${email}</a>`;
+      return email;
+    }).join(' · ');
+  }
+  if (type === 'tel') {
+    return text.split('·').map(s => {
+      const tel = s.trim();
+      const clean = tel.replace(/[^\d+]/g, '');
+      if (clean.length > 5) return `<a href="tel:${clean}">${tel}</a>`;
+      return tel;
+    }).join(' · ');
+  }
+  if (type === 'url') {
+    if (!text.startsWith('http')) return text;
+    return `<a href="${text}" target="_blank" rel="noopener">${text.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</a>`;
+  }
+  return text;
+}
+
+function getFornitoreName(id) {
+  const f = DATA.fornitori.find(x => x.id === id);
+  return f ? f.nome : id;
+}
+
+// ============================================================
+// FORNITORI
+// ============================================================
+function renderFornitori(filter = 'tutti') {
+  let items = DATA.fornitori;
+  if (filter === 'prima-scelta') items = items.filter(f => f.primaScelta);
+  else if (filter === 'da-provare') items = items.filter(f => f.daProvare);
+  else if (filter === 'italiano') items = items.filter(f => f.italiano);
+
+  const grid = document.getElementById('forn-grid');
+  document.getElementById('forn-count').innerHTML = `<strong>${items.length}</strong> fornitori`;
+
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+
+  grid.innerHTML = items.map(f => {
+    let statusBadge = '';
+    if (f.primaScelta) statusBadge = '<span class="badge badge-coral">🥇 Prima scelta</span>';
+    else if (f.daProvare) statusBadge = '<span class="badge badge-gold">🆕 Da provare</span>';
+    else if (f.sostituito) statusBadge = '<span class="badge badge-gray">✗ Sostituito</span>';
+    else if (f.italiano) statusBadge = '<span class="badge badge-green">🇮🇹 IT</span>';
+    else statusBadge = '<span class="badge badge-ocean">EN</span>';
+
+    return `
+    <div class="card" onclick="openModal('fornitori','${f.id}')">
+      <div class="card-header">
+        <div class="card-name">${f.nome}</div>
+        ${statusBadge}
+      </div>
+      <div class="card-meta">
+        <span class="tag">${f.tipo}</span>
+        <span class="tag">📍 ${f.zona}</span>
+      </div>
+      ${f.referente ? `<div class="card-row"><span class="label">Referenti</span><span class="value">${truncate(f.referente, 70)}</span></div>` : ''}
+      ${f.mail ? `<div class="card-row"><span class="label">Mail</span><span class="value">${truncate(f.mail, 55)}</span></div>` : ''}
+      ${f.tel ? `<div class="card-row"><span class="label">Telefono</span><span class="value">${truncate(f.tel, 55)}</span></div>` : ''}
+      ${f.conclusioni ? `<div class="card-feedback">🎯 ${truncate(f.conclusioni, 110)}</div>` : ''}
+      ${f.note && !f.conclusioni ? `<div class="card-notes">${truncate(f.note, 120)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// ALLOGGI
+// ============================================================
+function renderAlloggi() {
+  const isolaVal = document.getElementById('all-island').value;
+  const costoVal = document.getElementById('all-cost').value;
+  const searchVal = document.getElementById('search').value.toLowerCase();
+
+  let items = DATA.alloggi;
+  if (isolaVal !== 'tutti') items = items.filter(a => a.isola === isolaVal);
+  if (costoVal !== 'tutti') items = items.filter(a => (a.costo || '').toUpperCase() === costoVal);
+  if (searchVal) items = items.filter(a =>
+    ((a.nome || '') + (a.isola || '') + (a.note || '') + (a.feedback || '') + (a.servizi || '')).toLowerCase().includes(searchVal)
+  );
+
+  document.getElementById('all-count').innerHTML = `<strong>${items.length}</strong> strutture`;
+  const grid = document.getElementById('all-grid');
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+
+  grid.innerHTML = items.map(a => {
+    const hasWarn = a.feedbackNegativo || (a.note && a.note.includes('⚠️'));
+    return `
+    <div class="card" onclick="openModal('alloggi','${a.id}')">
+      <div class="card-header">
+        <div class="card-name">${a.nome}</div>
+        ${a.costo ? `<span class="badge ${costBadgeClass(a.costo)}">${a.costo}</span>` : ''}
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${a.isola}</span>
+        ${a.fornitoreCollegato ? `<span class="tag">🔗 ${getFornitoreName(a.fornitoreCollegato)}</span>` : ''}
+      </div>
+      ${a.posizione ? `<div class="card-row"><span class="label">Zona</span><span class="value">${truncate(a.posizione, 70)}</span></div>` : ''}
+      ${a.tel ? `<div class="card-row"><span class="label">Telefono</span><span class="value">${truncate(a.tel, 55)}</span></div>` : ''}
+      ${a.note ? `<div class="card-${hasWarn ? 'warn' : 'notes'}">${truncate(a.note, 110)}</div>` : ''}
+      ${a.feedback ? `<div class="card-feedback">👥 ${truncate(a.feedback, 100)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// ATTIVITA
+// ============================================================
+function renderAttivita() {
+  const isolaVal = document.getElementById('att-island').value;
+  const searchVal = document.getElementById('search').value.toLowerCase();
+
+  let items = DATA.attivita;
+  if (isolaVal !== 'tutti') items = items.filter(a => a.isola === isolaVal);
+  if (searchVal) items = items.filter(a =>
+    ((a.nome || '') + (a.fornitore || '') + (a.isola || '') + (a.note || '')).toLowerCase().includes(searchVal)
+  );
+
+  document.getElementById('att-count').innerHTML = `<strong>${items.length}</strong> attività`;
+  const grid = document.getElementById('att-grid');
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+
+  grid.innerHTML = items.map(a => `
+    <div class="card" onclick="openModal('attivita','${a.id}')">
+      <div class="card-header">
+        <div class="card-name">${a.nome}</div>
+        ${a.lingua ? `<span class="badge badge-lagoon">${a.lingua}</span>` : ''}
+      </div>
+      <div class="card-meta">
+        <span class="tag">📍 ${a.isola}</span>
+        ${a.fornitore ? `<span class="tag">🏢 ${truncate(a.fornitore, 30)}</span>` : ''}
+      </div>
+      ${a.costi ? `<div class="card-row"><span class="label">Costi</span><span class="value">${truncate(a.costi, 90)}</span></div>` : ''}
+      ${a.durata ? `<div class="card-row"><span class="label">Durata</span><span class="value">${truncate(a.durata, 60)}</span></div>` : ''}
+      ${a.note ? `<div class="card-notes">${truncate(a.note, 120)}</div>` : ''}
+      ${a.feedback ? `<div class="card-feedback">👥 ${truncate(a.feedback, 100)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// TRASPORTI
+// ============================================================
+function renderTrasporti() {
+  const grid = document.getElementById('tra-grid');
+  grid.innerHTML = DATA.trasporti.map(t => `
+    <div class="card" onclick="openModal('trasporti','${t.id}')">
+      <div class="card-header">
+        <div class="card-name">${t.fornitore}</div>
+        <span class="badge badge-ocean">${t.zona}</span>
+      </div>
+      <div class="card-meta">
+        ${t.servizi ? `<span class="tag">${t.servizi}</span>` : ''}
+      </div>
+      ${t.note ? `<div class="card-notes">${truncate(t.note, 180)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CRUISE
+// ============================================================
+function renderCruise() {
+  const grid = document.getElementById('cru-grid');
+  grid.innerHTML = DATA.cruise.map(c => `
+    <div class="card" onclick="openModal('cruise','${c.id}')">
+      <div class="card-header">
+        <div class="card-name">${c.nome}</div>
+        <span class="badge badge-ocean">⚓ Crociera</span>
+      </div>
+      ${c.rivenditoreIT ? `<div class="card-row"><span class="label">🇮🇹 IT</span><span class="value">${truncate(c.rivenditoreIT, 100)}</span></div>` : ''}
+      ${c.rivenditorePF ? `<div class="card-row"><span class="label">🇵🇫 PF</span><span class="value">${truncate(c.rivenditorePF, 80)}</span></div>` : ''}
+      ${c.note ? `<div class="card-notes">${truncate(c.note, 200)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// FEEDBACK (aggregated from all sections)
+// ============================================================
+function buildFeedbackList() {
+  const list = [];
+
+  DATA.alloggi.forEach(a => {
+    if (a.feedback) list.push({
+      tipo: 'alloggio', polarity: 'positivo', item: a.nome, isola: a.isola, client: a.feedback,
+      body: '', linkType: 'alloggi', linkId: a.id
+    });
+    if (a.feedbackNegativo) list.push({
+      tipo: 'alloggio', polarity: 'negativo', item: a.nome, isola: a.isola, client: 'Feedback negativo',
+      body: a.feedbackNegativo, linkType: 'alloggi', linkId: a.id
+    });
+    if (a.suggerimentoVaihi) list.push({
+      tipo: 'alloggio', polarity: 'neutro', item: a.nome, isola: a.isola, client: '💡 Tip Vaihi',
+      body: a.suggerimentoVaihi, linkType: 'alloggi', linkId: a.id
+    });
+  });
+
+  DATA.fornitori.forEach(f => {
+    if (f.feedback) list.push({
+      tipo: 'fornitore', polarity: f.feedback.match(/(lenti|imprecisi|non collaborative|confusi|malissimo)/i) ? 'negativo' : 'positivo',
+      item: f.nome, isola: f.zona, client: 'Feedback interno',
+      body: f.feedback, linkType: 'fornitori', linkId: f.id
+    });
+    if (f.conclusioni) list.push({
+      tipo: 'fornitore', polarity: f.conclusioni.match(/PRIMA SCELTA|TOP|OTTIMO/i) ? 'positivo' : 'neutro',
+      item: f.nome, isola: f.zona, client: '🎯 Conclusione',
+      body: f.conclusioni, linkType: 'fornitori', linkId: f.id
+    });
+  });
+
+  DATA.attivita.forEach(a => {
+    if (a.feedback) list.push({
+      tipo: 'attività', polarity: 'positivo', item: a.nome, isola: a.isola, client: a.feedback,
+      body: '', linkType: 'attivita', linkId: a.id
+    });
+  });
+
+  return list;
+}
+
+function renderFeedback(filter = 'tutti') {
+  const all = buildFeedbackList();
+  let items = all;
+  if (filter === 'positivo') items = all.filter(f => f.polarity === 'positivo');
+  else if (filter === 'negativo') items = all.filter(f => f.polarity === 'negativo');
+  else if (filter === 'alloggio') items = all.filter(f => f.tipo === 'alloggio');
+  else if (filter === 'fornitore') items = all.filter(f => f.tipo === 'fornitore');
+
+  document.getElementById('fb-count').innerHTML = `<strong>${items.length}</strong> feedback su ${all.length} totali`;
+  const list = document.getElementById('fb-list');
+
+  if (!items.length) { list.innerHTML = emptyHTML(); return; }
+
+  list.innerHTML = items.map(f => `
+    <div class="feedback-card fb-${f.polarity}">
+      <div class="fb-header">
+        <span class="fb-type">${f.tipo}</span>
+        <span class="fb-client">${f.client}</span>
+        <span style="color:var(--muted);font-size:12px;">→</span>
+        <span class="fb-link" onclick="openModal('${f.linkType}','${f.linkId}')">${f.item} (${f.isola})</span>
+      </div>
+      ${f.body ? `<div class="fb-body">${f.body}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(type, id) {
+  const overlay = document.getElementById('modal-overlay');
+  const title = document.getElementById('modal-title');
+  const subtitle = document.getElementById('modal-subtitle');
+  const body = document.getElementById('modal-body');
+  let item, html = '';
+
+  if (type === 'fornitori') {
+    item = DATA.fornitori.find(x => x.id === id);
+    if (!item) return;
+    title.textContent = item.nome;
+    subtitle.innerHTML = `${item.tipo} · 📍 ${item.zona}`;
+
+    // Links
+    const links = [];
+    if (item.sito) links.push(`<a class="link-btn" href="${item.sito}" target="_blank" rel="noopener"><span class="icon">🌐</span> Sito web</a>`);
+    if (item.mail) {
+      const firstMail = (item.mail.split(/[·;]/)[0] || '').trim().match(/[\w.-]+@[\w.-]+/);
+      if (firstMail) links.push(`<a class="link-btn" href="mailto:${firstMail[0]}"><span class="icon">✉️</span> Scrivi mail</a>`);
+    }
+    if (item.tel) {
+      const firstTel = (item.tel.split('·')[0] || '').trim();
+      const clean = firstTel.replace(/[^\d+]/g, '');
+      if (clean.length > 5) links.push(`<a class="link-btn" href="tel:${clean}"><span class="icon">📞</span> Chiama</a>`);
+    }
+
+    // Find related alloggi
+    const relAll = DATA.alloggi.filter(a => a.fornitoreCollegato === item.id);
+    const relAtt = DATA.attivita.filter(a => a.fornitoreCollegato === item.id);
+
+    html = `
+      ${links.length ? `<div class="link-group">${links.join('')}</div>` : ''}
+
+      ${item.brandCenter ? `<div class="modal-section"><div class="modal-section-title">Brand Center</div><div class="note-block">${item.brandCenter}</div></div>` : ''}
+
+      <div class="modal-section">
+        <div class="modal-section-title">Contatti</div>
+        <div class="modal-grid">
+          ${field('Referenti', item.referente)}
+          ${field('Lingua', item.lingua)}
+          ${field('Mail', linkify(item.mail, 'mail'))}
+          ${item.mailExtra ? field('Altre mail', linkify(item.mailExtra, 'mail')) : ''}
+          ${field('Telefono', linkify(item.tel, 'tel'))}
+          ${field('Sito web', linkify(item.sito, 'url'))}
+        </div>
+      </div>
+
+      ${item.servizi ? `<div class="modal-section"><div class="modal-section-title">Servizi offerti</div><div class="note-block">${item.servizi}</div></div>` : ''}
+      ${item.portale ? `<div class="modal-section"><div class="modal-section-title">Portale / Net rates</div><div class="note-block">${item.portale}</div></div>` : ''}
+      ${item.pagamenti ? `<div class="modal-section"><div class="modal-section-title">Pagamenti</div><div class="note-block">${item.pagamenti}</div></div>` : ''}
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note operative</div><div class="note-block">${item.note}</div></div>` : ''}
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">Feedback interno</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+      ${item.conclusioni ? `<div class="modal-section"><div class="modal-section-title">🎯 Conclusioni</div><div class="feedback-block">${item.conclusioni}</div></div>` : ''}
+
+      ${relAll.length ? `<div class="modal-section"><div class="modal-section-title">🏝️ Alloggi collegati (${relAll.length})</div><div class="related-list">${relAll.map(a => `<div class="related-item" onclick="openModal('alloggi','${a.id}')"><span><strong>${a.nome}</strong> · ${a.isola}</span><span class="arrow">→</span></div>`).join('')}</div></div>` : ''}
+      ${relAtt.length ? `<div class="modal-section"><div class="modal-section-title">🐚 Attività collegate (${relAtt.length})</div><div class="related-list">${relAtt.map(a => `<div class="related-item" onclick="openModal('attivita','${a.id}')"><span><strong>${a.nome}</strong> · ${a.isola}</span><span class="arrow">→</span></div>`).join('')}</div></div>` : ''}
+
+      ${item.fonte ? `<div class="modal-section" style="font-size:11px;color:var(--muted);font-style:italic;">Come è stato trovato: ${item.fonte}</div>` : ''}
+    `;
+  } else if (type === 'alloggi') {
+    item = DATA.alloggi.find(x => x.id === id);
+    if (!item) return;
+    title.textContent = item.nome;
+    subtitle.innerHTML = `📍 ${item.isola}${item.costo ? ` · <span class="${costClass(item.costo)}">${item.costo}</span>` : ''}`;
+
+    const links = [];
+    if (item.sito) links.push(`<a class="link-btn" href="${item.sito}" target="_blank" rel="noopener"><span class="icon">🌐</span> Sito web</a>`);
+    if (item.mail) {
+      const firstMail = (item.mail.split(/[·;]/)[0] || '').trim().match(/[\w.-]+@[\w.-]+/);
+      if (firstMail) links.push(`<a class="link-btn" href="mailto:${firstMail[0]}"><span class="icon">✉️</span> Scrivi mail</a>`);
+    }
+    if (item.tel) {
+      const firstTel = (item.tel.split('·')[0] || '').trim();
+      const clean = firstTel.replace(/[^\d+]/g, '');
+      if (clean.length > 5) links.push(`<a class="link-btn" href="tel:${clean}"><span class="icon">📞</span> Chiama</a>`);
+    }
+
+    const fornitore = item.fornitoreCollegato ? DATA.fornitori.find(f => f.id === item.fornitoreCollegato) : null;
+
+    html = `
+      ${links.length ? `<div class="link-group">${links.join('')}</div>` : ''}
+
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Costo', item.costo ? `<span class="${costClass(item.costo)}">${item.costo}</span>` : '')}
+          ${field('Prenotazione', item.prenotazione)}
+          ${field('Posizione', item.posizione)}
+          ${field('Transfer', item.transfer)}
+          ${field('Mail', linkify(item.mail, 'mail'))}
+          ${field('Telefono', linkify(item.tel, 'tel'))}
+          ${field('Sito', linkify(item.sito, 'url'))}
+        </div>
+      </div>
+
+      ${item.camere ? `<div class="modal-section"><div class="modal-section-title">Camere</div><div class="note-block">${item.camere}</div></div>` : ''}
+      ${item.servizi ? `<div class="modal-section"><div class="modal-section-title">Servizi</div><div class="note-block">${item.servizi}</div></div>` : ''}
+
+      ${item.note && item.note.includes('⚠️') ? `<div class="modal-section"><div class="modal-section-title">⚠️ Attenzione</div><div class="warn-block">${item.note}</div></div>` :
+        item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+
+      ${item.suggerimentoVaihi ? `<div class="modal-section"><div class="modal-section-title">💡 Suggerimento Vaihi / TIT</div><div class="note-block">${item.suggerimentoVaihi}</div></div>` : ''}
+
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">Feedback clienti ✅</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+      ${item.feedbackNegativo ? `<div class="modal-section"><div class="modal-section-title">Feedback ⚠️ Attenzione</div><div class="warn-block">${item.feedbackNegativo}</div></div>` : ''}
+
+      ${fornitore ? `<div class="modal-section"><div class="modal-section-title">🔗 Fornitore collegato</div><div class="related-list"><div class="related-item" onclick="openModal('fornitori','${fornitore.id}')"><span><strong>${fornitore.nome}</strong> · ${fornitore.tipo}</span><span class="arrow">→</span></div></div></div>` : ''}
+    `;
+  } else if (type === 'attivita') {
+    item = DATA.attivita.find(x => x.id === id);
+    if (!item) return;
+    title.textContent = item.nome;
+    subtitle.innerHTML = `📍 ${item.isola}${item.fornitore ? ` · 🏢 ${item.fornitore}` : ''}`;
+
+    const links = [];
+    if (item.sito) links.push(`<a class="link-btn" href="${item.sito}" target="_blank" rel="noopener"><span class="icon">🌐</span> Sito</a>`);
+    if (item.mail) {
+      const firstMail = (item.mail.split(/[·;]/)[0] || '').trim().match(/[\w.-]+@[\w.-]+/);
+      if (firstMail) links.push(`<a class="link-btn" href="mailto:${firstMail[0]}"><span class="icon">✉️</span> Mail</a>`);
+    }
+    if (item.tel) {
+      const firstTel = (item.tel.split('·')[0] || '').trim();
+      const clean = firstTel.replace(/[^\d+]/g, '');
+      if (clean.length > 5) links.push(`<a class="link-btn" href="tel:${clean}"><span class="icon">📞</span> Chiama</a>`);
+    }
+
+    const fornitore = item.fornitoreCollegato ? DATA.fornitori.find(f => f.id === item.fornitoreCollegato) : null;
+
+    html = `
+      ${links.length ? `<div class="link-group">${links.join('')}</div>` : ''}
+
+      <div class="modal-section">
+        <div class="modal-section-title">Dettagli</div>
+        <div class="modal-grid">
+          ${field('Costi', item.costi)}
+          ${field('Durata', item.durata)}
+          ${field('Lingua', item.lingua)}
+          ${field('Prenotazione', item.prenotazione)}
+          ${field('Pick-up', item.pickup)}
+          ${field('Mail', linkify(item.mail, 'mail'))}
+          ${field('Telefono', linkify(item.tel, 'tel'))}
+        </div>
+      </div>
+
+      ${item.incluso ? `<div class="modal-section"><div class="modal-section-title">✅ Incluso</div><div class="feedback-block">${item.incluso}</div></div>` : ''}
+      ${item.escluso ? `<div class="modal-section"><div class="modal-section-title">❌ Escluso</div><div class="warn-block">${item.escluso}</div></div>` : ''}
+      ${item.daPortare ? `<div class="modal-section"><div class="modal-section-title">🎒 Da portare</div><div class="note-block">${item.daPortare}</div></div>` : ''}
+
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">Feedback clienti</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+      ${item.cancel ? `<div class="modal-section"><div class="modal-section-title">🔄 Cancellation policy</div><div class="warn-block">${item.cancel}</div></div>` : ''}
+
+      ${fornitore ? `<div class="modal-section"><div class="modal-section-title">🔗 Fornitore collegato</div><div class="related-list"><div class="related-item" onclick="openModal('fornitori','${fornitore.id}')"><span><strong>${fornitore.nome}</strong> · ${fornitore.tipo}</span><span class="arrow">→</span></div></div></div>` : ''}
+    `;
+  } else if (type === 'trasporti') {
+    item = DATA.trasporti.find(x => x.id === id);
+    if (!item) return;
+    title.textContent = item.fornitore;
+    subtitle.innerHTML = `${item.zona}${item.servizi ? ` · ${item.servizi}` : ''}`;
+
+    const links = [];
+    if (item.sito) links.push(`<a class="link-btn" href="${item.sito}" target="_blank" rel="noopener"><span class="icon">🌐</span> Sito</a>`);
+    if (item.mail) {
+      const firstMail = (item.mail.split(/[·;]/)[0] || '').trim().match(/[\w.-]+@[\w.-]+/);
+      if (firstMail) links.push(`<a class="link-btn" href="mailto:${firstMail[0]}"><span class="icon">✉️</span> Mail</a>`);
+    }
+
+    html = `
+      ${links.length ? `<div class="link-group">${links.join('')}</div>` : ''}
+      <div class="modal-section">
+        <div class="modal-section-title">Contatti</div>
+        <div class="modal-grid">
+          ${field('Prenotazione', item.prenotazione)}
+          ${field('Mail', linkify(item.mail, 'mail'))}
+          ${field('Telefono', linkify(item.tel, 'tel'))}
+          ${field('Sito', linkify(item.sito, 'url'))}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Note</div><div class="note-block">${item.note}</div></div>` : ''}
+    `;
+  } else if (type === 'cruise') {
+    item = DATA.cruise.find(x => x.id === id);
+    if (!item) return;
+    title.textContent = item.nome;
+    subtitle.innerHTML = `⚓ Crociera`;
+    html = `
+      <div class="modal-section">
+        <div class="modal-section-title">Rivenditori</div>
+        <div class="modal-grid">
+          ${field('🇮🇹 Italia', item.rivenditoreIT)}
+          ${field('🇵🇫 Polinesia', item.rivenditorePF)}
+        </div>
+      </div>
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">Descrizione</div><div class="note-block">${item.note}</div></div>` : ''}
+      ${item.materiale ? `<div class="modal-section"><div class="modal-section-title">Materiale</div><div class="note-block">${item.materiale}</div></div>` : ''}
+    `;
+  }
+
+  body.innerHTML = html;
+  overlay.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function field(label, value) {
+  if (!value || value === '—' || value === '') return '';
+  return `<div><div class="modal-field-label">${label}</div><div class="modal-field-value">${value}</div></div>`;
+}
+
+function onOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const secMap = {
+  overview: 'sec-overview', fornitori: 'sec-fornitori', alloggi: 'sec-alloggi',
+  attivita: 'sec-attivita', trasporti: 'sec-trasporti', cruise: 'sec-cruise', feedback: 'sec-feedback'
+};
+
+const titleMap = {
+  overview: { t: 'Dashboard', s: 'panoramica generale' },
+  fornitori: { t: 'Fornitori', s: 'DMC e tour operator' },
+  alloggi: { t: 'Alloggi', s: 'hotel, resort, pension' },
+  attivita: { t: 'Attività', s: 'escursioni ed esperienze' },
+  trasporti: { t: 'Trasporti', s: 'voli, traghetti' },
+  cruise: { t: 'Crociere', s: 'yacht e cruise' },
+  feedback: { t: 'Feedback', s: 'raccolta di recensioni e note' }
+};
+
+let currentSection = 'overview';
+
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(secMap[sec]).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => { if (b.dataset.section === sec) b.classList.add('active'); });
+  const t = titleMap[sec];
+  document.getElementById('page-title').innerHTML = `${t.t} <span class="section-sub">${t.s}</span>`;
+  currentSection = sec;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// FILTERS & SEARCH
+// ============================================================
+function doSearch() {
+  if (currentSection === 'alloggi') renderAlloggi();
+  else if (currentSection === 'attivita') renderAttivita();
+}
+
+function filterAlloggi() { renderAlloggi(); }
+function filterAttivita() { renderAttivita(); }
+
+// ============================================================
+// STATS
+// ============================================================
+function renderIslandStats() {
+  const counts = {};
+  DATA.alloggi.forEach(a => { counts[a.isola] = (counts[a.isola] || 0) + 1; });
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  const max = sorted[0][1];
+  document.getElementById('island-stats').innerHTML = sorted.map(([island, count]) => `
+    <div class="stat-row">
+      <div class="stat-label"><span class="name">${island}</span><span class="num">${count}</span></div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${(count / max * 100).toFixed(0)}%;"></div></div>
+    </div>
+  `).join('');
+}
+
+function populateDropdowns() {
+  const isoleAll = [...new Set(DATA.alloggi.map(a => a.isola))].sort();
+  const selA = document.getElementById('all-island');
+  isoleAll.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; selA.appendChild(o); });
+
+  const isoleAtt = [...new Set(DATA.attivita.map(a => a.isola))].sort();
+  const selAtt = document.getElementById('att-island');
+  isoleAtt.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; selAtt.appendChild(o); });
+}
+
+function updateCounts() {
+  document.getElementById('c-forn').textContent = DATA.fornitori.length;
+  document.getElementById('c-all').textContent = DATA.alloggi.length;
+  document.getElementById('c-att').textContent = DATA.attivita.length;
+  document.getElementById('c-tra').textContent = DATA.trasporti.length;
+  document.getElementById('c-cru').textContent = DATA.cruise.length;
+  document.getElementById('c-fb').textContent = buildFeedbackList().length;
+
+  document.getElementById('ov-forn').textContent = DATA.fornitori.length;
+  document.getElementById('ov-all').textContent = DATA.alloggi.length;
+  document.getElementById('ov-att').textContent = DATA.attivita.length;
+  document.getElementById('ov-tra').textContent = DATA.trasporti.length;
+  document.getElementById('ov-cru').textContent = DATA.cruise.length;
+  document.getElementById('ov-fb').textContent = buildFeedbackList().length;
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+function initListeners() {
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.addEventListener('click', () => showSection(b.dataset.section));
+  });
+
+  document.querySelectorAll('[data-filter-forn]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter-forn]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      renderFornitori(b.dataset.filterForn);
+    });
+  });
+
+  document.querySelectorAll('[data-filter-fb]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter-fb]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      renderFeedback(b.dataset.filterFb);
+    });
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+}
+
+function emptyHTML() {
+  return `<div class="empty" style="grid-column:1/-1;"><div class="empty-icon">🔍</div>Nessun risultato trovato.</div>`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  populateDropdowns();
+  renderFornitori();
+  renderAlloggi();
+  renderAttivita();
+  renderTrasporti();
+  renderCruise();
+  renderFeedback();
+  renderIslandStats();
+  updateCounts();
+  initListeners();
+}
+
+init();
+</script>
+</body>
+</html>
