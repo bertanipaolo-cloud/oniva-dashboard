@@ -866,6 +866,350 @@
   .fb-negative { border-left: 4px solid var(--coral); }
   .fb-neutral { border-left: 4px solid var(--muted); }
 
+  /* TOUR SPECIFIC */
+  .tour-card {
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tour-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--coral);
+    transform: scaleY(0);
+    transition: transform 0.25s;
+    transform-origin: top;
+    border-radius: 14px 0 0 14px;
+  }
+
+  .tour-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .tour-card:hover::before { transform: scaleY(1); }
+
+  .tour-card.is-saved {
+    border-color: var(--coral);
+    background: linear-gradient(180deg, white 0%, #fff5f3 100%);
+  }
+
+  .tour-card.is-saved::before { transform: scaleY(1); }
+
+  .tour-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .tour-name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+    flex: 1;
+    letter-spacing: -0.2px;
+  }
+
+  .tour-bookmark {
+    background: none;
+    border: 1px solid var(--border);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 14px;
+    flex-shrink: 0;
+    color: var(--muted);
+  }
+
+  .tour-bookmark:hover { border-color: var(--coral); color: var(--coral); background: #fff5f3; }
+  .tour-bookmark.is-saved { background: var(--coral); border-color: var(--coral); color: white; }
+
+  .tour-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .tour-price {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--coral);
+    letter-spacing: -0.5px;
+  }
+
+  .tour-price-suffix {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+    margin-left: 3px;
+  }
+
+  .tour-price-special {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--coral);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .tour-desc {
+    font-size: 12.5px;
+    color: var(--muted-dark);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tour-divider {
+    border-top: 1px dashed var(--border-light);
+    padding-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .tour-divider .dot { color: var(--border); }
+
+  /* Tour planner */
+  .planner-bar {
+    position: sticky;
+    top: 70px;
+    z-index: 30;
+    background: linear-gradient(135deg, var(--coral) 0%, #d65a48 100%);
+    color: white;
+    padding: 14px 20px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    display: none;
+    box-shadow: var(--shadow-md);
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .planner-bar.show { display: flex; }
+
+  .planner-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .planner-info .num {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .planner-info .lbl {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.85;
+  }
+
+  .planner-divider {
+    width: 1px;
+    height: 36px;
+    background: rgba(255,255,255,0.25);
+  }
+
+  .planner-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  .planner-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 7px 14px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+
+  .planner-btn:hover { background: white; color: var(--coral); border-color: white; }
+
+  .planner-list {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  .planner-list.show { display: block; }
+
+  .planner-list-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .planner-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .planner-stat {
+    background: var(--cream);
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .planner-stat .v {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--coral);
+    display: block;
+    line-height: 1.1;
+  }
+
+  .planner-stat .l {
+    font-size: 10.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  .planner-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--pale);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    border-left: 3px solid var(--coral);
+  }
+
+  .planner-item-name {
+    flex: 1;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .planner-item-name:hover { color: var(--coral); }
+
+  .planner-item-price {
+    color: var(--coral);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .planner-item-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+
+  .planner-item-remove:hover { background: var(--coral); color: white; }
+
+  /* CATEGORY BADGES (tours) */
+  .cat-cultura { background: #fce9bf; color: #8a5f0f; }
+  .cat-natura { background: #d8ecdf; color: var(--green); }
+  .cat-laguna { background: #d6eef5; color: var(--ocean); }
+  .cat-snorkeling { background: #e0f0f5; color: #3a7a8f; }
+  .cat-balene { background: #d0e2eb; color: #1f4a6e; }
+  .cat-mare { background: #cfeeed; color: #1a6963; }
+  .cat-storia { background: #f5e0d4; color: #7a4a2a; }
+  .cat-4x4 { background: var(--sand); color: #8a6d2e; }
+  .cat-default { background: var(--tag-bg); color: var(--muted-dark); }
+
+  /* Tour list shown inside alloggio modal */
+  .nearby-tours {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .nearby-tour {
+    padding: 10px 12px;
+    background: var(--cream);
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nearby-tour:hover { background: white; border-color: var(--coral); }
+
+  .nearby-tour-info { flex: 1; }
+  .nearby-tour-info .name { font-weight: 500; font-size: 13px; color: var(--ink); }
+  .nearby-tour-info .meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .nearby-tour-price { color: var(--coral); font-weight: 600; font-size: 13px; white-space: nowrap; }
+
+  /* Sort select */
+  .sort-wrap {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sort-wrap label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -910,6 +1254,9 @@
     </button>
     <button class="nav-btn" data-section="attivita">
       <span class="icon">🐚</span> Attività <span class="count" id="c-att"></span>
+    </button>
+    <button class="nav-btn" data-section="tour">
+      <span class="icon">🗺️</span> Tour & Escursioni <span class="count" id="c-tour"></span>
     </button>
     <button class="nav-btn" data-section="trasporti">
       <span class="icon">⛴️</span> Trasporti <span class="count" id="c-tra"></span>
@@ -961,6 +1308,11 @@
           <div class="ov-num" id="ov-att">—</div>
           <div class="ov-label">Attività</div>
         </div>
+        <div class="overview-card" onclick="showSection('tour')">
+          <div class="ov-icon">🗺️</div>
+          <div class="ov-num" id="ov-tour">—</div>
+          <div class="ov-label">Tour & Escursioni</div>
+        </div>
         <div class="overview-card" onclick="showSection('feedback')">
           <div class="ov-icon">💬</div>
           <div class="ov-num" id="ov-fb">—</div>
@@ -991,6 +1343,7 @@
           <div class="quick-tip"><span class="emoji">🌧️</span><span>Evitare <strong>Gennaio-Febbraio</strong> (piogge sulle Society Islands)</span></div>
           <div class="quick-tip"><span class="emoji">💰</span><span>Markup consigliato: <strong>15-17%</strong> massimo sui net rates</span></div>
           <div class="quick-tip"><span class="emoji">🐋</span><span>Whale watching a Moorea: <strong>metà agosto - ottobre</strong> (picco settembre)</span></div>
+          <div class="quick-tip"><span class="emoji">🗺️</span><span>Sezione <strong>Tour</strong>: usa il "+" per costruire un pacchetto e <strong>copialo</strong> negli appunti</span></div>
         </div>
       </div>
     </div>
@@ -1039,6 +1392,74 @@
       </div>
       <div class="result-count" id="att-count"></div>
       <div class="cards-grid" id="att-grid"></div>
+    </div>
+
+    <!-- TOUR -->
+    <div class="section" id="sec-tour">
+      <!-- Planner sticky bar -->
+      <div class="planner-bar" id="planner-bar">
+        <div class="planner-info">
+          <span class="num" id="planner-count">0</span>
+          <span class="lbl">Tour selezionati</span>
+        </div>
+        <div class="planner-divider"></div>
+        <div class="planner-info">
+          <span class="num" id="planner-total">0€</span>
+          <span class="lbl">Totale stima/pax</span>
+        </div>
+        <div class="planner-actions">
+          <button class="planner-btn" onclick="togglePlannerList()">📋 Vedi pacchetto</button>
+          <button class="planner-btn" onclick="exportPlanner()">📋 Copia testo</button>
+          <button class="planner-btn" onclick="clearPlanner()">✕ Pulisci</button>
+        </div>
+      </div>
+
+      <!-- Planner list expanded -->
+      <div class="planner-list" id="planner-list">
+        <div class="planner-list-title">
+          <span>🎯 Pacchetto in costruzione</span>
+          <button class="planner-btn" style="background:var(--cream);color:var(--ink);border-color:var(--border)" onclick="togglePlannerList()">Chiudi ✕</button>
+        </div>
+        <div class="planner-stat-grid" id="planner-stats"></div>
+        <div id="planner-items"></div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:10px;font-style:italic;">💡 La stima è puramente indicativa: somma dei prezzi adulti per tour. Verifica sempre con il fornitore (markup, supplementi, stagionalità).</div>
+      </div>
+
+      <div class="filter-bar">
+        <span class="filter-label">Isola</span>
+        <select class="city-select" id="tour-island" onchange="renderTours()">
+          <option value="tutti">Tutte le isole</option>
+        </select>
+        <select class="city-select" id="tour-cat" onchange="renderTours()">
+          <option value="tutti">Tutte le categorie</option>
+        </select>
+        <select class="city-select" id="tour-dur" onchange="renderTours()">
+          <option value="tutti">Qualsiasi durata</option>
+          <option value="Half Day">Half Day</option>
+          <option value="Full Day">Full Day</option>
+          <option value="short">Tour brevi (1-4h)</option>
+          <option value="multi">Half/Full Day</option>
+        </select>
+        <select class="city-select" id="tour-price" onchange="renderTours()">
+          <option value="tutti">Qualsiasi prezzo</option>
+          <option value="0-75">€ 0-75</option>
+          <option value="75-120">€ 75-120</option>
+          <option value="120-200">€ 120-200</option>
+          <option value="200+">€ 200+</option>
+        </select>
+        <div class="sort-wrap">
+          <label>Ordina</label>
+          <select class="city-select" id="tour-sort" onchange="renderTours()">
+            <option value="default">Predefinito</option>
+            <option value="price-asc">Prezzo ↑</option>
+            <option value="price-desc">Prezzo ↓</option>
+            <option value="name">Nome A-Z</option>
+            <option value="island">Isola</option>
+          </select>
+        </div>
+      </div>
+      <div class="result-count" id="tour-count"></div>
+      <div class="cards-grid" id="tour-grid"></div>
     </div>
 
     <!-- TRASPORTI -->
@@ -1356,6 +1777,53 @@ const DATA = {
 
   cruise: [
     { id:'c1', nome:"Dream Yacht Catamarano", rivenditoreIT:"Albatross (Dario) · Dyc-albatross · +39 393 908 8229 · info@albatross.it · 02 48 02 71 22", rivenditorePF:"Tahiti Tours (listino)", note:"🛥️ Crociere a bordo di comodi catamarani con equipaggio. Cabine con bagno privato, pensione completa, consumi inclusi. Partenze settimanali garantite. Solo 6 cabine ospiti + zona equipaggio + ampi spazi per privacy/relax. Skipper + cuoco. Calette esclusive, baie non affollate per nuotate/snorkeling. Crociere 4-7-10 notti con partenza settimanale.", materiale:"Disponibilità live · Materiale foto e video" }
+  ],
+
+  tour: [
+    // TAHITI
+    { id:'tr1', isola:'Tahiti', arcipelago:'Società', nome:"Mountain 4x4 Safari - Full day", durata:"Full Day", durataCat:"Full Day", categoria:"Cultura · 4x4", prezzo:72.5, prezzoPriv:629, prezzoChild:48.5, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:false, pranzoNote:"Sosta al Relais de la Maroto", privato:"Max 7 pax · €629", desc:"Un'avventura nel cuore pulsante di Tahiti risalendo la Valle di Papenoo. Tra cascate spettacolari, fiumi e una vegetazione tropicale lussureggiante, scoprirete i segreti geologici e la flora dell'isola in un'atmosfera di pace assoluta, guidati da esperti del territorio." },
+    { id:'tr2', isola:'Tahiti', arcipelago:'Società', nome:"The Papenoo Valley, From Father To Son", durata:"Half Day", durataCat:"Half Day", categoria:"Natura · 4x4", prezzo:60, prezzoChild:30, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:false, desc:"Un'esperienza intima e autentica per attraversare la valle più grande di Tahiti. Guidati da chi questo territorio lo tramanda di generazione in generazione, vivrete un safari emozionante tra panorami mozzafiato e la storia di una famiglia legata alla propria terra." },
+    { id:'tr3', isola:'Tahiti', arcipelago:'Società', nome:"The Papenoo Valley, From Father To Son", durata:"Full Day", durataCat:"Full Day", categoria:"Natura · 4x4", prezzo:88.5, prezzoChild:44, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:false, desc:"Un'esperienza intima e autentica per attraversare la valle più grande di Tahiti. Versione full day con tappe più approfondite tra panorami mozzafiato e la storia di una famiglia legata alla propria terra." },
+    { id:'tr4', isola:'Tahiti', arcipelago:'Società', nome:"Papenoo Land Of Legends, A Cultural 4x4 Tour", durata:"Full Day", durataCat:"Full Day", categoria:"Cultura · 4x4", prezzo:88.5, prezzoChild:44, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:false, desc:"Un viaggio nel cuore pulsante di Tahiti, dove la natura prepotente della valle si intreccia alle antiche leggende polinesiane. Tra cascate spettacolari e siti sacri, scoprirete l'anima culturale e mitologica dell'isola a bordo di un 4x4." },
+    { id:'tr5', isola:'Tahiti', arcipelago:'Società', nome:"Daytour Teahupoo & Tahiti Peninsula", durata:"Full Day", durataCat:"Full Day", categoria:"Mare · Natura", prezzo:156.5, prezzoChild:92.5, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, note:"⭐ PER CHI HA ALMENO 3 NOTTI E VUOLE VISITARE TAHITI SUD", desc:"Un viaggio nell'anima selvaggia di Tahiti Iti. Dalla mitica onda di Teahupoo alle grotte nascoste, vivrete una giornata di pura meraviglia tra oceano e montagne primordiali." },
+
+    // MOOREA
+    { id:'tr6', isola:'Moorea', arcipelago:'Società', nome:"Aito 4x4 Safari Adventure to the Belvedere", durata:"Half Day", durataCat:"Half Day", categoria:"Cultura · 4x4", prezzo:41.5, prezzoPriv:322.5, prezzoChild:20.5, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:false, privato:"Max 8 pax · €322,5", desc:"Sali a bordo di un 4x4 per scoprire i meravigliosi paesaggi di Moorea. Visita le baie di Cook e Opunohu, l'interno del vulcano e la sua maestosa caldera fino al magnifico punto panoramico del Belvedere. Lungo il percorso vestigia ancestrali, campi di pineapple e altre piantagioni. Al ritorno alla base, rinfreschi offerti." },
+    { id:'tr7', isola:'Moorea', arcipelago:'Società', nome:"Outrigger Miti Lagoon Tour, Full Day (Motu Lunch Included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:97.5, prezzoPriv:973.5, prezzoChild:48.5, lingua:"EN/FR", fornitoreId:'tahititours', fornitoreSec:"Miti Moorea Lagoon Tours", pranzo:true, privato:"Max 8 pax/boat · €973,5", desc:"Imbarcati su una canoa tradizionale per scoprire le migliori attrazioni di Moorea. Visita la baia di Cook o Opunohu con le loro maestose montagne. Naviga nella laguna per incontrare razze e squali pinna nera. Snorkeling tra barriera corallina e pesci tropicali, frutta fresca e bevande. Per concludere, lezione di cucina sul motu (poisson cru). Dimostrazioni di intreccio, piante medicinali, come legare il pareo." },
+    { id:'tr8', isola:'Moorea', arcipelago:'Società', nome:"Whale Watching - East Coast (Maharepa Village)", durata:"3 ore", durataCat:"short", categoria:"Balene", prezzoSpecial:"Snorkeler €184,50 · Watcher only €147,50", lingua:"EN/FR", fornitoreId:'tahititours', stagione:"⏰ 20 luglio - 20 novembre", note:"Prezzo child = adulto", desc:"Le balene raggiungono le calde acque della Polinesia durante l'inverno australe per accoppiarsi e partorire. Avvicinarsi a questi giganti del mare è un'esperienza indimenticabile." },
+    { id:'tr9', isola:'Moorea', arcipelago:'Società', nome:"Whale Watching - North Coast (Opunohu Bay)", durata:"3 ore", durataCat:"short", categoria:"Balene", prezzoSpecial:"Snorkeler €221,00 · Watcher only €132,50", lingua:"EN/FR", fornitoreId:'tahititours', stagione:"⏰ 20 luglio - 20 novembre", note:"Prezzo child = adulto", desc:"Whale watching dalla costa Nord di Moorea, partenza da Opunohu Bay." },
+    { id:'tr10', isola:'Moorea', arcipelago:'Società', nome:"Whale Watching - West Coast (Tiahura Village)", durata:"3 ore", durataCat:"short", categoria:"Balene", prezzoSpecial:"Snorkeler €147,50 · Watcher only €73,50", lingua:"EN/FR", fornitoreId:'tahititours', stagione:"⏰ 20 luglio - 20 novembre", note:"Prezzo child = adulto", desc:"Whale watching dalla costa Ovest, partenza da Tiahura Village. Il più economico tra i tre punti di partenza." },
+
+    // BORA BORA
+    { id:'tr11', isola:'Bora Bora', arcipelago:'Società', nome:"Ultimate Shark & Ray Watching, Full Day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:137.5, prezzoPriv:903.5, prezzoChild:69, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, privato:"2 pax/boat · €903,5", desc:"Sali su una piacevole barca a motore tradizionale per incontrare pesci colorati, razze e squali pinna nera. Al suono dell'ukulele, la guida polinesiana ti condurrà al motu dove verrà preparato un gustoso pranzo barbecue con piatti tipici tahitiani. Tour condiviso, pranzo servito in area separata dell'isolotto." },
+    { id:'tr12', isola:'Bora Bora', arcipelago:'Società', nome:"Mountain 4x4 Safari", durata:"Half Day", durataCat:"Half Day", categoria:"Cultura · 4x4", prezzo:63.5, prezzoChild:31.5, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:false, desc:"Scopri l'interno selvaggio di Bora Bora in 4x4, i resti della Seconda Guerra Mondiale e le spettacolari viste panoramiche sulle sfumature blu della laguna. Servizio premium focalizzato sulla cultura, inclusa visita a siti archeologici sconosciuti su terreni privati. Sosta da 'Mama Ruta' per dimostrazione tradizionale di tintura dei pareo e assaggio di frutta locale." },
+    { id:'tr13', isola:'Bora Bora', arcipelago:'Società', nome:"COMBO TOUR 4x4 & Jet Ski", durata:"Full Day", durataCat:"Full Day", categoria:"4x4 · Laguna", prezzoSpecial:"2 pax/jet ski: €218,5/pax · 1 pax/jet ski: €367/pax", lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, pranzoNote:"Ristorante tipico a Matira", desc:"Un tour all'insegna dell'avventura: safari 4x4 per scoprire l'interno dell'isola attraverso sentieri scoscesi che portano a punti panoramici mozzafiato. Sosta pranzo a Matira. La giornata continua con 2 ore di tour in jet ski sulla laguna turchese." },
+    { id:'tr14', isola:'Bora Bora', arcipelago:'Società', nome:"Dive for your Pearl - 02H00", durata:"2 ore", durataCat:"short", categoria:"Laguna · Snorkeling", prezzo:138.5, prezzoChild:110.5, lingua:"EN/FR", fornitoreId:'tahititours', desc:"Raggiungi il motu dove si trova la coltivazione di perle di Bora Bora. In un ambiente idilliaco con vista sul Monte Otemanu, imparerai tutto sulla perla nera e la sua cultura. Maschera e boccaglio per tuffarsi in laguna, raccogliere un'ostrica e scoprire il tesoro che custodisce per te! Rinfreschi e frutta fresca dopo il tuffo." },
+    { id:'tr15', isola:'Bora Bora', arcipelago:'Società', nome:"Pure Snorkeling - Half day", durata:"Half Day", durataCat:"Half Day", categoria:"Laguna · Snorkeling", prezzo:96, prezzoChild:48, lingua:"EN/FR", fornitoreId:'tahititours', desc:"Il modo migliore per esplorare la flora e fauna marina, adatto a nuotatori di ogni livello. L'istruttore qualificato ti aiuterà a esplorare la bellezza dei giardini di corallo e a incontrare aquile di mare e mante durante 4 tappe in siti protetti a bordo di una barca Larson 254, tra le più confortevoli." },
+
+    // RAIATEA / TAHA'A
+    { id:'tr16', isola:"Raiatea / Taha'a", arcipelago:'Società', nome:"The Tahaa Full Discovery Tour, Land & Lagoon - Full day (Motu Lunch included)", durata:"Half Day", durataCat:"Half Day", categoria:"Land · Laguna · Daytrip", prezzo:126.5, prezzoChild:63, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, desc:"Scoprite tutti i tesori dell'Isola della Vaniglia in un'avventura di un'intera giornata. Visita di una fattoria di perle, una piantagione di vaniglia e una distilleria di rum. Salperete in barca verso un meraviglioso motu: un isolotto incontaminato di sabbia bianca circondato da acque turchesi. Pranzo BBQ in stile polinesiano. Pomeriggio con snorkeling in uno dei giardini di corallo più spettacolari dell'arcipelago." },
+    { id:'tr17', isola:'Raiatea', arcipelago:'Società', nome:"Raiatea of Yesterday & Nowadays - Half day", durata:"Half Day", durataCat:"Half Day", categoria:"Cultura · Storia", prezzo:66.5, prezzoPriv:427.5, prezzoChild:66.5, lingua:"EN/FR", fornitoreId:'tahititours', privato:"Max 8 pax · €427,5", note:"Prezzo unico Adulto/Bambino", desc:"Un viaggio nel tempo per capire la vera vita polinesiana. Dalle tradizioni viventi del villaggio di Uturoa al sacro Marae di Taputapuatea, fino ai segreti dell'economia locale tra perle e vaniglia. Un'esperienza completa tra natura maestosa e cultura profonda." },
+
+    // HUAHINE
+    { id:'tr18', isola:'Huahine', arcipelago:'Società', nome:"Huahine Cultural Lagoon Tour (Terainui)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Cultura", prezzo:106, prezzoChild:60, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, feedback:"⭐ Molto apprezzato e consigliato da MANSUTTI", desc:"Un tour esclusivo per scoprire l'anima di Huahine: dai siti archeologici al Museo delle Conchiglie, fino a un laboratorio di pittura su pareo. Il cuore della giornata è il pranzo tipico a casa della guida, seguito da un'introduzione alla tradizionale canoa polinesiana." },
+    { id:'tr19', isola:'Huahine', arcipelago:'Società', nome:"The Huahine Essential 4x4 & Outrigger Canoe Experience - Full Day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Cultura · 4x4 · Laguna", prezzo:149, prezzoChild:74.5, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, pranzoNote:"Pranzo vegetariano sul motu", desc:"In 4x4 esplorerai i siti naturali e culturali imperdibili di Huahine: Fare, le piantagioni di vaniglia, le anguille dagli occhi blu, l'antico villaggio di Maeva e la fattoria di perle sull'acqua. Sali poi su una canoa tradizionale verso un motu privato per un delizioso pranzo vegetariano con sapori locali. Nel pomeriggio, snorkeling nel giardino di corallo prima del rientro." },
+    { id:'tr20', isola:'Huahine', arcipelago:'Società', nome:"4x4 Safari Expedition - Half day", durata:"Half Day", durataCat:"Half Day", categoria:"Cultura · 4x4", prezzo:51.5, prezzoChild:25.5, lingua:"EN/FR", fornitoreId:'tahititours', desc:"La guida ti accompagnerà intorno all'isola visitando i marae di Maeva, le enormi anguille dagli occhi blu di Faie e il Belvedere di Maroe per la vista sulla baia. Visita anche all'unica fattoria di perle sull'acqua e alle tradizionali trappole per pesci, con leggende e cultura locale durante il tour." },
+
+    // RANGIROA (Tuamotu)
+    { id:'tr21', isola:'Rangiroa', arcipelago:'Tuamotu', nome:"The Blue Lagoon, Sea Birds & Rosé de Tahiti - Full day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:96, prezzoChild:48, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, note:"⚠️ Pick-up dalla Pension Tihimani Lodge non più disponibile", desc:"A circa un'ora di barca dal villaggio principale si trova la Laguna Blu, una laguna nella laguna che funge da vivaio per razze e squali pinna nera. Bagni in acque traslucide, passeggiate tra gli uccelli del motu, laboratori di intreccio o relax su una spiaggia di sabbia rosa. Pranzo barbecue accompagnato dal Rosé de Tahiti, l'unico vino al mondo da vigneto corallino. Condizioni permettendo, avvistamento delfini a Tiputa." },
+    { id:'tr22', isola:'Rangiroa', arcipelago:'Tuamotu', nome:"The Blue Lagoon, Diadem of Rangiroa - Full day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:110.5, prezzoChild:55.5, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, desc:"Una corona di diversi motu forma una meravigliosa piccola laguna interna, un'esplosione di colori! Bagni, passeggiate con la guida o in autonomia, relax o scoperta. Pranzo locale all'ombra di un 'Fare Pote'e', accompagnato da musica polinesiana. Prima del rientro, osservazione di squali e, condizioni permettendo, dei delfini a Tiputa." },
+    { id:'tr23', isola:'Rangiroa', arcipelago:'Tuamotu', nome:"Discover the Reef Island, a geological curiosity - Full day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Cultura", prezzo:96, prezzoChild:48, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, desc:"Dirigiti a sud verso l'enigmatica 'Isola della Barriera'. Dietro le spiagge incontaminate si trovano le mura di corallo fossile 'Feo', che svettano per oltre 2 metri testimoniando formazioni geologiche millenarie. Esplora le piscine naturali e scopri i segreti della flora e fauna locale, tra ricci matita e crostacei curiosi." },
+    { id:'tr24', isola:'Rangiroa', arcipelago:'Tuamotu', nome:"Drift Snorkeling Tour at Tiputa Pass - 01H30", durata:"1h30m", durataCat:"short", categoria:"Snorkeling", prezzo:60.5, prezzoChild:60.5, lingua:"EN/FR", fornitoreId:'tahititours', note:"⚠️ CORRENTE FORTE — necessita esperienza e saper nuotare bene · Prezzo child = adulto", desc:"Il tour inizia con lo snorkeling all'Acquario per conoscere la fauna lagunare, per poi dirigersi alla pass di Tiputa per uno snorkeling in corrente con possibili incontri con squali e mante. Infine, ricerca dei delfini tursiopi." },
+
+    // TIKEHAU
+    { id:'tr25', isola:'Tikehau', arcipelago:'Tuamotu', nome:"Explore the Beautiful Nature of Tikehau - Full day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:124.5, prezzoChild:62, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, desc:"Isola degli uccelli, snorkeling nella pass alla ricerca delle mante, pranzo barbecue nel villaggio dei pescatori… non perderai nessuna delle attrazioni principali dell'atollo, accompagnato dalla gentilezza degli abitanti locali." },
+    { id:'tr26', isola:'Tikehau', arcipelago:'Tuamotu', nome:"Eco-Marine Discovery & Eden Island - Full day", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:103, prezzoChild:103, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, note:"⚠️ Eden Island chiusa nei weekend → prenotazioni potrebbero essere riprogrammate o cancellate · Prezzo child = adulto", desc:"Tour eco-marino con scoperta dell'Isola di Eden, snorkeling e pranzo sul motu." },
+    { id:'tr27', isola:'Tikehau', arcipelago:'Tuamotu', nome:"Snorkeling Guided Tour - 04H00 / Morning Tour", durata:"4h", durataCat:"short", categoria:"Snorkeling", prezzo:88.5, prezzoChild:88.5, lingua:"EN/FR", fornitoreId:'tahititours', note:"Prezzo child = adulto", desc:"Scopri le bellezze sottomarine di Tikehau. Dopo uno spuntino vicino al villaggio dei pescatori, andrai verso l'oceano per osservare i delfini e poi in laguna per cercare le mante e nuotare nel giardino di corallo tra pesci balestra e altre specie tropicali." },
+
+    // FAKARAVA
+    { id:'tr28', isola:'Fakarava', arcipelago:'Tuamotu', nome:"Snorkeling in the Heart of the Green Lagoon", durata:"Half/Full Day", durataCat:"multi", categoria:"Snorkeling", prezzoSpecial:"HD: €87,5 · FD: €107", prezzoChild:71, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, pranzoNote:"FD: pranzo motu incluso · HD: snack", note:"Prezzo Child HD: €71 · FD: €89,5", desc:"Il sito di Teahatea (Laguna Verde) offre due tappe imperdibili: una lunga spiaggia di sabbia bianca con vista mozzafiato e una laguna interna riparata perfetta per lo snorkeling, casa di squali del reef e tartarughe marine. In base alla durata scelta verrà servito uno snack o un pranzo barbecue sul motu." },
+    { id:'tr29', isola:'Fakarava', arcipelago:'Tuamotu', nome:"Lagoon Adventure to South Fakarava - Full day (Motu Lunch included)", durata:"Full Day", durataCat:"Full Day", categoria:"Laguna · Snorkeling", prezzo:131, prezzoChild:106, lingua:"EN/FR", fornitoreId:'tahititours', pranzo:true, pranzoNote:"Pranzo nel villaggio di Hirifa", desc:"Rotta verso il sud di Fakarava per una giornata eccezionale. Snorkeling nella famosa pass vicino al motu Tetamanu, sosta alle Sabbie Rosa e pranzo nel villaggio di Hirifa. Pomeriggio dedicato al relax e a laboratori di intreccio tradizionale." }
   ]
 };
 
@@ -1415,6 +1883,246 @@ function linkify(text, type) {
 function getFornitoreName(id) {
   const f = DATA.fornitori.find(x => x.id === id);
   return f ? f.nome : id;
+}
+
+// ============================================================
+// TOUR
+// ============================================================
+function catBadgeClass(cat) {
+  if (!cat) return 'cat-default';
+  const c = cat.toLowerCase();
+  if (c.includes('balene')) return 'cat-balene';
+  if (c.includes('snorkeling')) return 'cat-snorkeling';
+  if (c.includes('laguna')) return 'cat-laguna';
+  if (c.includes('cultura') || c.includes('storia')) return 'cat-cultura';
+  if (c.includes('4x4')) return 'cat-4x4';
+  if (c.includes('natura')) return 'cat-natura';
+  if (c.includes('mare')) return 'cat-mare';
+  return 'cat-default';
+}
+
+function tourPriceLabel(t) {
+  if (t.prezzoSpecial) return `<span class="tour-price-special">${t.prezzoSpecial}</span>`;
+  if (t.prezzo) return `<span class="tour-price">€${t.prezzo}<span class="tour-price-suffix">/pax</span></span>`;
+  return '';
+}
+
+function getTourMinPrice(t) {
+  if (t.prezzo) return t.prezzo;
+  if (t.prezzoSpecial) {
+    const m = t.prezzoSpecial.match(/€\s*(\d+(?:[,.]\d+)?)/);
+    if (m) return parseFloat(m[1].replace(',', '.'));
+  }
+  return 999999;
+}
+
+function renderTours() {
+  const islandVal = document.getElementById('tour-island').value;
+  const catVal = document.getElementById('tour-cat').value;
+  const durVal = document.getElementById('tour-dur').value;
+  const priceVal = document.getElementById('tour-price').value;
+  const sortVal = document.getElementById('tour-sort').value;
+  const searchVal = document.getElementById('search').value.toLowerCase();
+
+  let items = DATA.tour.slice();
+
+  if (islandVal !== 'tutti') items = items.filter(t => t.isola === islandVal);
+  if (catVal !== 'tutti') items = items.filter(t => (t.categoria || '').includes(catVal));
+  if (durVal !== 'tutti') items = items.filter(t => t.durataCat === durVal);
+  if (priceVal !== 'tutti') {
+    items = items.filter(t => {
+      const p = getTourMinPrice(t);
+      if (priceVal === '0-75') return p <= 75;
+      if (priceVal === '75-120') return p > 75 && p <= 120;
+      if (priceVal === '120-200') return p > 120 && p <= 200;
+      if (priceVal === '200+') return p > 200;
+      return true;
+    });
+  }
+  if (searchVal) items = items.filter(t =>
+    ((t.nome || '') + (t.isola || '') + (t.categoria || '') + (t.desc || '')).toLowerCase().includes(searchVal)
+  );
+
+  if (sortVal === 'price-asc') items.sort((a, b) => getTourMinPrice(a) - getTourMinPrice(b));
+  else if (sortVal === 'price-desc') items.sort((a, b) => getTourMinPrice(b) - getTourMinPrice(a));
+  else if (sortVal === 'name') items.sort((a, b) => a.nome.localeCompare(b.nome));
+  else if (sortVal === 'island') items.sort((a, b) => a.isola.localeCompare(b.isola));
+
+  document.getElementById('tour-count').innerHTML = `<strong>${items.length}</strong> tour${items.length !== DATA.tour.length ? ` (su ${DATA.tour.length} totali)` : ''}`;
+
+  const grid = document.getElementById('tour-grid');
+  if (!items.length) { grid.innerHTML = emptyHTML(); return; }
+
+  grid.innerHTML = items.map(t => {
+    const saved = plannerHas(t.id);
+    const catList = (t.categoria || '').split(' · ');
+    return `
+    <div class="tour-card ${saved ? 'is-saved' : ''}" onclick="openModal('tour','${t.id}')">
+      <div class="tour-top">
+        <div>
+          <div class="tour-name">${t.nome}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:0.5px;">📍 ${t.isola.toUpperCase()} · ${t.arcipelago}</div>
+        </div>
+        <button class="tour-bookmark ${saved ? 'is-saved' : ''}" onclick="event.stopPropagation();togglePlanner('${t.id}')" title="Aggiungi al pacchetto">
+          ${saved ? '✓' : '+'}
+        </button>
+      </div>
+      <div class="tour-meta">
+        ${catList.map(c => `<span class="badge ${catBadgeClass(c)}">${c.trim()}</span>`).join('')}
+        <span class="tag">⏱ ${t.durata}</span>
+        ${t.pranzo ? '<span class="tag">🍽️ Pranzo</span>' : ''}
+        ${t.privato ? '<span class="tag">👥 Privato</span>' : ''}
+        ${t.lingua ? `<span class="tag">🗣 ${t.lingua}</span>` : ''}
+      </div>
+      <div>${tourPriceLabel(t)}</div>
+      ${t.desc ? `<div class="tour-desc">${t.desc}</div>` : ''}
+      <div class="tour-divider">
+        ${t.fornitoreId ? `<span>🏢 ${getFornitoreName(t.fornitoreId)}</span>` : ''}
+        ${t.stagione ? `<span class="dot">·</span><span>${t.stagione}</span>` : ''}
+        ${t.feedback ? `<span class="dot">·</span><span style="color:var(--green);font-weight:500;">${t.feedback}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getToursByIsland(island) {
+  // Map alloggio island names to tour island names
+  const mapping = { "Taha'a": "Raiatea / Taha'a" };
+  const candidates = [island, mapping[island]].filter(Boolean);
+  return DATA.tour.filter(t =>
+    candidates.includes(t.isola) ||
+    (island === "Raiatea" && t.isola.includes("Raiatea"))
+  );
+}
+
+// ============================================================
+// PLANNER (localStorage-free, in-memory)
+// ============================================================
+let planner = [];
+
+function plannerHas(id) { return planner.includes(id); }
+
+function togglePlanner(id) {
+  const idx = planner.indexOf(id);
+  if (idx >= 0) planner.splice(idx, 1);
+  else planner.push(id);
+  updatePlannerUI();
+  if (currentSection === 'tour') renderTours();
+}
+
+function clearPlanner() {
+  if (!planner.length) return;
+  if (!confirm('Pulire l\'intero pacchetto?')) return;
+  planner = [];
+  updatePlannerUI();
+  document.getElementById('planner-list').classList.remove('show');
+  renderTours();
+}
+
+function togglePlannerList() {
+  if (!planner.length) {
+    alert('Nessun tour selezionato. Clicca il "+" sui tour per aggiungerli al pacchetto.');
+    return;
+  }
+  document.getElementById('planner-list').classList.toggle('show');
+  renderPlannerList();
+}
+
+function renderPlannerList() {
+  const tours = planner.map(id => DATA.tour.find(t => t.id === id)).filter(Boolean);
+
+  // Stats
+  const total = tours.reduce((s, t) => s + (t.prezzo || getTourMinPrice(t) === 999999 ? 0 : getTourMinPrice(t)), 0);
+  const totalChild = tours.reduce((s, t) => s + (t.prezzoChild || 0), 0);
+  const fullDays = tours.filter(t => t.durataCat === 'Full Day').length;
+  const halfDays = tours.filter(t => t.durataCat === 'Half Day').length;
+  const islands = [...new Set(tours.map(t => t.isola))];
+
+  document.getElementById('planner-stats').innerHTML = `
+    <div class="planner-stat"><span class="v">${tours.length}</span><span class="l">Tour</span></div>
+    <div class="planner-stat"><span class="v">€${total.toFixed(0)}</span><span class="l">Adulto/pax</span></div>
+    <div class="planner-stat"><span class="v">€${totalChild.toFixed(0)}</span><span class="l">Bambino/pax</span></div>
+    <div class="planner-stat"><span class="v">${fullDays}</span><span class="l">Full Day</span></div>
+    <div class="planner-stat"><span class="v">${halfDays}</span><span class="l">Half Day</span></div>
+    <div class="planner-stat"><span class="v">${islands.length}</span><span class="l">Isole</span></div>
+  `;
+
+  // Group by island
+  const byIsland = {};
+  tours.forEach(t => {
+    if (!byIsland[t.isola]) byIsland[t.isola] = [];
+    byIsland[t.isola].push(t);
+  });
+
+  let html = '';
+  Object.entries(byIsland).forEach(([island, list]) => {
+    html += `<div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:600;margin:14px 0 6px;">📍 ${island}</div>`;
+    list.forEach(t => {
+      html += `
+      <div class="planner-item">
+        <span class="planner-item-name" onclick="openModal('tour','${t.id}')">${t.nome}</span>
+        <span style="font-size:11px;color:var(--muted);">${t.durata}</span>
+        <span class="planner-item-price">${t.prezzo ? '€' + t.prezzo : (t.prezzoSpecial || '–')}</span>
+        <button class="planner-item-remove" onclick="togglePlanner('${t.id}')" title="Rimuovi">✕</button>
+      </div>`;
+    });
+  });
+
+  document.getElementById('planner-items').innerHTML = html;
+}
+
+function exportPlanner() {
+  if (!planner.length) { alert('Nessun tour selezionato.'); return; }
+  const tours = planner.map(id => DATA.tour.find(t => t.id === id)).filter(Boolean);
+  const total = tours.reduce((s, t) => s + (getTourMinPrice(t) === 999999 ? 0 : getTourMinPrice(t)), 0);
+
+  let txt = `🌺 PACCHETTO TOUR — POLINESIA FRANCESE\n`;
+  txt += `${'='.repeat(48)}\n\n`;
+
+  const byIsland = {};
+  tours.forEach(t => { if (!byIsland[t.isola]) byIsland[t.isola] = []; byIsland[t.isola].push(t); });
+
+  Object.entries(byIsland).forEach(([island, list]) => {
+    txt += `📍 ${island.toUpperCase()}\n`;
+    list.forEach(t => {
+      txt += `  • ${t.nome}\n`;
+      txt += `    ${t.durata} · ${t.categoria}`;
+      if (t.prezzo) txt += ` · €${t.prezzo}/pax`;
+      else if (t.prezzoSpecial) txt += ` · ${t.prezzoSpecial}`;
+      txt += `\n`;
+      if (t.pranzo) txt += `    🍽 Pranzo incluso\n`;
+      if (t.note) txt += `    ⚠ ${t.note}\n`;
+      txt += `    🏢 Fornitore: ${getFornitoreName(t.fornitoreId)}\n\n`;
+    });
+  });
+
+  txt += `\n${'='.repeat(48)}\n`;
+  txt += `TOTALE STIMA ADULTO: €${total.toFixed(0)}/pax\n`;
+  txt += `(stima indicativa — verificare sempre con fornitore)\n`;
+
+  navigator.clipboard.writeText(txt).then(() => {
+    alert('✅ Pacchetto copiato negli appunti!');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('✅ Pacchetto copiato negli appunti!');
+  });
+}
+
+function updatePlannerUI() {
+  const tours = planner.map(id => DATA.tour.find(t => t.id === id)).filter(Boolean);
+  const total = tours.reduce((s, t) => s + (getTourMinPrice(t) === 999999 ? 0 : getTourMinPrice(t)), 0);
+  document.getElementById('planner-count').textContent = tours.length;
+  document.getElementById('planner-total').textContent = '€' + total.toFixed(0);
+  const bar = document.getElementById('planner-bar');
+  if (tours.length) bar.classList.add('show');
+  else bar.classList.remove('show');
+  if (document.getElementById('planner-list').classList.contains('show')) renderPlannerList();
 }
 
 // ============================================================
@@ -1671,6 +2379,7 @@ function openModal(type, id) {
     // Find related alloggi
     const relAll = DATA.alloggi.filter(a => a.fornitoreCollegato === item.id);
     const relAtt = DATA.attivita.filter(a => a.fornitoreCollegato === item.id);
+    const relTour = DATA.tour.filter(t => t.fornitoreId === item.id);
 
     html = `
       ${links.length ? `<div class="link-group">${links.join('')}</div>` : ''}
@@ -1698,6 +2407,19 @@ function openModal(type, id) {
 
       ${relAll.length ? `<div class="modal-section"><div class="modal-section-title">🏝️ Alloggi collegati (${relAll.length})</div><div class="related-list">${relAll.map(a => `<div class="related-item" onclick="openModal('alloggi','${a.id}')"><span><strong>${a.nome}</strong> · ${a.isola}</span><span class="arrow">→</span></div>`).join('')}</div></div>` : ''}
       ${relAtt.length ? `<div class="modal-section"><div class="modal-section-title">🐚 Attività collegate (${relAtt.length})</div><div class="related-list">${relAtt.map(a => `<div class="related-item" onclick="openModal('attivita','${a.id}')"><span><strong>${a.nome}</strong> · ${a.isola}</span><span class="arrow">→</span></div>`).join('')}</div></div>` : ''}
+
+      ${relTour.length ? `<div class="modal-section">
+        <div class="modal-section-title">🗺️ Tour collegati (${relTour.length})</div>
+        <div class="related-list">
+          ${relTour.slice(0, 10).map(t => `
+            <div class="related-item" onclick="openModal('tour','${t.id}')">
+              <span><strong>${t.nome}</strong><br><span style="font-size:11px;color:var(--muted);">${t.isola} · ${t.durata} · ${t.prezzo ? '€' + t.prezzo : (t.prezzoSpecial || '–')}</span></span>
+              <span class="arrow">→</span>
+            </div>
+          `).join('')}
+          ${relTour.length > 10 ? `<div style="font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px;font-style:italic;">+ altri ${relTour.length - 10} tour</div>` : ''}
+        </div>
+      </div>` : ''}
 
       ${item.fonte ? `<div class="modal-section" style="font-size:11px;color:var(--muted);font-style:italic;">Come è stato trovato: ${item.fonte}</div>` : ''}
     `;
@@ -1749,6 +2471,26 @@ function openModal(type, id) {
       ${item.feedbackNegativo ? `<div class="modal-section"><div class="modal-section-title">Feedback ⚠️ Attenzione</div><div class="warn-block">${item.feedbackNegativo}</div></div>` : ''}
 
       ${fornitore ? `<div class="modal-section"><div class="modal-section-title">🔗 Fornitore collegato</div><div class="related-list"><div class="related-item" onclick="openModal('fornitori','${fornitore.id}')"><span><strong>${fornitore.nome}</strong> · ${fornitore.tipo}</span><span class="arrow">→</span></div></div></div>` : ''}
+
+      ${(() => {
+        const isleTours = getToursByIsland(item.isola);
+        if (!isleTours.length) return '';
+        return `<div class="modal-section">
+          <div class="modal-section-title">🗺️ Tour disponibili su ${item.isola} (${isleTours.length})</div>
+          <div class="nearby-tours">
+            ${isleTours.slice(0, 8).map(t => `
+              <div class="nearby-tour" onclick="openModal('tour','${t.id}')">
+                <div class="nearby-tour-info">
+                  <div class="name">${t.nome}</div>
+                  <div class="meta">${t.durata} · ${t.categoria}${t.pranzo ? ' · 🍽 pranzo' : ''}</div>
+                </div>
+                <div class="nearby-tour-price">${t.prezzo ? '€' + t.prezzo : (t.prezzoSpecial ? t.prezzoSpecial.split(' · ')[0] : '–')}</div>
+              </div>
+            `).join('')}
+            ${isleTours.length > 8 ? `<div style="font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px;font-style:italic;">+ altri ${isleTours.length - 8} tour disponibili nella sezione Tour</div>` : ''}
+          </div>
+        </div>`;
+      })()}
     `;
   } else if (type === 'attivita') {
     item = DATA.attivita.find(x => x.id === id);
@@ -1838,6 +2580,83 @@ function openModal(type, id) {
       ${item.note ? `<div class="modal-section"><div class="modal-section-title">Descrizione</div><div class="note-block">${item.note}</div></div>` : ''}
       ${item.materiale ? `<div class="modal-section"><div class="modal-section-title">Materiale</div><div class="note-block">${item.materiale}</div></div>` : ''}
     `;
+  } else if (type === 'tour') {
+    item = DATA.tour.find(x => x.id === id);
+    if (!item) return;
+    title.textContent = item.nome;
+    subtitle.innerHTML = `📍 ${item.isola} · ${item.arcipelago} · ⏱ ${item.durata}`;
+
+    const fornitore = item.fornitoreId ? DATA.fornitori.find(f => f.id === item.fornitoreId) : null;
+    const saved = plannerHas(item.id);
+
+    // Find related alloggi on same island
+    const sameIslandAlloggi = DATA.alloggi.filter(a =>
+      a.isola === item.isola ||
+      (item.isola === "Raiatea / Taha'a" && (a.isola === 'Raiatea' || a.isola === "Taha'a"))
+    ).slice(0, 6);
+
+    const catList = (item.categoria || '').split(' · ');
+
+    html = `
+      <div class="link-group">
+        <button class="link-btn" style="${saved ? 'background:var(--coral);color:white;border-color:var(--coral);' : ''}" onclick="togglePlanner('${item.id}');closeModal();showSection('tour');">
+          <span class="icon">${saved ? '✓' : '+'}</span> ${saved ? 'Rimuovi dal pacchetto' : 'Aggiungi al pacchetto'}
+        </button>
+        ${fornitore ? `<button class="link-btn" onclick="openModal('fornitori','${fornitore.id}')"><span class="icon">🏢</span> Vai al fornitore</button>` : ''}
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Categoria & dettagli</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+          ${catList.map(c => `<span class="badge ${catBadgeClass(c)}">${c.trim()}</span>`).join('')}
+          <span class="badge badge-gray">⏱ ${item.durata}</span>
+          ${item.lingua ? `<span class="badge badge-gray">🗣 ${item.lingua}</span>` : ''}
+        </div>
+        <div class="modal-grid">
+          ${item.prezzo ? field('💰 Prezzo adulto', `<strong style="color:var(--coral);font-size:18px;">€${item.prezzo}</strong>/pax`) : ''}
+          ${item.prezzoSpecial ? field('💰 Prezzo', item.prezzoSpecial) : ''}
+          ${item.prezzoChild ? field('👶 Prezzo bambino', `€${item.prezzoChild}`) : ''}
+          ${item.privato ? field('👥 Privato', item.privato) : ''}
+          ${item.pranzo !== undefined ? field('🍽 Pranzo', item.pranzo ? '✅ Incluso' + (item.pranzoNote ? ' — ' + item.pranzoNote : '') : '❌ Non incluso' + (item.pranzoNote ? ' — ' + item.pranzoNote : '')) : ''}
+          ${item.stagione ? field('📅 Stagionalità', item.stagione) : ''}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Descrizione</div>
+        <div class="note-block">${item.desc}</div>
+      </div>
+
+      ${item.note ? `<div class="modal-section"><div class="modal-section-title">⚠️ Note operative</div><div class="warn-block">${item.note}</div></div>` : ''}
+      ${item.feedback ? `<div class="modal-section"><div class="modal-section-title">💬 Feedback interno</div><div class="feedback-block">${item.feedback}</div></div>` : ''}
+
+      ${fornitore ? `
+        <div class="modal-section">
+          <div class="modal-section-title">🏢 Fornitore di prenotazione</div>
+          <div class="related-list">
+            <div class="related-item" onclick="openModal('fornitori','${fornitore.id}')">
+              <span><strong>${fornitore.nome}</strong> · ${fornitore.tipo}<br><span style="font-size:11px;color:var(--muted);">${fornitore.mail || ''}</span></span>
+              <span class="arrow">→</span>
+            </div>
+          </div>
+          ${item.fornitoreSec ? `<div style="font-size:12px;color:var(--muted);margin-top:6px;font-style:italic;">Operatore locale: ${item.fornitoreSec}</div>` : ''}
+        </div>
+      ` : ''}
+
+      ${sameIslandAlloggi.length ? `
+        <div class="modal-section">
+          <div class="modal-section-title">🏝️ Alloggi su ${item.isola} (${sameIslandAlloggi.length})</div>
+          <div class="related-list">
+            ${sameIslandAlloggi.map(a => `
+              <div class="related-item" onclick="openModal('alloggi','${a.id}')">
+                <span><strong>${a.nome}</strong>${a.costo ? ` · <span class="${costClass(a.costo)}">${a.costo}</span>` : ''}</span>
+                <span class="arrow">→</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
+    `;
   }
 
   body.innerHTML = html;
@@ -1863,7 +2682,7 @@ function closeModal() {
 // ============================================================
 const secMap = {
   overview: 'sec-overview', fornitori: 'sec-fornitori', alloggi: 'sec-alloggi',
-  attivita: 'sec-attivita', trasporti: 'sec-trasporti', cruise: 'sec-cruise', feedback: 'sec-feedback'
+  attivita: 'sec-attivita', tour: 'sec-tour', trasporti: 'sec-trasporti', cruise: 'sec-cruise', feedback: 'sec-feedback'
 };
 
 const titleMap = {
@@ -1871,6 +2690,7 @@ const titleMap = {
   fornitori: { t: 'Fornitori', s: 'DMC e tour operator' },
   alloggi: { t: 'Alloggi', s: 'hotel, resort, pension' },
   attivita: { t: 'Attività', s: 'escursioni ed esperienze' },
+  tour: { t: 'Tour & Escursioni', s: 'catalogo prenotabile + planner pacchetto' },
   trasporti: { t: 'Trasporti', s: 'voli, traghetti' },
   cruise: { t: 'Crociere', s: 'yacht e cruise' },
   feedback: { t: 'Feedback', s: 'raccolta di recensioni e note' }
@@ -1895,6 +2715,7 @@ function showSection(sec) {
 function doSearch() {
   if (currentSection === 'alloggi') renderAlloggi();
   else if (currentSection === 'attivita') renderAttivita();
+  else if (currentSection === 'tour') renderTours();
 }
 
 function filterAlloggi() { renderAlloggi(); }
@@ -1924,12 +2745,23 @@ function populateDropdowns() {
   const isoleAtt = [...new Set(DATA.attivita.map(a => a.isola))].sort();
   const selAtt = document.getElementById('att-island');
   isoleAtt.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; selAtt.appendChild(o); });
+
+  // Tour dropdowns
+  const isoleTour = [...new Set(DATA.tour.map(t => t.isola))].sort();
+  const selTI = document.getElementById('tour-island');
+  isoleTour.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; selTI.appendChild(o); });
+
+  const cats = new Set();
+  DATA.tour.forEach(t => (t.categoria || '').split(' · ').forEach(c => c.trim() && cats.add(c.trim())));
+  const selTC = document.getElementById('tour-cat');
+  [...cats].sort().forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; selTC.appendChild(o); });
 }
 
 function updateCounts() {
   document.getElementById('c-forn').textContent = DATA.fornitori.length;
   document.getElementById('c-all').textContent = DATA.alloggi.length;
   document.getElementById('c-att').textContent = DATA.attivita.length;
+  document.getElementById('c-tour').textContent = DATA.tour.length;
   document.getElementById('c-tra').textContent = DATA.trasporti.length;
   document.getElementById('c-cru').textContent = DATA.cruise.length;
   document.getElementById('c-fb').textContent = buildFeedbackList().length;
@@ -1937,6 +2769,7 @@ function updateCounts() {
   document.getElementById('ov-forn').textContent = DATA.fornitori.length;
   document.getElementById('ov-all').textContent = DATA.alloggi.length;
   document.getElementById('ov-att').textContent = DATA.attivita.length;
+  document.getElementById('ov-tour').textContent = DATA.tour.length;
   document.getElementById('ov-tra').textContent = DATA.trasporti.length;
   document.getElementById('ov-cru').textContent = DATA.cruise.length;
   document.getElementById('ov-fb').textContent = buildFeedbackList().length;
@@ -1983,6 +2816,7 @@ function init() {
   renderFornitori();
   renderAlloggi();
   renderAttivita();
+  renderTours();
   renderTrasporti();
   renderCruise();
   renderFeedback();
