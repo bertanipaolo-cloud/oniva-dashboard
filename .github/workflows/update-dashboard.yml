@@ -1,0 +1,61 @@
+name: Update Onivà dashboard
+
+# Runs weekly (Mon 06:00 UTC) and on-demand from the Actions tab.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # commit the refreshed HTML back to the repo
+
+concurrency:
+  group: oniva-dashboard
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install openpyxl google-api-python-client google-auth
+
+      - name: Export Google Sheets to xlsx
+        env:
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+          ONIVA_SRC: ${{ github.workspace }}
+        run: python scripts/fetch_sheets.py
+
+      - name: Recompute dashboard (contracts + bank; cashflow frozen)
+        env:
+          ONIVA_SRC: ${{ github.workspace }}
+          ONIVA_HTML: ${{ github.workspace }}/oniva_dashboard.html
+        run: python scripts/recompute_ci.py
+
+      - name: Commit & publish refreshed HTML
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add oniva_dashboard.html
+          if git diff --cached --quiet; then
+            echo "No data changes this week."
+          else
+            git commit -m "chore: weekly dashboard refresh [skip ci]"
+            git push
+          fi
+
+# GitHub Pages (classic, served from this branch) republishes automatically
+# on push — the existing dashboard URL keeps working, no settings to change.
+#
+# --- One-time setup (see SETUP.md) ---
+# - Secret GOOGLE_SA_KEY = full service-account JSON.
+# - Share both Google Sheets (Viewer) with the service-account email.
+# - Exported .xlsx are git-ignored (.gitignore), never committed.
