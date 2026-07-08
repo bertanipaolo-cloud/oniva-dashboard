@@ -47,10 +47,18 @@ jobs:
           git add oniva_dashboard.html
           if git diff --cached --quiet; then
             echo "No data changes this week."
-          else
-            git commit -m "chore: weekly dashboard refresh [skip ci]"
-            git push
+            exit 0
           fi
+          git commit -m "chore: weekly dashboard refresh [skip ci]"
+          # Push resiliently: sync with remote first, retry on races.
+          for i in 1 2 3 4 5; do
+            git pull --rebase --autostash origin main \
+              && git push \
+              && { echo "pushed on attempt $i"; exit 0; }
+            echo "push attempt $i rejected — retrying in 5s…"
+            sleep 5
+          done
+          echo "ERROR: could not push after 5 attempts"; exit 1
 
 # GitHub Pages (classic, served from this branch) republishes automatically
 # on push — the existing dashboard URL keeps working, no settings to change.
