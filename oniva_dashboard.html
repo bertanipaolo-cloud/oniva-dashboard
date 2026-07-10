@@ -178,7 +178,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
 </div>
 
 <div class="section">
-  <div class="sec-title">Banca alla data di aggiornamento (22.06.2026)</div>
+  <div class="sec-title">Banca</div>
   <div class="chart-box">
     <div class="bank-grid">
       <div>
@@ -194,7 +194,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
       </div>
       <div id="bankRows"></div>
     </div>
-    <div class="note">Saldi al 22.06.2026 (Revolut al 19.06.2026). Fonte: foglio DATI BANCARI_CONTO — voce "TOTALE BANCA".</div>
+    <div class="note">Fonte: foglio DATI BANCARI_CONTO — voce "TOTALE BANCA".</div>
   </div>
 </div>
 
@@ -445,7 +445,7 @@ function renderCfTable() {
 
 function renderBank() {
   document.getElementById('bankTot').textContent = eur(BANK.totale);
-  document.getElementById('bankSub').textContent = 'al 22.06.2026 · di cui Gift Card '+eur(BANK.giftCard);
+  document.getElementById('bankSub').textContent = 'di cui Gift Card '+eur(BANK.giftCard);
   document.getElementById('bankNet').textContent = eur(BANK.totale - BANK.giftCard);
   const max = Math.max(...BANK.conti.map(c=>c.v));
   document.getElementById('bankRows').innerHTML = BANK.conti.map(c=>`

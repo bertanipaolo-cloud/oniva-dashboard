@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: oniva-dashboard
-  cancel-in-progress: false
+  cancel-in-progress: true   # a new run cancels an older one → never overlap
 
 jobs:
   refresh:
@@ -50,15 +50,17 @@ jobs:
             exit 0
           fi
           git commit -m "chore: weekly dashboard refresh [skip ci]"
-          # Push resiliently: sync with remote first, retry on races.
-          for i in 1 2 3 4 5; do
-            git pull --rebase --autostash origin main \
-              && git push \
-              && { echo "pushed on attempt $i"; exit 0; }
-            echo "push attempt $i rejected — retrying in 5s…"
-            sleep 5
+          # Push. If the remote moved, integrate it keeping OUR freshly
+          # generated dashboard (the file is regenerated, so ours always wins),
+          # then retry. Abort any half-done merge before retrying.
+          for i in 1 2 3; do
+            git push && { echo "pushed on attempt $i"; exit 0; }
+            echo "push $i rejected — syncing with remote…"
+            git fetch origin main
+            git merge -X ours --no-edit origin/main || git merge --abort
+            sleep 3
           done
-          echo "ERROR: could not push after 5 attempts"; exit 1
+          echo "ERROR: could not push after 3 attempts"; exit 1
 
 # GitHub Pages (classic, served from this branch) republishes automatically
 # on push — the existing dashboard URL keeps working, no settings to change.
