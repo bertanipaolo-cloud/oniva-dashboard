@@ -48,11 +48,27 @@ def main():
 
     raw, keyed = R.compute_raw(contracts)
     bank = R.compute_bank(bank_f)
+    analysis = R.compute_analysis(contracts)
+    forecast = R.compute_forecast(contracts)
 
-    # Banner dates: contracts + bank only (leave cashflow date frozen).
+    # ---- Banner dates -----------------------------------------------------
+    # Use the DATA's own as-of date, not the file timestamp:
+    #   contracts -> most recent signing date found in the sheets
+    #   bank      -> the "SALDO al" date written inside DATI BANCARI_CONTO
+    # (cashflow is frozen, its date is left untouched)
+    import datetime
+
     def mtime(p):
-        import datetime
         return datetime.datetime.fromtimestamp(os.path.getmtime(p)).strftime("%d.%m.%Y")
+
+    def fmt(d):
+        return d.strftime("%d.%m.%Y")
+
+    contracts_date = fmt(datetime.date.fromisoformat(forecast["asOf"])) if forecast else mtime(contracts)
+    try:
+        bank_date = R.banner_dates(contracts, bank_f, bank_f)["bank"]
+    except Exception:
+        bank_date = mtime(bank_f)
 
     html = open(HTML, encoding="utf-8").read()
 
@@ -67,14 +83,18 @@ def main():
     out = html
     out = R.replace_const(out, "RAW", R.serialize_raw(raw))
     out = R.replace_const(out, "BANK", R.serialize_bank(bank))
+    if "const ANALYSIS" in out:
+        out = R.replace_const(out, "ANALYSIS", R.serialize_analysis(analysis))
+    if "const FORECAST" in out and forecast:
+        out = R.replace_const(out, "FORECAST", R.serialize_forecast(forecast))
     # CF block is intentionally left untouched (frozen).
 
     # Update only the contracts + bank banner dates.
     import re
     out = re.sub(r"(Contratti agg\. <b>)[^<]*(</b>)",
-                 lambda m: m.group(1) + mtime(contracts) + m.group(2), out)
+                 lambda m: m.group(1) + contracts_date + m.group(2), out)
     out = re.sub(r"(Saldi bancari agg\. <b>)[^<]*(</b>)",
-                 lambda m: m.group(1) + mtime(bank_f) + m.group(2), out)
+                 lambda m: m.group(1) + bank_date + m.group(2), out)
 
     with open(HTML, "w", encoding="utf-8") as fh:
         fh.write(out)
@@ -82,8 +102,11 @@ def main():
     # NOTE: we update ONLY oniva_dashboard.html (the file served by Pages).
     # The repo's index.html is a separate landing/portal page and is left alone.
 
-    print(f"\nUpdated (RAW + BANK): {HTML}")
+    nan = sum(len(v) for v in analysis["firmato"].values())
+    print(f"\nUpdated (RAW + BANK + ANALYSIS): {HTML}")
     print(f"  viaggi total: {sum(raw['viaggi'])}  | bank totale: {bank['totale']}")
+    print(f"  analysis: firmato years {sorted(analysis['firmato'])} "
+          f"({nan} year-dest cells)")
     print("  cashflow (CF): FROZEN — left unchanged")
     return 0
 

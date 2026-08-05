@@ -1,8 +1,8 @@
 
 <style>
 :root {
-  --oni-ink: #143C3A;        /* deep teal */
-  --oni-ink-2: #0C2A28;      /* darker teal */
+  --oni-ink: #2F6B58;        /* verde Onivà */
+  --oni-ink-2: #1F4A3E;      /* verde Onivà scuro */
   --oni-gold: #D9B86A;       /* brand gold */
   --oni-gold-soft: #F9E3B8;  /* logo sand */
   --oni-green: #1D7A5A;
@@ -77,6 +77,29 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
 .bank-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--oni-gold), #c9a455); }
 .bank-val { font-size: 11.5px; color: var(--oni-tx2); min-width: 82px; text-align: right; }
 .note { font-size: 11px; color: var(--oni-tx3); margin-top: 10px; line-height: 1.5; }
+
+/* ---- Tabs ---- */
+.tabs { display:flex; gap:4px; margin-bottom:1.25rem; border-bottom:1px solid var(--oni-line); flex-wrap:wrap; }
+.tab-btn { appearance:none; border:none; background:none; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; color:var(--oni-tx2); padding:10px 18px; border-bottom:2px solid transparent; margin-bottom:-1px; letter-spacing:.02em; transition:color .15s; }
+.tab-btn:hover { color:var(--oni-ink); }
+.tab-btn.active { color:var(--oni-ink); border-bottom-color:var(--oni-gold); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ---- Analisi economica ---- */
+.an-controls { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:12px; }
+.seg { display:inline-flex; border:1px solid var(--oni-line); border-radius:9px; overflow:hidden; }
+.seg-btn { appearance:none; border:none; background:var(--oni-card); cursor:pointer; font-family:inherit; font-size:12px; font-weight:600; color:var(--oni-tx2); padding:7px 16px; }
+.seg-btn + .seg-btn { border-left:1px solid var(--oni-line); }
+.seg-btn.active { background:var(--oni-ink); color:#fff; }
+.an-hint { font-size:11px; color:var(--oni-tx3); max-width:520px; line-height:1.5; }
+.badge { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:999px; background:var(--oni-ink); color:#fff; margin-left:8px; vertical-align:middle; }
+.badge.alt { background:var(--oni-gold); color:var(--oni-ink-2); }
+.badge.sub { background:var(--oni-card-2); color:var(--oni-tx2); border:1px solid var(--oni-line); }
+
+/* Brand: verde Onivà — impostato sulle variabili :root (vedi sotto), così si
+   propaga a testata, tabelle, tab attivo, barre e badge in modo coerente. */
+.dest-fill { background: linear-gradient(90deg, var(--oni-ink), var(--oni-ink-2)); }
 </style>
 
 <div class="dash">
@@ -96,6 +119,14 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   </div>
 </div>
 
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="contratti" onclick="showTab('contratti')">Contratti</button>
+  <button class="tab-btn" data-tab="previsionale" onclick="showTab('previsionale')">Previsionale</button>
+  <button class="tab-btn" data-tab="cashflow" onclick="showTab('cashflow')">Cashflow</button>
+  <button class="tab-btn" data-tab="banche" onclick="showTab('banche')">Banche</button>
+  <button class="tab-btn" data-tab="bilanci" onclick="showTab('bilanci')">Bilanci</button>
+</nav>
+<div class="tab-panel active" id="tab-contratti">
 <div class="filter-row">
   <select id="yearFilter" onchange="renderAll()">
     <option value="all">Tutti gli anni</option>
@@ -105,6 +136,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
     <option value="2024">2024</option>
     <option value="2025">2025</option>
     <option value="2026">2026</option>
+    <option value="2027">2027</option>
   </select>
   <select id="tipoFilter" onchange="renderAll()">
     <option value="all">Tutte le tipologie</option>
@@ -136,7 +168,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   <div class="chart-box">
     <div class="ctitle">Ricavi vs Costi (2023–2025)</div>
     <div class="legend">
-      <span><b style="background:#143C3A"></b>Ricavi</span>
+      <span><b style="background:#2F6B58"></b>Ricavi</span>
       <span><b style="background:#D9B86A"></b>Costi</span>
     </div>
     <div style="position:relative;width:100%;height:200px"><canvas id="chartFin"></canvas></div>
@@ -147,6 +179,107 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   </div>
 </div>
 
+<div class="section">
+  <div class="sec-title">Analisi economica <span id="anBadge"></span></div>
+  <div class="an-controls">
+    <div class="seg">
+      <button class="seg-btn active" data-basis="firmato" onclick="setBasis('firmato')">Firmato</button>
+      <button class="seg-btn" data-basis="competenza" onclick="setBasis('competenza')">Competenza</button>
+    </div>
+    <div class="seg" id="anStatoSeg" style="display:none">
+      <button class="seg-btn active" data-stato="tutti" onclick="setStato('tutti')">Tutti</button>
+      <button class="seg-btn" data-stato="partiti" onclick="setStato('partiti')">Già partiti</button>
+      <button class="seg-btn" data-stato="dapartire" onclick="setStato('dapartire')">Da partire</button>
+    </div>
+    <span class="an-hint">Spesa = valore contratto · Fee = fee al netto IVA · Mark Up = margine Onivà. Dati economici dal 2023. L'anno segue il filtro in alto; “Firmato” = anno di firma, “Competenza” = anno del viaggio.</span>
+  </div>
+  <div class="metrics" id="anKpi"></div>
+  <div class="chart-box" style="margin-top:14px">
+    <div class="ctitle">Dettaglio per destinazione</div>
+    <div class="cf-table-wrap"><table class="cf-table" id="anTable"></table></div>
+  </div>
+</div>
+</div><!--/contratti-->
+<div class="tab-panel" id="tab-previsionale">
+<div class="section">
+  <div class="sec-title">Previsionale</div>
+  <div class="an-controls">
+    <div class="seg">
+      <button class="seg-btn" data-sc="0.9" onclick="setScen(0.9)">Prudente −10%</button>
+      <button class="seg-btn active" data-sc="1" onclick="setScen(1)">Base</button>
+      <button class="seg-btn" data-sc="1.1" onclick="setScen(1.1)">Ottimistico +10%</button>
+    </div>
+    <span class="an-hint" id="fcHint"></span>
+  </div>
+  <div class="metrics" id="fcKpi"></div>
+</div>
+
+<div class="chart-row">
+  <div class="chart-box">
+    <div class="ctitle">Firme per mese — effettive vs stimate</div>
+    <div class="legend">
+      <span><b style="background:#2F6B58"></b>Effettive</span>
+      <span><b style="background:#D9B86A"></b>Stimate</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="chartFcMesi"></canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="ctitle">Viaggi per anno — storico e stima</div>
+    <div class="legend">
+      <span><b style="background:#2F6B58"></b>Firme</span>
+      <span><b style="background:#4E8C77"></b>Partenze</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="chartFcAnni"></canvas></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="chart-box">
+    <div class="ctitle" id="fcOrigTitle">Partenze per anno di firma</div>
+    <div class="cf-table-wrap"><table class="cf-table" id="fcOrigTable"></table></div>
+    <div class="note">Quanti dei viaggi in partenza erano già stati firmati negli anni precedenti (portafoglio ereditato) e quanti sono stati firmati nell'anno stesso.</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="chart-box">
+    <div class="ctitle">Composizione della stima</div>
+    <div class="cf-table-wrap"><table class="cf-table" id="fcTable"></table></div>
+    <div class="note" id="fcNote"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">Confronto anni <span id="cmpBadge"></span></div>
+  <div class="an-controls">
+    <div class="seg">
+      <button class="seg-btn active" data-cmp="firmato" onclick="setCmp('firmato')">Firmato</button>
+      <button class="seg-btn" data-cmp="competenza" onclick="setCmp('competenza')">Competenza</button>
+    </div>
+    <span class="an-hint">Totali per anno: valore viaggi, fee e mark up, con variazione sull'anno precedente. Gli ultimi due anni sono stime.</span>
+  </div>
+  <div class="chart-box">
+    <div class="cf-table-wrap"><table class="cf-table" id="cmpTable"></table></div>
+    <div class="note" id="cmpNote"></div>
+  </div>
+</div>
+
+<div class="chart-row">
+  <div class="chart-box">
+    <div class="ctitle">Valore viaggi per anno (€)</div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="chartCmpVal"></canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="ctitle">Fee e Mark Up per anno (€)</div>
+    <div class="legend">
+      <span><b style="background:#2F6B58"></b>Fee</span>
+      <span><b style="background:#D9B86A"></b>Mark Up</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="chartCmpFee"></canvas></div>
+  </div>
+</div>
+</div><!--/previsionale-->
+<div class="tab-panel" id="tab-cashflow">
 <div class="section">
   <div class="sec-title">Cashflow 2026 — proiezione cassa (al 08.06.2026)</div>
   <div class="metrics" id="cfMetrics"></div>
@@ -160,7 +293,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   <div class="chart-box">
     <div class="ctitle">Entrate vs Uscite stimate 2026 (€)</div>
     <div class="legend">
-      <span><b style="background:#143C3A"></b>Entrate stimate</span>
+      <span><b style="background:#2F6B58"></b>Entrate stimate</span>
       <span><b style="background:#D9B86A"></b>Uscite stimate</span>
     </div>
     <div style="position:relative;width:100%;height:220px"><canvas id="chartEU"></canvas></div>
@@ -177,6 +310,8 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   </div>
 </div>
 
+</div><!--/cashflow-->
+<div class="tab-panel" id="tab-banche">
 <div class="section">
   <div class="sec-title">Banca</div>
   <div class="chart-box">
@@ -198,23 +333,83 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   </div>
 </div>
 
+</div><!--/banche-->
+<div class="tab-panel" id="tab-bilanci">
+<div class="section">
+  <div class="sec-title">Bilanci a confronto <span class="badge">2023 · 2024 · 2025</span></div>
+  <div class="metrics" id="bilKpi"></div>
+</div>
+
+<div class="chart-row">
+  <div class="chart-box">
+    <div class="ctitle">Ricavi, EBITDA e utile netto (€)</div>
+    <div class="legend">
+      <span><b style="background:#2F6B58"></b>Ricavi</span>
+      <span><b style="background:#D9B86A"></b>EBITDA</span>
+      <span><b style="background:#1D7A5A"></b>Utile netto</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="chartBilCE"></canvas></div>
+  </div>
+  <div class="chart-box">
+    <div class="ctitle">Struttura dei costi sui ricavi (%)</div>
+    <div class="legend">
+      <span><b style="background:#2F6B58"></b>Acquisti viaggi</span>
+      <span><b style="background:#4E8C77"></b>Personale</span>
+      <span><b style="background:#D9B86A"></b>Servizi e altri</span>
+      <span><b style="background:#1D7A5A"></b>Margine</span>
+    </div>
+    <div style="position:relative;width:100%;height:220px"><canvas id="chartBilCosti"></canvas></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="chart-box">
+    <div class="ctitle">Conto economico riclassificato</div>
+    <div class="cf-table-wrap"><table class="cf-table" id="bilCeTable"></table></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="chart-box">
+    <div class="ctitle">Stato patrimoniale</div>
+    <div class="cf-table-wrap"><table class="cf-table" id="bilSpTable"></table></div>
+    <div class="note" id="bilNota"></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="chart-box">
+    <div class="ctitle">Indici</div>
+    <div class="cf-table-wrap"><table class="cf-table" id="bilIdxTable"></table></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-title">Raccordo bilancio ↔ gestionale</div>
+  <div class="chart-box">
+    <div class="cf-table-wrap"><table class="cf-table" id="bilRacTable"></table></div>
+    <div class="note">I ricavi di bilancio seguono la <b>competenza economica</b> (viaggio effettuato), quindi si avvicinano al gestionale “Competenza” più che al “Firmato”. Differenze residue derivano da acconti, storni, assicurazioni e servizi fatturati separatamente. Nel 2023 il gestionale ha molte date di viaggio non compilate, quindi il confronto per quell'anno è meno affidabile.</div>
+  </div>
+</div>
+</div><!--/bilanci-->
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const RAW = {
-  anni: [2021,2022,2023,2024,2025,2026],
-  viaggi: [44,137,313,375,373,207],
-  ricavi: [0,0,904477,1989279,2216828,0],
-  costi:  [0,0,676447,1573647,1766346,0],
-  valore: [0,0,2388347,3271127,3915846,2555200],
+  anni: [2021,2022,2023,2024,2025,2026,2027],
+  viaggi: [44,137,313,375,373,208,0],
+  ricavi: [0,0,904477,1989279,2216828,0,0],
+  costi:  [0,0,676447,1573647,1766346,0,0],
+  valore: [0,0,2388347,3271127,3915846,2591760,0],
   tipoPerAnno: {
     2021:{HONEYMOON:16,'MULTI-TRAVELER':8,MYSTERY:8,'FAMILY+KIDS':3,WELFARE:9,ONE:0,'SOLO SERVIZI':0,ALTRO:0},
     2022:{HONEYMOON:62,'MULTI-TRAVELER':30,MYSTERY:23,'FAMILY+KIDS':11,WELFARE:1,ONE:5,'SOLO SERVIZI':5,ALTRO:0},
     2023:{HONEYMOON:122,'MULTI-TRAVELER':83,MYSTERY:57,'FAMILY+KIDS':34,WELFARE:1,ONE:7,'SOLO SERVIZI':9,ALTRO:0},
     2024:{HONEYMOON:182,'MULTI-TRAVELER':92,MYSTERY:42,'FAMILY+KIDS':40,WELFARE:0,ONE:3,'SOLO SERVIZI':16,ALTRO:0},
     2025:{HONEYMOON:184,'MULTI-TRAVELER':105,MYSTERY:29,'FAMILY+KIDS':49,WELFARE:0,ONE:5,'SOLO SERVIZI':1,ALTRO:0},
-    2026:{HONEYMOON:125,'MULTI-TRAVELER':48,MYSTERY:8,'FAMILY+KIDS':20,WELFARE:0,ONE:4,'SOLO SERVIZI':0,ALTRO:2}
+    2026:{HONEYMOON:128,'MULTI-TRAVELER':48,MYSTERY:8,'FAMILY+KIDS':20,WELFARE:0,ONE:4,'SOLO SERVIZI':0,ALTRO:0},
+    2027:{HONEYMOON:0,'MULTI-TRAVELER':0,MYSTERY:0,'FAMILY+KIDS':0,WELFARE:0,ONE:0,'SOLO SERVIZI':0,ALTRO:0}
   },
   dest: [
     {name:'Giappone',n:179,v:1550467},
@@ -261,11 +456,254 @@ const BANK = {
   ]
 };
 
+const ANALYSIS = {
+  firmato: {
+    2023:{'Non indicata':[295,2341990,420111,398],Altro:[7,26910,5702,0]},
+    2024:{Giappone:[85,804865,139585,27781],USA:[44,566756,91270,17521],Altro:[86,456708,72198,20791],Indonesia:[18,184675,32198,7778],Messico:[17,173670,30407,10972],Thailandia:[16,146055,23872,2700],Tanzania:[12,143015,19314,2969],Australia:[7,84500,14600,6209],Polinesia:[4,79330,13487,1789],Vietnam:[7,72943,8731,733],'Perù':[7,70490,11677,3880],Mauritius:[6,52475,7850,2667],Turchia:[13,48265,8758,1350],Maldive:[3,45310,6229,2261],Spagna:[12,38810,6838,4660],Argentina:[2,37520,5821,1354],NuovaZelanda:[3,36908,5636,504],Egitto:[4,30180,4073,349],Canada:[3,29640,4936,826],Marocco:[9,29298,5242,1391],Cina:[2,24610,2911,1489],Filippine:[3,22644,3974,887],Seychelles:[2,21655,3613,989],Portogallo:[4,17035,2981,583],Kenya:[1,15800,1694,3963],Singapore:[1,10520,1930,2145],Madagascar:[1,10050,1823,-98],SriLanka:[1,8250,1120,517],Malesia:[1,7000,1307,3926],Francia:[1,2150,364,52]},
+    2025:{Giappone:[94,932048,153431,37087],USA:[62,865854,122965,20538],Altro:[58,380163,57640,10014],Polinesia:[14,279145,32446,52],Messico:[20,228717,36326,12152],'Perù':[18,197581,23944,5282],Australia:[7,119800,20320,-238],Tanzania:[8,103427,13596,4146],Indonesia:[11,100177,16284,4408],Thailandia:[8,74720,11804,2317],Maldive:[5,71355,5793,1948],NuovaZelanda:[5,64860,11390,1667],Malesia:[4,52920,6405,583],Vietnam:[4,49455,6375,1825],Madagascar:[4,48260,5748,1779],Argentina:[5,46443,7338,2700],Marocco:[8,45570,7655,2230],Brasile:[3,43624,5139,3302],Turchia:[9,40675,7128,2488],Mauritius:[3,38160,5140,-18],Spagna:[4,27020,4677,1030],Cina:[2,19670,4627,1277],Portogallo:[6,15890,3024,404],Francia:[4,13942,2502,814],Filippine:[1,12640,1203,674],India:[2,12480,633,-428],Canada:[1,9790,1798,569],Seychelles:[1,8750,1351,132],SriLanka:[1,7220,728,-1],Egitto:[1,5490,876,334]},
+    2026:{USA:[36,627730,90702,0],Giappone:[47,549190,84198,3983],Polinesia:[21,449440,53999,0],Altro:[34,337500,47604,447],Indonesia:[9,80320,11948,0],Tanzania:[5,79430,10731,0],Argentina:[5,71290,11872,0],Mauritius:[6,51450,8014,-649],NuovaZelanda:[3,43750,6974,0],Thailandia:[4,43590,7276,0],Messico:[5,40975,6482,0],Cina:[4,40600,5463,0],Vietnam:[4,32950,4097,0],Canada:[4,29460,4578,0],Seychelles:[2,27820,4521,0],Portogallo:[4,17130,2472,0],Spagna:[6,16505,2916,86],Marocco:[4,16490,2562,0],Malesia:[1,14700,2180,0],Kenya:[1,6250,828,0],Australia:[1,5790,812,470],Turchia:[1,5600,745,0],Francia:[1,3800,597,0]}
+  },
+  competenza: {
+    2023:{'Non indicata':[211,1555785,276312,398,211,1555785,276312,398],Altro:[7,26910,5702,0,7,26910,5702,0]},
+    2024:{'Non indicata':[84,743667,132781,0,84,743667,132781,0],Giappone:[44,411935,73139,15136,44,411935,73139,15136],Altro:[61,307590,51367,11878,61,307590,51367,11878],USA:[23,260141,44368,7620,23,260141,44368,7620],Tanzania:[12,143015,19314,2969,12,143015,19314,2969],Messico:[13,128270,22687,8872,13,128270,22687,8872],Indonesia:[11,97610,17936,3504,11,97610,17936,3504],Thailandia:[10,89187,14494,2111,10,89187,14494,2111],Australia:[7,84500,14600,6209,7,84500,14600,6209],'Perù':[6,60245,9967,2945,6,60245,9967,2945],Polinesia:[3,54050,9060,1160,3,54050,9060,1160],Mauritius:[6,52475,7850,2667,6,52475,7850,2667],Maldive:[3,45310,6229,2261,3,45310,6229,2261],Turchia:[9,39570,7204,844,9,39570,7204,844],Vietnam:[4,35685,3918,70,4,35685,3918,70],Spagna:[9,30190,5348,3131,9,30190,5348,3131],Marocco:[8,26920,4859,1096,8,26920,4859,1096],Egitto:[3,24530,3473,327,3,24530,3473,327],Argentina:[1,21950,3068,143,1,21950,3068,143],Seychelles:[2,21655,3613,989,2,21655,3613,989],Kenya:[1,15800,1694,3963,1,15800,1694,3963],NuovaZelanda:[1,14300,2151,174,1,14300,2151,174],Portogallo:[3,12540,2243,201,3,12540,2243,201],Canada:[1,11400,2060,-98,1,11400,2060,-98],Madagascar:[1,10050,1823,-98,1,10050,1823,-98],Cina:[1,8360,1173,124,1,8360,1173,124],SriLanka:[1,8250,1120,517,1,8250,1120,517],Malesia:[1,7000,1307,3926,1,7000,1307,3926],Francia:[1,2150,364,52,1,2150,364,52]},
+    2025:{Giappone:[109,1064473,178271,47703,109,1064473,178271,47703],USA:[54,735139,114656,28632,54,735139,114656,28632],Altro:[63,398090,60648,18311,63,398090,60648,18311],Messico:[20,231837,37084,12875,20,231837,37084,12875],'Perù':[17,187426,22725,6217,17,187426,22725,6217],Indonesia:[18,187242,30545,8683,18,187242,30545,8683],Thailandia:[11,111618,17912,2101,11,111618,17912,2101],Vietnam:[7,86713,11188,2488,7,86713,11188,2488],Polinesia:[4,80295,12017,647,4,80295,12017,647],NuovaZelanda:[6,74608,12634,1997,6,74608,12634,1997],Tanzania:[5,70282,9575,4146,5,70282,9575,4146],Australia:[4,68900,11445,-238,4,68900,11445,-238],Turchia:[12,47190,8333,2994,12,47190,8333,2994],Brasile:[3,43624,5139,3302,3,43624,5139,3302],Argentina:[3,38080,6626,1048,3,38080,6626,1048],Marocco:[7,36268,6228,2524,7,36268,6228,2524],Cina:[3,35920,6364,2641,3,35920,6364,2641],Madagascar:[3,35760,4064,1779,3,35760,4064,1779],Spagna:[7,35640,6167,2559,7,35640,6167,2559],Filippine:[4,35284,5177,1561,4,35284,5177,1561],Maldive:[2,33630,3315,1090,2,33630,3315,1090],Canada:[3,28030,4674,1493,3,28030,4674,1493],Mauritius:[2,27830,4052,376,2,27830,4052,376],Portogallo:[7,20385,3762,786,7,20385,3762,786],Francia:[4,13942,2502,814,4,13942,2502,814],Malesia:[1,11370,1033,583,1,11370,1033,583],Egitto:[2,11140,1476,355,2,11140,1476,355],Singapore:[1,10520,1930,2145,1,10520,1930,2145],Seychelles:[1,8750,1351,132,1,8750,1351,132],SriLanka:[1,7220,728,-1,1,7220,728,-1],India:[1,5980,633,6,1,5980,633,6]},
+    2026:{USA:[60,969700,131101,1806,32,499050,65690,1806],Giappone:[69,769895,119121,6013,35,351725,56497,6013],Polinesia:[29,627230,72812,35,18,353890,40451,35],Altro:[51,463821,64863,1063,28,215691,30061,1063],Tanzania:[8,112575,14751,0,4,49545,6520,0],Argentina:[7,81403,12931,2863,3,23933,3465,2863],Indonesia:[9,80320,11948,0,5,45900,6848,0],Messico:[8,75755,12414,1378,5,51630,8559,1378],Mauritius:[7,61780,9102,-1043,2,16680,1863,-1043],Australia:[4,56690,9688,470,1,5790,812,470],NuovaZelanda:[4,56610,9214,0,1,12860,2240,0],Malesia:[4,56250,7552,0,0,0,0,0],Thailandia:[6,55210,9170,804,4,33790,5695,804],Cina:[4,40600,5463,0,0,0,0,0],Maldive:[3,37725,2478,859,3,37725,2478,859],Canada:[4,29460,4578,0,1,8220,1237,0],Marocco:[6,28170,4371,0,4,18030,2778,0],Seychelles:[2,27820,4521,0,1,13820,2388,0],Vietnam:[3,26400,2990,0,1,9500,1606,0],'Perù':[2,20400,2928,0,2,20400,2928,0],Spagna:[6,16505,2916,86,3,6230,974,86],Portogallo:[3,13390,1893,0,2,8090,1143,0],Madagascar:[1,12500,1683,0,1,12500,1683,0],Turchia:[2,7780,1094,0,1,5600,745,0],India:[1,6500,0,-434,1,6500,0,-434],Kenya:[1,6250,828,0,1,6250,828,0],Francia:[1,3800,597,0,0,0,0,0]},
+    2027:{USA:[5,95360,14813,0,0,0,0,0],Giappone:[4,39800,6684,0,0,0,0,0],Polinesia:[2,27490,3493,0,0,0,0,0],Argentina:[1,13820,2406,0,0,0,0,0],Thailandia:[1,8350,1376,0,0,0,0,0],Messico:[1,7500,1029,0,0,0,0,0],Vietnam:[1,6550,1107,0,0,0,0,0],Altro:[3,4870,563,0,0,0,0,0],Portogallo:[1,3740,579,0,0,0,0,0]}
+  }
+};
+
+const FORECAST = {
+  "asOf": "2026-08-03",
+  "anno": 2026,
+  "firme": {
+    "ytd": {
+      "n": 208,
+      "v": 2591760,
+      "fee": 371572,
+      "mk": 90878
+    },
+    "resto": {
+      "n": 109.0,
+      "v": 1357838,
+      "fee": 195609,
+      "mk": 47611
+    },
+    "anno": {
+      "n": 317.0,
+      "v": 3949598,
+      "fee": 567181,
+      "mk": 138489
+    },
+    "mesi": [
+      {
+        "m": 1,
+        "act": 31,
+        "fc": 0
+      },
+      {
+        "m": 2,
+        "act": 43,
+        "fc": 0
+      },
+      {
+        "m": 3,
+        "act": 32,
+        "fc": 0
+      },
+      {
+        "m": 4,
+        "act": 35,
+        "fc": 0
+      },
+      {
+        "m": 5,
+        "act": 20,
+        "fc": 0
+      },
+      {
+        "m": 6,
+        "act": 22,
+        "fc": 0
+      },
+      {
+        "m": 7,
+        "act": 23,
+        "fc": 0
+      },
+      {
+        "m": 8,
+        "act": 2,
+        "fc": 15.9
+      },
+      {
+        "m": 9,
+        "act": 0,
+        "fc": 23.7
+      },
+      {
+        "m": 10,
+        "act": 0,
+        "fc": 23.0
+      },
+      {
+        "m": 11,
+        "act": 0,
+        "fc": 25.4
+      },
+      {
+        "m": 12,
+        "act": 0,
+        "fc": 21.0
+      }
+    ]
+  },
+  "partenze": {
+    "fatte": {
+      "n": 156,
+      "v": 1752119,
+      "fee": 240779,
+      "mk": 65839
+    },
+    "portafoglio": {
+      "n": 149,
+      "v": 1992420,
+      "fee": 280231,
+      "mk": 69862
+    },
+    "daNuove": {
+      "n": 22.6,
+      "v": 281875,
+      "fee": 40607,
+      "mk": 9884
+    },
+    "tot": {
+      "n": 327.6,
+      "v": 4026414,
+      "fee": 561616,
+      "mk": 145585
+    }
+  },
+  "partenzePerFirma": {
+    "2025": {
+      "n": 116,
+      "v": 1360259,
+      "fee": 181488,
+      "mk": 49731,
+      "nPartiti": 89
+    },
+    "2026": {
+      "n": 189,
+      "v": 2384280,
+      "fee": 339522,
+      "mk": 85970,
+      "nPartiti": 67
+    }
+  },
+  "mkCoverage": {
+    "2023": 0.01,
+    "2024": 0.995,
+    "2025": 0.764,
+    "2026": 0.034
+  },
+  "firmeProssimo": {
+    "n": 317.0,
+    "v": 3949598,
+    "fee": 568976,
+    "mk": 138489
+  },
+  "prossimo": {
+    "anno": 2027,
+    "portafoglio": {
+      "n": 19,
+      "v": 207480,
+      "fee": 32050,
+      "mk": 7275
+    },
+    "daFirmeAnno": {
+      "n": 86.4,
+      "v": 1075963,
+      "fee": 155002,
+      "mk": 37728
+    },
+    "daFirmeProssimo": {
+      "n": 217.7,
+      "v": 2712607,
+      "fee": 390776,
+      "mk": 95115
+    },
+    "tot": {
+      "n": 323.0,
+      "v": 3996050,
+      "fee": 577828,
+      "mk": 140118
+    }
+  },
+  "storico": {
+    "anni": [
+      2023,
+      2024,
+      2025
+    ],
+    "firme": [
+      302,
+      375,
+      373
+    ],
+    "partenze": [
+      209,
+      328,
+      385
+    ]
+  },
+  "ipotesi": {
+    "avgValore": 12460,
+    "avgFee": 1795,
+    "mkRatio": 0.0351,
+    "quotaStessoAnno": 0.687
+  }
+};
+
+const BILANCI = {
+  anni: [2023,2024,2025],
+  ce: {
+    ricaviVendite: [2201776,2624310,3653573],
+    altriRicavi: [233,13014,10417],
+    valoreProd: [2202009,2637324,3663990],
+    materiePrime: [1649153,2036789,2859703],
+    servizi: [159776,180496,218399],
+    godimentoBeni: [13934,37690,13201],
+    personale: [340669,342342,477968],
+    ammortamenti: [13329,15739,0],
+    oneriDiversi: [19327,11648,8944],
+    costiProd: [2196188,2624704,3578215],
+    ebit: [5821,12620,85775],
+    gestFin: [92,961,180],
+    anteImposte: [5913,13581,85955],
+    imposte: [5327,8584,15079],
+    utile: [586,4997,70876],
+  },
+  sp: {
+    immobilizz: [87749,83455,84893],
+    rimanenze: [1731,0,882863],
+    crediti: [33041,68704,38596],
+    liquidita: [61377,84560,177338],
+    attivoCircol: [96149,153264,1098797],
+    rateiAttivi: [397006,579417,0],
+    totAttivo: [580904,816136,1183690],
+    patrimonioNetto: [2011,10003,77883],
+    tfr: [29773,36586,29042],
+    debiti: [307836,376767,1076765],
+    rateiPassivi: [241284,392780,0],
+    totPassivo: [580904,816136,1183690],
+  },
+  nota: "Fonte: bilanci depositati (2025 e 2024; il 2024 combacia esattamente nei due documenti). ATTENZIONE alla comparabilità: nel 2025 cambia la rappresentazione degli acconti sui viaggi non ancora partiti — compaiono 883k di rimanenze e i debiti salgono a 1,08 mln, mentre ratei e risconti (attivi 579k e passivi 393k nel 2024) vanno a zero. Le voci patrimoniali 2025 non sono quindi direttamente confrontabili con gli anni precedenti. Il bilancio 2025 non espone ammortamenti (0 contro 15.739 del 2024)."
+};
+
 const TIPO_COLORS = {
-  HONEYMOON:'#143C3A','MULTI-TRAVELER':'#2A6B66',MYSTERY:'#D9B86A','FAMILY+KIDS':'#C9844A',
+  HONEYMOON:'#2F6B58','MULTI-TRAVELER':'#4E8C77',MYSTERY:'#D9B86A','FAMILY+KIDS':'#C9844A',
   WELFARE:'#7F77DD',ONE:'#C0567E','SOLO SERVIZI':'#9A988F',ALTRO:'#C9C6BC'
 };
-const ONI = { ink:'#143C3A', ink2:'#2A6B66', gold:'#D9B86A', goldSoft:'#F9E3B8', green:'#1D7A5A', red:'#C0392B', grey:'#9A988F' };
+const ONI = { ink:'#2F6B58', ink2:'#4E8C77', gold:'#D9B86A', goldSoft:'#F9E3B8', green:'#1D7A5A', red:'#C0392B', grey:'#9A988F' };
 
 let charts = {};
 
@@ -457,6 +895,475 @@ function renderBank() {
   `).join('');
 }
 
+
+let anBasis = 'firmato';
+let anStato = 'tutti';
+function setBasis(b){
+  anBasis = b;
+  document.querySelectorAll('.seg-btn[data-basis]').forEach(function(x){ x.classList.toggle('active', x.dataset.basis === b); });
+  var seg = document.getElementById('anStatoSeg');
+  if(seg) seg.style.display = (b === 'competenza') ? '' : 'none';
+  renderAnalysis();
+}
+function setStato(s){
+  anStato = s;
+  document.querySelectorAll('.seg-btn[data-stato]').forEach(function(x){ x.classList.toggle('active', x.dataset.stato === s); });
+  renderAnalysis();
+}
+function anAggregate(){
+  var yr = document.getElementById('yearFilter').value;
+  var src = (typeof ANALYSIS !== 'undefined' && ANALYSIS[anBasis]) ? ANALYSIS[anBasis] : {};
+  var years = (yr === 'all') ? Object.keys(src) : [yr];
+  var useStato = (anBasis === 'competenza' && anStato !== 'tutti');
+  var agg = {};
+  years.forEach(function(y){
+    var yd = src[y]; if(!yd) return;
+    Object.keys(yd).forEach(function(d){
+      var a = yd[d]; var r = agg[d] || (agg[d] = [0,0,0,0]);
+      for(var i=0;i<4;i++){
+        var val = a[i];
+        if(useStato && a.length >= 8){
+          val = (anStato === 'partiti') ? a[i+4] : (a[i] - a[i+4]);
+        }
+        r[i] += val;
+      }
+    });
+  });
+  var rows = Object.keys(agg).map(function(d){ return [d].concat(agg[d]); })
+                   .filter(function(r){ return r[1] > 0; })
+                   .sort(function(x,y){ return y[2] - x[2]; });
+  var tot = [0,0,0,0];
+  rows.forEach(function(r){ for(var i=0;i<4;i++) tot[i] += r[i+1]; });
+  return { tot: tot, rows: rows };
+}
+function renderAnalysis(){
+  var kpi = document.getElementById('anKpi'); if(!kpi) return;
+  var tbl = document.getElementById('anTable');
+  var badge = document.getElementById('anBadge');
+  if(badge){
+    var lbl = (anBasis === 'firmato') ? 'Firmato · anno di firma' : 'Competenza · anno del viaggio';
+    var extra = '';
+    if(anBasis === 'competenza' && anStato !== 'tutti'){
+      extra = '<span class="badge sub">' + (anStato === 'partiti' ? 'solo già partiti' : 'solo da partire') + '</span>';
+    }
+    badge.innerHTML = '<span class="badge' + (anBasis === 'competenza' ? ' alt' : '') + '">' + lbl + '</span>' + extra;
+  }
+  var a = anAggregate();
+  var n = a.tot[0], sp = a.tot[1], fe = a.tot[2], mk = a.tot[3];
+  if(n === 0){
+    var yrSel = document.getElementById('yearFilter').value;
+    var msg = (anBasis === 'firmato' && yrSel === '2027')
+      ? ['Nessun contratto firmato nel 2027', 'passa a “Competenza” per i viaggi già programmati']
+      : ['Nessun dato economico', 'disponibile dal 2023'];
+    kpi.innerHTML = '<div class="metric"><div class="label">' + msg[0] + '</div><div class="val">—</div><div class="sub">' + msg[1] + '</div></div>';
+    if(tbl) tbl.innerHTML = '';
+    return;
+  }
+  var avg = function(v){ return n > 0 ? v / n : 0; };
+  var cards = [
+    ['Spesa totale', eur(sp)], ['Spesa media', eur(avg(sp))],
+    ['Fee totali', eur(fe)], ['Fee media', eur(avg(fe))],
+    ['Mark Up totale', eur(mk)], ['Mark Up media', eur(avg(mk))],
+    ['Fee + Mark Up', eur(fe + mk)], ['Fee + MK media', eur(avg(fe + mk))]
+  ];
+  kpi.innerHTML = cards.map(function(c){
+    return '<div class="metric"><div class="label">' + c[0] + '</div><div class="val">' + c[1] + '</div></div>';
+  }).join('');
+  var h = '<thead><tr><th>Destinazione</th><th>N</th><th>Spesa tot</th><th>Spesa media</th><th>Fee tot</th><th>Fee media</th><th>Mark Up</th><th>Fee+MK</th></tr></thead><tbody>';
+  a.rows.forEach(function(r){
+    var d = r[0], cn = r[1], csp = r[2], cfe = r[3], cmk = r[4];
+    h += '<tr><td>' + d + '</td><td>' + cn + '</td><td>' + eur(csp) + '</td><td>' + eur(csp/cn) + '</td><td>' + eur(cfe) + '</td><td>' + eur(cfe/cn) + '</td><td>' + eur(cmk) + '</td><td>' + eur(cfe + cmk) + '</td></tr>';
+  });
+  h += '<tr class="sep"><td>Totale</td><td>' + n + '</td><td>' + eur(sp) + '</td><td>' + eur(avg(sp)) + '</td><td>' + eur(fe) + '</td><td>' + eur(avg(fe)) + '</td><td>' + eur(mk) + '</td><td>' + eur(fe + mk) + '</td></tr>';
+  h += '</tbody>';
+  if(tbl) tbl.innerHTML = h;
+}
+
+let fcScen = 1;
+function setScen(s){
+  fcScen = s;
+  document.querySelectorAll('.seg-btn[data-sc]').forEach(function(x){ x.classList.toggle('active', parseFloat(x.dataset.sc) === s); });
+  renderForecast();
+}
+function renderForecast(){
+  var host = document.getElementById('fcKpi');
+  if(!host || typeof FORECAST === 'undefined' || !FORECAST || !FORECAST.anno) return;
+  var F = FORECAST, k = fcScen;
+  var Y = F.anno, N = F.prossimo.anno;
+  var sc = function(o){ return { n: o.n * k, v: o.v * k, fee: (o.fee||0) * k, mk: (o.mk||0) * k }; };
+  var firmeAnno = { n: F.firme.ytd.n + F.firme.resto.n * k,
+                    v: F.firme.ytd.v + F.firme.resto.v * k,
+                    fee: F.firme.ytd.fee + F.firme.resto.fee * k,
+                    mk: F.firme.ytd.mk + F.firme.resto.mk * k };
+  var partAnno = { n: F.partenze.fatte.n + F.partenze.portafoglio.n + F.partenze.daNuove.n * k,
+                   v: F.partenze.fatte.v + F.partenze.portafoglio.v + F.partenze.daNuove.v * k };
+  var partAnnoFee = F.partenze.fatte.fee + F.partenze.portafoglio.fee + F.partenze.daNuove.fee * k;
+  var partAnnoMk  = F.partenze.fatte.mk  + F.partenze.portafoglio.mk  + F.partenze.daNuove.mk  * k;
+  var prox = { n: F.prossimo.portafoglio.n + (F.prossimo.daFirmeAnno.n + F.prossimo.daFirmeProssimo.n) * k,
+               v: F.prossimo.portafoglio.v + (F.prossimo.daFirmeAnno.v + F.prossimo.daFirmeProssimo.v) * k,
+               fee: F.prossimo.portafoglio.fee + (F.prossimo.daFirmeAnno.fee + F.prossimo.daFirmeProssimo.fee) * k,
+               mk: F.prossimo.portafoglio.mk + (F.prossimo.daFirmeAnno.mk + F.prossimo.daFirmeProssimo.mk) * k };
+  var n0 = function(x){ return Math.round(x).toLocaleString('it'); };
+  host.innerHTML =
+    '<div class="metric"><div class="label">Firme ' + Y + ' (stima anno)</div><div class="val">' + n0(firmeAnno.n) + '</div><div class="sub">' + n0(F.firme.ytd.n) + ' fatte + ' + n0(F.firme.resto.n*k) + ' stimate</div></div>' +
+    '<div class="metric"><div class="label">Valore firmato ' + Y + '</div><div class="val">' + eurK(firmeAnno.v) + '</div><div class="sub">media ' + eur(firmeAnno.v/Math.max(firmeAnno.n,1)) + '/viaggio</div></div>' +
+    '<div class="metric"><div class="label">Fee ' + Y + ' (stima)</div><div class="val">' + eurK(firmeAnno.fee) + '</div><div class="sub">media ' + eur(firmeAnno.fee/Math.max(firmeAnno.n,1)) + '/viaggio</div></div>' +
+    '<div class="metric"><div class="label">Fee + Mark Up ' + Y + '</div><div class="val">' + eurK(firmeAnno.fee + firmeAnno.mk) + '</div><div class="sub">di cui mark up ' + eurK(firmeAnno.mk) + '</div></div>' +
+    '<div class="metric"><div class="label">Partenze ' + Y + ' (stima anno)</div><div class="val">' + n0(partAnno.n) + '</div><div class="sub">' + n0(F.partenze.fatte.n) + ' fatte + ' + n0(F.partenze.portafoglio.n) + ' in portafoglio</div></div>' +
+    '<div class="metric"><div class="label">Fee + MK partenze ' + Y + '</div><div class="val">' + eurK(partAnnoFee + partAnnoMk) + '</div><div class="sub">media ' + eur((partAnnoFee + partAnnoMk)/Math.max(partAnno.n,1)) + '/viaggio</div></div>' +
+    '<div class="metric"><div class="label">Partenze ' + N + ' (stima)</div><div class="val">' + n0(prox.n) + '</div><div class="sub">valore ' + eurK(prox.v) + '</div></div>' +
+    '<div class="metric"><div class="label">Fee + MK ' + N + ' (stima)</div><div class="val">' + eurK(prox.fee + prox.mk) + '</div><div class="sub">media ' + eur((prox.fee + prox.mk)/Math.max(prox.n,1)) + '/viaggio</div></div>';
+
+  var hint = document.getElementById('fcHint');
+  if(hint) hint.textContent = 'Stima su stagionalità 2023–2025 (quota firme per mese e probabilità di partire nell\'anno di firma). Dati al ' + F.asOf.split('-').reverse().join('.') + '.';
+
+  var tbl = document.getElementById('fcTable');
+  if(tbl){
+    var E = function(o, f){ return [o.n * f, o.v * f, (o.fee||0) * f, (o.mk||0) * f]; };
+    var rows = [
+      ['Firme ' + Y + ' — già acquisite', E(F.firme.ytd,1), 'effettivo'],
+      ['Firme ' + Y + ' — stimate da qui a fine anno', E(F.firme.resto,k), 'stima'],
+      ['TOT|Totale firme ' + Y, [F.firme.ytd.n + F.firme.resto.n*k, F.firme.ytd.v + F.firme.resto.v*k, F.firme.ytd.fee + F.firme.resto.fee*k, F.firme.ytd.mk + F.firme.resto.mk*k], ''],
+      ['Partenze ' + Y + ' — già effettuate', E(F.partenze.fatte,1), 'effettivo'],
+      ['Partenze ' + Y + ' — già firmate, da partire', E(F.partenze.portafoglio,1), 'in portafoglio'],
+      ['Partenze ' + Y + ' — da firme future', E(F.partenze.daNuove,k), 'stima'],
+      ['TOT|Totale partenze ' + Y, [partAnno.n, partAnno.v, partAnnoFee, partAnnoMk], ''],
+      ['Partenze ' + N + ' — già firmate', E(F.prossimo.portafoglio,1), 'in portafoglio'],
+      ['Partenze ' + N + ' — da firme ' + Y + ' (2° semestre)', E(F.prossimo.daFirmeAnno,k), 'stima'],
+      ['Partenze ' + N + ' — da firme ' + N, E(F.prossimo.daFirmeProssimo,k), 'stima'],
+      ['TOT|Totale partenze ' + N, [prox.n, prox.v, prox.fee, prox.mk], '']
+    ];
+    var h = '<thead><tr><th>Voce</th><th>Viaggi</th><th>Valore</th><th>Valore medio</th><th>Fee</th><th>Fee media</th><th>Mark Up</th><th>Fee+MK</th><th>Fee+MK media</th><th>Tipo</th></tr></thead><tbody>';
+    rows.forEach(function(r){
+      var isTot = r[0].indexOf('TOT|') === 0;
+      var label = isTot ? r[0].slice(4) : r[0];
+      var d = r[1], nn = Math.max(d[0], 1);
+      h += '<tr' + (isTot ? ' class="sep"' : '') + '><td>' + (isTot ? '<b>' + label + '</b>' : label) + '</td>' +
+           '<td>' + n0(d[0]) + '</td><td>' + eur(d[1]) + '</td><td>' + eur(d[1]/nn) + '</td>' +
+           '<td>' + eur(d[2]) + '</td><td>' + eur(d[2]/nn) + '</td>' +
+           '<td>' + eur(d[3]) + '</td><td>' + eur(d[2] + d[3]) + '</td><td>' + eur((d[2]+d[3])/nn) + '</td>' +
+           '<td>' + r[2] + '</td></tr>';
+    });
+    h += '</tbody>';
+    tbl.innerHTML = h;
+  }
+  var note = document.getElementById('fcNote');
+  if(note && F.ipotesi){
+    note.innerHTML = 'Ipotesi: valore medio per viaggio <b>' + eur(F.ipotesi.avgValore) + '</b>, fee media <b>' + eur(F.ipotesi.avgFee) + '</b>, mark up <b>' + (F.ipotesi.mkRatio*100).toFixed(1) + '%</b> del valore. Storicamente il <b>' + Math.round(F.ipotesi.quotaStessoAnno*100) + '%</b> dei viaggi parte nell\'anno di firma, il resto l\'anno successivo. Le firme di ' + N + ' sono ipotizzate pari alla stima ' + Y + ', scalate dallo scenario scelto.';
+  }
+
+  // table: departures by signing year
+  var ot = document.getElementById('fcOrigTable');
+  if(ot && F.partenzePerFirma){
+    var ti = document.getElementById('fcOrigTitle');
+    if(ti) ti.textContent = 'Partenze ' + Y + ' per anno di firma';
+    var keys = Object.keys(F.partenzePerFirma).sort();
+    var oh = '<thead><tr><th>Firmati nel</th><th>Viaggi</th><th>di cui già partiti</th><th>Valore</th><th>Valore medio</th><th>Fee</th><th>Fee media</th><th>Mark Up</th><th>Fee+MK</th></tr></thead><tbody>';
+    var ot_t = [0,0,0,0,0];
+    keys.forEach(function(sy){
+      var d = F.partenzePerFirma[sy], nn = Math.max(d.n, 1);
+      ot_t[0]+=d.n; ot_t[1]+=d.nPartiti; ot_t[2]+=d.v; ot_t[3]+=d.fee; ot_t[4]+=d.mk;
+      var lab = (parseInt(sy) < Y) ? sy + ' <span style="color:var(--oni-tx3)">(portafoglio ereditato)</span>' : sy + ' <span style="color:var(--oni-tx3)">(stesso anno)</span>';
+      oh += '<tr><td>' + lab + '</td><td>' + n0(d.n) + '</td><td>' + n0(d.nPartiti) + '</td><td>' + eur(d.v) + '</td><td>' + eur(d.v/nn) + '</td><td>' + eur(d.fee) + '</td><td>' + eur(d.fee/nn) + '</td><td>' + eur(d.mk) + '</td><td>' + eur(d.fee + d.mk) + '</td></tr>';
+    });
+    var tn = Math.max(ot_t[0], 1);
+    oh += '<tr class="sep"><td><b>Totale già firmate</b></td><td>' + n0(ot_t[0]) + '</td><td>' + n0(ot_t[1]) + '</td><td>' + eur(ot_t[2]) + '</td><td>' + eur(ot_t[2]/tn) + '</td><td>' + eur(ot_t[3]) + '</td><td>' + eur(ot_t[3]/tn) + '</td><td>' + eur(ot_t[4]) + '</td><td>' + eur(ot_t[3]+ot_t[4]) + '</td></tr>';
+    oh += '</tbody>';
+    ot.innerHTML = oh;
+  }
+  renderCmp();
+
+  // chart: monthly signings actual vs forecast
+  if(charts.fcMesi) charts.fcMesi.destroy();
+  var cvM = document.getElementById('chartFcMesi');
+  if(cvM){
+    charts.fcMesi = new Chart(cvM, {
+      type:'bar',
+      data:{ labels: CF.mesi, datasets:[
+        { label:'Effettive', data: F.firme.mesi.map(function(m){ return m.act; }), backgroundColor: ONI.ink, borderRadius:3, borderSkipped:false },
+        { label:'Stimate', data: F.firme.mesi.map(function(m){ return Math.round(m.fc * k); }), backgroundColor: ONI.gold, borderRadius:3, borderSkipped:false }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{ x:{ stacked:true, ticks:{color:'#888',font:{size:11}}, grid:{display:false} },
+                 y:{ stacked:true, ticks:{color:'#888',font:{size:11}}, grid:{color:'rgba(128,128,128,0.1)'} } } }
+    });
+  }
+  // chart: yearly history + estimate
+  if(charts.fcAnni) charts.fcAnni.destroy();
+  var cvY = document.getElementById('chartFcAnni');
+  if(cvY){
+    var labels = F.storico.anni.concat([Y + ' (stima)', N + ' (stima)']);
+    var firme = F.storico.firme.concat([Math.round(firmeAnno.n), Math.round(F.firme.anno.n * k)]);
+    var part  = F.storico.partenze.concat([Math.round(partAnno.n), Math.round(prox.n)]);
+    charts.fcAnni = new Chart(cvY, {
+      type:'bar',
+      data:{ labels: labels, datasets:[
+        { label:'Firme', data: firme, backgroundColor: ONI.ink, borderRadius:4, borderSkipped:false },
+        { label:'Partenze', data: part, backgroundColor: ONI.ink2, borderRadius:4, borderSkipped:false }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{ x:{ ticks:{color:'#888',font:{size:10}}, grid:{display:false} },
+                 y:{ ticks:{color:'#888',font:{size:11}}, grid:{color:'rgba(128,128,128,0.1)'} } } }
+    });
+  }
+}
+
+let cmpBasis = 'firmato';
+function setCmp(b){
+  cmpBasis = b;
+  document.querySelectorAll('.seg-btn[data-cmp]').forEach(function(x){ x.classList.toggle('active', x.dataset.cmp === b); });
+  renderCmp();
+}
+function cmpYearTotals(basis, y){
+  var src = (typeof ANALYSIS !== 'undefined' && ANALYSIS[basis]) ? ANALYSIS[basis][y] : null;
+  if(!src) return null;
+  var t = [0,0,0,0];
+  Object.keys(src).forEach(function(d){ for(var i=0;i<4;i++) t[i] += src[d][i]; });
+  return { n: t[0], v: t[1], fee: t[2], mk: t[3] };
+}
+function renderCmp(){
+  var tbl = document.getElementById('cmpTable');
+  if(!tbl || typeof FORECAST === 'undefined' || !FORECAST.anno) return;
+  var F = FORECAST, k = fcScen, Y = F.anno, N = F.prossimo.anno;
+  var cb = document.getElementById('cmpBadge');
+  if(cb){
+    cb.innerHTML = '<span class="badge' + (cmpBasis === 'competenza' ? ' alt' : '') + '">' +
+      (cmpBasis === 'firmato' ? 'Firmato · anno di firma' : 'Competenza · anno del viaggio') + '</span>';
+  }
+  var rows = [];
+  [Y-3, Y-2, Y-1].forEach(function(y){
+    var t = cmpYearTotals(cmpBasis, String(y));
+    if(t) rows.push({ label: String(y), d: t, est: false });
+  });
+  if(cmpBasis === 'firmato'){
+    rows.push({ label: Y + ' (stima)', est: true, d: {
+      n: F.firme.ytd.n + F.firme.resto.n*k, v: F.firme.ytd.v + F.firme.resto.v*k,
+      fee: F.firme.ytd.fee + F.firme.resto.fee*k, mk: F.firme.ytd.mk + F.firme.resto.mk*k } });
+    rows.push({ label: N + ' (stima)', est: true, d: {
+      n: F.firmeProssimo.n*k, v: F.firmeProssimo.v*k, fee: F.firmeProssimo.fee*k, mk: F.firmeProssimo.mk*k } });
+  } else {
+    var pf = F.partenze;
+    rows.push({ label: Y + ' (stima)', est: true, d: {
+      n: pf.fatte.n + pf.portafoglio.n + pf.daNuove.n*k,
+      v: pf.fatte.v + pf.portafoglio.v + pf.daNuove.v*k,
+      fee: pf.fatte.fee + pf.portafoglio.fee + pf.daNuove.fee*k,
+      mk: pf.fatte.mk + pf.portafoglio.mk + pf.daNuove.mk*k } });
+    var px = F.prossimo;
+    rows.push({ label: N + ' (stima)', est: true, d: {
+      n: px.portafoglio.n + (px.daFirmeAnno.n + px.daFirmeProssimo.n)*k,
+      v: px.portafoglio.v + (px.daFirmeAnno.v + px.daFirmeProssimo.v)*k,
+      fee: px.portafoglio.fee + (px.daFirmeAnno.fee + px.daFirmeProssimo.fee)*k,
+      mk: px.portafoglio.mk + (px.daFirmeAnno.mk + px.daFirmeProssimo.mk)*k } });
+  }
+  var n0 = function(x){ return Math.round(x).toLocaleString('it'); };
+  var pct = function(cur, prev){
+    if(!prev) return '<td>—</td>';
+    var p = (cur - prev) / prev * 100;
+    var cls = p >= 0 ? 'pos' : 'neg';
+    return '<td class="' + cls + '">' + (p >= 0 ? '+' : '') + p.toFixed(1) + '%</td>';
+  };
+  var cov = F.mkCoverage || {};
+  var partial = [];
+  var h = '<thead><tr><th>Anno</th><th>Viaggi</th><th>Valore viaggi</th><th>Valore medio</th><th>Fee</th><th>Fee media</th><th>Mark Up</th><th>Fee+MK</th><th>Fee+MK media</th><th>Δ Fee</th></tr></thead><tbody>';
+  rows.forEach(function(r, i){
+    var d = r.d, prev = i > 0 ? rows[i-1].d : null;
+    var fm = d.fee + d.mk;
+    var yKey = r.label.slice(0,4);
+    var c = cov[yKey];
+    var mkCell;
+    if(!r.est && c !== undefined && c < 0.05){
+      mkCell = '<td style="color:var(--oni-tx3)">n/d</td>';
+      partial.push(yKey + ' (non rilevato)');
+    } else if(!r.est && c !== undefined && c < 0.95){
+      mkCell = '<td>' + eur(d.mk) + ' <span style="color:var(--oni-tx3)">(' + Math.round(c*100) + '%)</span></td>';
+      partial.push(yKey + ' (' + Math.round(c*100) + '% compilato)');
+    } else {
+      mkCell = '<td>' + eur(d.mk) + '</td>';
+    }
+    var nn = Math.max(d.n, 1);
+    h += '<tr' + (r.est ? ' class="sep"' : '') + '><td>' + (r.est ? '<b>' + r.label + '</b>' : r.label) + '</td>' +
+      '<td>' + n0(d.n) + '</td><td>' + eur(d.v) + '</td><td>' + eur(d.v/nn) + '</td>' +
+      '<td>' + eur(d.fee) + '</td><td>' + eur(d.fee/nn) + '</td>' + mkCell +
+      '<td>' + eur(fm) + '</td><td>' + eur(fm/nn) + '</td>' +
+      pct(d.fee, prev ? prev.fee : 0) + '</tr>';
+  });
+  h += '</tbody>';
+  tbl.innerHTML = h;
+  var cn = document.getElementById('cmpNote');
+  if(cn){
+    cn.innerHTML = 'Il <b>mark up</b> viene inserito a consuntivo: negli anni evidenziati la colonna è incompleta' +
+      (partial.length ? ' — ' + partial.join(', ') : '') +
+      '. Il confronto più affidabile è quindi sul <b>valore viaggi</b> e sulle <b>fee</b>; nelle stime il mark up è modellato al ' +
+      ((F.ipotesi ? F.ipotesi.mkRatio : 0)*100).toFixed(1) + '% del valore.';
+  }
+
+  var labels = rows.map(function(r){ return r.label; });
+  if(charts.cmpVal) charts.cmpVal.destroy();
+  var c1 = document.getElementById('chartCmpVal');
+  if(c1){
+    charts.cmpVal = new Chart(c1, {
+      type:'bar',
+      data:{ labels: labels, datasets:[{ data: rows.map(function(r){ return Math.round(r.d.v); }),
+        backgroundColor: rows.map(function(r){ return r.est ? ONI.gold : ONI.ink; }), borderRadius:4, borderSkipped:false }]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){ return ' ' + eur(c.raw); }}}},
+        scales:{ x:{ ticks:{color:'#888',font:{size:10}}, grid:{display:false} },
+                 y:{ ticks:{color:'#888',font:{size:11},callback:function(v){ return eurK(v); }}, grid:{color:'rgba(128,128,128,0.1)'} } } }
+    });
+  }
+  if(charts.cmpFee) charts.cmpFee.destroy();
+  var c2 = document.getElementById('chartCmpFee');
+  if(c2){
+    charts.cmpFee = new Chart(c2, {
+      type:'bar',
+      data:{ labels: labels, datasets:[
+        { label:'Fee', data: rows.map(function(r){ return Math.round(r.d.fee); }), backgroundColor: ONI.ink, borderRadius:3, borderSkipped:false },
+        { label:'Mark Up', data: rows.map(function(r){ return Math.round(r.d.mk); }), backgroundColor: ONI.gold, borderRadius:3, borderSkipped:false }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){ return ' ' + c.dataset.label + ': ' + eur(c.raw); }}}},
+        scales:{ x:{ stacked:true, ticks:{color:'#888',font:{size:10}}, grid:{display:false} },
+                 y:{ stacked:true, ticks:{color:'#888',font:{size:11},callback:function(v){ return eurK(v); }}, grid:{color:'rgba(128,128,128,0.1)'} } } }
+    });
+  }
+}
+
+function renderBilanci(){
+  var host = document.getElementById('bilKpi');
+  if(!host || typeof BILANCI === 'undefined' || !BILANCI.anni) return;
+  var B = BILANCI, A = B.anni, ce = B.ce, sp = B.sp, L = A.length - 1;
+  var ebitda = A.map(function(_,i){ return ce.ebit[i] + ce.ammortamenti[i]; });
+  var pctv = function(x, base){ return base ? (x/base*100).toFixed(1) + '%' : '—'; };
+  var dlt = function(cur, prev){
+    if(!prev) return '';
+    var p = (cur - prev) / Math.abs(prev) * 100;
+    return '<div class="sub" style="color:' + (p>=0?'#1D7A5A':'#C0392B') + '">' + (p>=0?'+':'') + p.toFixed(0) + '% vs ' + A[L-1] + '</div>';
+  };
+  host.innerHTML =
+    '<div class="metric"><div class="label">Ricavi ' + A[L] + '</div><div class="val">' + eurK(ce.ricaviVendite[L]) + '</div>' + dlt(ce.ricaviVendite[L], ce.ricaviVendite[L-1]) + '</div>' +
+    '<div class="metric"><div class="label">EBITDA ' + A[L] + '</div><div class="val">' + eurK(ebitda[L]) + '</div>' + dlt(ebitda[L], ebitda[L-1]) + '</div>' +
+    '<div class="metric"><div class="label">Utile netto ' + A[L] + '</div><div class="val">' + eur(ce.utile[L]) + '</div>' + dlt(ce.utile[L], ce.utile[L-1]) + '</div>' +
+    '<div class="metric"><div class="label">Patrimonio netto ' + A[L] + '</div><div class="val">' + eur(sp.patrimonioNetto[L]) + '</div>' + dlt(sp.patrimonioNetto[L], sp.patrimonioNetto[L-1]) + '</div>';
+
+  var hdr = function(){ return '<thead><tr><th>Voce</th>' + A.map(function(y){ return '<th>' + y + '</th>'; }).join('') + '<th>Δ ' + A[L-1] + '→' + A[L] + '</th></tr></thead><tbody>'; };
+  var row = function(label, vals, bold){
+    var d = '';
+    if(vals[L-1]) { var p = (vals[L]-vals[L-1])/Math.abs(vals[L-1])*100;
+      d = '<td class="' + (p>=0?'pos':'neg') + '">' + (p>=0?'+':'') + p.toFixed(1) + '%</td>'; }
+    else d = '<td>—</td>';
+    return '<tr' + (bold?' class="sep"':'') + '><td>' + (bold?'<b>'+label+'</b>':label) + '</td>' +
+      vals.map(function(v){ return '<td>' + eur(v) + '</td>'; }).join('') + d + '</tr>';
+  };
+  var t1 = document.getElementById('bilCeTable');
+  if(t1){
+    t1.innerHTML = hdr() +
+      row('Ricavi delle vendite', ce.ricaviVendite) +
+      row('Altri ricavi', ce.altriRicavi) +
+      row('Valore della produzione', ce.valoreProd, true) +
+      row('Acquisti viaggi e materie', ce.materiePrime) +
+      row('Servizi', ce.servizi) +
+      row('Godimento beni di terzi', ce.godimentoBeni) +
+      row('Personale', ce.personale) +
+      row('Oneri diversi', ce.oneriDiversi) +
+      row('EBITDA', ebitda, true) +
+      row('Ammortamenti', ce.ammortamenti) +
+      row('EBIT (A−B)', ce.ebit, true) +
+      row('Gestione finanziaria', ce.gestFin) +
+      row('Risultato ante imposte', ce.anteImposte) +
+      row('Imposte', ce.imposte) +
+      row('Utile netto', ce.utile, true) + '</tbody>';
+  }
+  var t2 = document.getElementById('bilSpTable');
+  if(t2){
+    t2.innerHTML = hdr() +
+      row('Immobilizzazioni', sp.immobilizz) +
+      row('Rimanenze', sp.rimanenze) +
+      row('Crediti', sp.crediti) +
+      row('Disponibilità liquide', sp.liquidita) +
+      row('Ratei e risconti attivi', sp.rateiAttivi) +
+      row('Totale attivo', sp.totAttivo, true) +
+      row('Patrimonio netto', sp.patrimonioNetto) +
+      row('TFR', sp.tfr) +
+      row('Debiti', sp.debiti) +
+      row('Ratei e risconti passivi', sp.rateiPassivi) +
+      row('Totale passivo', sp.totPassivo, true) + '</tbody>';
+  }
+  var nb = document.getElementById('bilNota');
+  if(nb) nb.innerHTML = B.nota;
+
+  var t3 = document.getElementById('bilIdxTable');
+  if(t3){
+    var idx = [
+      ['Margine EBITDA', A.map(function(_,i){ return pctv(ebitda[i], ce.ricaviVendite[i]); })],
+      ['Margine EBIT', A.map(function(_,i){ return pctv(ce.ebit[i], ce.ricaviVendite[i]); })],
+      ['Utile netto / ricavi', A.map(function(_,i){ return pctv(ce.utile[i], ce.ricaviVendite[i]); })],
+      ['Costo acquisti / ricavi', A.map(function(_,i){ return pctv(ce.materiePrime[i], ce.ricaviVendite[i]); })],
+      ['Costo personale / ricavi', A.map(function(_,i){ return pctv(ce.personale[i], ce.ricaviVendite[i]); })],
+      ['ROE (utile / patrimonio netto)', A.map(function(_,i){ return pctv(ce.utile[i], sp.patrimonioNetto[i]); })],
+      ['Patrimonio netto / totale attivo', A.map(function(_,i){ return pctv(sp.patrimonioNetto[i], sp.totAttivo[i]); })],
+      ['Liquidità / debiti', A.map(function(_,i){ return pctv(sp.liquidita[i], sp.debiti[i]); })]
+    ];
+    t3.innerHTML = '<thead><tr><th>Indice</th>' + A.map(function(y){ return '<th>' + y + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      idx.map(function(r){ return '<tr><td>' + r[0] + '</td>' + r[1].map(function(v){ return '<td>' + v + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody>';
+  }
+
+  // raccordo bilancio <-> gestionale
+  var t4 = document.getElementById('bilRacTable');
+  if(t4 && typeof ANALYSIS !== 'undefined'){
+    var g = function(basis, y){
+      var d = ANALYSIS[basis] ? ANALYSIS[basis][y] : null;
+      if(!d) return null;
+      var t = [0,0,0,0];
+      Object.keys(d).forEach(function(k){ for(var i=0;i<4;i++) t[i] += d[k][i]; });
+      return t;
+    };
+    var h = '<thead><tr><th>Anno</th><th>Ricavi bilancio</th><th>Gestionale competenza</th><th>Δ</th><th>Gestionale firmato</th><th>Fee gestionale</th></tr></thead><tbody>';
+    A.forEach(function(y, i){
+      var gc = g('competenza', String(y)), gf = g('firmato', String(y));
+      var dv = gc ? ce.ricaviVendite[i] - gc[1] : null;
+      h += '<tr><td>' + y + '</td><td>' + eur(ce.ricaviVendite[i]) + '</td>' +
+        '<td>' + (gc ? eur(gc[1]) : '—') + '</td>' +
+        '<td class="' + (dv >= 0 ? 'pos' : 'neg') + '">' + (dv === null ? '—' : (dv >= 0 ? '+' : '') + eur(dv)) + '</td>' +
+        '<td>' + (gf ? eur(gf[1]) : '—') + '</td>' +
+        '<td>' + (gc ? eur(gc[2]) : '—') + '</td></tr>';
+    });
+    t4.innerHTML = h + '</tbody>';
+  }
+
+  if(charts.bilCE) charts.bilCE.destroy();
+  var c1 = document.getElementById('chartBilCE');
+  if(c1){
+    charts.bilCE = new Chart(c1, { type:'bar',
+      data:{ labels:A, datasets:[
+        { label:'Ricavi', data: ce.ricaviVendite, backgroundColor: ONI.ink, borderRadius:4, borderSkipped:false },
+        { label:'EBITDA', data: ebitda, backgroundColor: ONI.gold, borderRadius:4, borderSkipped:false },
+        { label:'Utile', data: ce.utile, backgroundColor: ONI.green, borderRadius:4, borderSkipped:false }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){ return ' ' + c.dataset.label + ': ' + eur(c.raw); }}}},
+        scales:{ x:{ ticks:{color:'#888',font:{size:11}}, grid:{display:false} },
+                 y:{ ticks:{color:'#888',font:{size:11},callback:function(v){ return eurK(v); }}, grid:{color:'rgba(128,128,128,0.1)'} } } } });
+  }
+  if(charts.bilCosti) charts.bilCosti.destroy();
+  var c2 = document.getElementById('chartBilCosti');
+  if(c2){
+    var pc = function(arr){ return A.map(function(_,i){ return +(arr[i]/ce.ricaviVendite[i]*100).toFixed(1); }); };
+    var altri = A.map(function(_,i){ return ce.servizi[i] + ce.godimentoBeni[i] + ce.oneriDiversi[i]; });
+    var marg = A.map(function(_,i){ return ce.ricaviVendite[i] - ce.materiePrime[i] - ce.personale[i] - altri[i]; });
+    charts.bilCosti = new Chart(c2, { type:'bar',
+      data:{ labels:A, datasets:[
+        { label:'Acquisti viaggi', data: pc(ce.materiePrime), backgroundColor: ONI.ink },
+        { label:'Personale', data: pc(ce.personale), backgroundColor: ONI.ink2 },
+        { label:'Servizi e altri', data: pc(altri), backgroundColor: ONI.gold },
+        { label:'Margine', data: pc(marg), backgroundColor: ONI.green }
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:function(c){ return ' ' + c.dataset.label + ': ' + c.raw + '%'; }}}},
+        scales:{ x:{ stacked:true, ticks:{color:'#888',font:{size:11}}, grid:{display:false} },
+                 y:{ stacked:true, max:100, ticks:{color:'#888',font:{size:11},callback:function(v){ return v + '%'; }}, grid:{color:'rgba(128,128,128,0.1)'} } } } });
+  }
+}
+
 function renderAll() {
   renderMetrics();
   renderAnnoChart();
@@ -468,8 +1375,16 @@ function renderAll() {
   renderEUChart();
   renderCfTable();
   renderBank();
+  renderAnalysis();
+  renderForecast();
+  renderBilanci();
 }
 
 document.getElementById('oniLogo').src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjAAAAGYCAMAAABriChDAAAAflBMVEX////547j547j547j547j547j547j547j547j547j547j547j547j547j547j547j////////////////////////////////////////////////////////////////658P77M///v399OP+/Pf99eX//v7547j////66MWBJoErAAAAJ3RSTlMAIGBQELDgoPDAgECQ0DBwQBBQgMDwsGAgkNDgoDBwVGr19uvrr/VYiCHRAAAlwklEQVR42u192WLsKqylM+wkVZmwAY/Yd+wu9///YD9k8sAgYcBORXo9J7uqYCEtLQmRZWS/z25u7+5pFciAdvfvcrk83NBCkEHs9uFyuVwul0daCjIAXJ4un/ZAi0HmDEYPl297ouUgc1Dd02Vi/2hByKx2vszsmVaEDOxeLifCC5mVvTxN0PL0SDk1GTgcPZ1JtCOz2+MELy8EFzK73b9OuMsbrQcZGC9P77QcZHC8vJJ7IUPg5ZHYCxmC71I4InPbyzdebmkxyJx2S3ghQ9jNE+GFDGGvhBcyhH0XBM60FmRue6PWFzKMfTU0vJL+QobJkEjfJYPYAxEYMg8H80pLQYZxMNSLSYZxMHRfjQxkX5odde+SQeyNHAwZxh7JwZBh7Ik0XjKE3X06mDtaCjKIvdCFezKMfYowL7QSZBC7oYhE5kFhKCKRoSgM5UhkMDtRnZoMY09UdyRD2P0n56VOOzKQPRPnJfMAzIlWggxkZ0qSyDwAQ0kSGQGGLII9EmDIMHbCDIRhjLGc1owAA9DtCi7kOI7jOMqyItAQYKz/U1WOM5OcFu6PA8bS3FA3clxZS07mbwPGSHpZOWqtI8RQlqSBixhNJmjt/qTZdJi6HC3GaPEIMFPLm9FqDS3eMS1njHOuhBBCiJJzXrA6OGDWtaRK2vFCMemIUOGlgUS0JQ8jod3qq9W9GF3W0gYdyepKda4t61S12dc86ybDuKLRx6fTJh3G+qYdgdY1fQjAXFDRiELSsdDSjSiTWzBzvwIMIBqN4ziOirbqCLSlakcP6wZvQrNo0cyVjq4IDYgq2q39iYuSo68pTzpzmqXVw/ILSFX1WZZl+UqTIal3b2Nq3GTCS0p7e/pJkli7RMvPP8koIh2Muohxs3lB5uZ8vtVG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';
-renderAll();
+function showTab(name){
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.toggle('active', p.id === 'tab-' + name); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === name); });
+  renderAll(); // re-render so charts in the now-visible panel size correctly
+}
+showTab('contratti');
 </script>

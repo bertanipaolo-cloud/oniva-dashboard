@@ -220,7 +220,7 @@ def _hdr_name(ws, hr, c):
 def compute_raw(contracts_path):
     wb = openpyxl.load_workbook(contracts_path, data_only=True)
 
-    anni = [2021, 2022, 2023, 2024, 2025, 2026]
+    anni = [2021, 2022, 2023, 2024, 2025, 2026, 2027]
     viaggi = {y: 0 for y in anni}
     ricavi = {y: 0.0 for y in anni}
     costi  = {y: 0.0 for y in anni}
@@ -586,6 +586,355 @@ def serialize_bank(bank):
     L.append("  ]")
     L.append("}")
     return "\n".join(L)
+
+
+# --------------------------------------------------------------------------- #
+# Economic analysis (spesa / fee / markup) by basis (firmato / competenza),
+# per year and per primary destination. Financial columns exist only in the
+# 2023-2026 sheets (the 2021-2022 sheet has no fee/valore/markup).
+# --------------------------------------------------------------------------- #
+ANALYSIS_SHEETS = ["2023", "2024", "2025", "2026"]
+
+
+def _year_of(v):
+    return v.year if isinstance(v, (datetime.datetime, datetime.date)) else None
+
+
+def _acol(hdr, *needles, exclude=()):
+    for i, h in enumerate(hdr):
+        H = (h or "").upper()
+        if all(n in H for n in needles) and not any(x in H for x in exclude):
+            return i
+    return None
+
+
+def _primary_dest(dstr):
+    s = (dstr or "").strip()
+    if not s:
+        return "Non indicata"
+    u = s.upper()
+    for c, al in TOP10.items():
+        if any(a in u for a in al):
+            return c
+    for c, al in OTHER_COUNTRIES.items():
+        if any(a in u for a in al):
+            return c
+    return "Altro"
+
+
+def compute_analysis(contracts_path, today=None):
+    """Per-year, per-destination economics.
+
+    firmato    -> [n, spesa, fee, markup]
+    competenza -> [n, spesa, fee, markup, n_partiti, spesa_p, fee_p, markup_p]
+                  (the trailing 4 are the already-departed subset, so the UI can
+                   split 'già partiti' vs 'da partire')
+    """
+    today = today or datetime.date.today()
+    wb = openpyxl.load_workbook(contracts_path, read_only=True, data_only=True)
+    out = {"firmato": {}, "competenza": {}}
+
+    def add(basis, yr, dest, sp, fe, mk, departed=None):
+        width = 8 if basis == "competenza" else 4
+        d = out[basis].setdefault(yr, {}).setdefault(dest, [0] + [0.0] * (width - 1))
+        d[0] += 1
+        d[1] += sp
+        d[2] += fe
+        d[3] += mk
+        if basis == "competenza" and departed:
+            d[4] += 1
+            d[5] += sp
+            d[6] += fe
+            d[7] += mk
+
+    for sh in ANALYSIS_SHEETS:
+        if sh not in wb.sheetnames:
+            continue
+        ws = wb[sh]
+        hr = SHEET_HEADER_ROW.get(sh, 1)
+        hdr = [" ".join(str(c.value).split()) if c.value is not None else ""
+               for c in ws[hr]]
+
+        ci_firma = _acol(hdr, "DATA FIRMA")
+        if ci_firma is None:
+            for i, h in enumerate(hdr):
+                if h.strip().upper() == "DEL":
+                    ci_firma = i
+                    break
+        ci_comp = (_acol(hdr, "DATA PARTENZA")
+                   or _acol(hdr, "DATA DI VIAGGIO")
+                   or _acol(hdr, "DATA DI RIENTRO"))
+        ci_dest = _acol(hdr, "DESTINAZIONE")
+        ci_val = _acol(hdr, "VALORE CONTRATTO")
+        ci_fee = _acol(hdr, "FEE", "NETTO")
+        if ci_fee is None:
+            ci_fee = _acol(hdr, "FEE", exclude=("%", "JOULE", "TOTALE", "MARK", "NOME"))
+        ci_mk = _acol(hdr, "MARK UP", "ONIVA")
+        if ci_mk is None:
+            ci_mk = _acol(hdr, "MARK UP", exclude=("NOME",))
+
+        for row in ws.iter_rows(min_row=hr + 1, values_only=True):
+            if not row or not is_contract_row(row[0]):
+                continue
+            dstr = str(row[ci_dest]) if (ci_dest is not None and row[ci_dest] is not None) else ""
+            dest = _primary_dest(dstr)
+            sp = num(row[ci_val]) if ci_val is not None else 0
+            fe = num(row[ci_fee]) if ci_fee is not None else 0
+            mk = num(row[ci_mk]) if ci_mk is not None else 0
+            yf = _year_of(row[ci_firma]) if ci_firma is not None else None
+            dv = row[ci_comp] if ci_comp is not None else None
+            yc = _year_of(dv)
+            if yf:
+                add("firmato", yf, dest, sp, fe, mk)
+            if yc:
+                dd = dv.date() if isinstance(dv, datetime.datetime) else dv
+                add("competenza", yc, dest, sp, fe, mk, departed=(dd <= today))
+    wb.close()
+    return out
+
+
+def serialize_analysis(an):
+    def yearblock(bd):
+        rows = []
+        for yr in sorted(bd):
+            dd = bd[yr]
+            items = ",".join(
+                f"{js_key(d)}:[" + ",".join(str(int(round(x))) for x in r) + "]"
+                for d, r in sorted(dd.items(), key=lambda x: -x[1][1]))
+            rows.append(f"    {yr}:{{{items}}}")
+        return ",\n".join(rows)
+
+    L = ["{", "  firmato: {"]
+    L.append(yearblock(an["firmato"]))
+    L.append("  },")
+    L.append("  competenza: {")
+    L.append(yearblock(an["competenza"]))
+    L.append("  }")
+    L.append("}")
+    return "\n".join(L)
+
+
+# --------------------------------------------------------------------------- #
+# Forecast: rest-of-year signings & departures for the current year, plus the
+# following year. Built from 2023-2025 seasonality:
+#   - monthly share of annual signings
+#   - P(depart in signing year) by signing month  (100% in Jan -> ~1% in Dec)
+# --------------------------------------------------------------------------- #
+BASE_YEARS = [2023, 2024, 2025]
+
+
+def _contract_records(contracts_path):
+    """[(firma_date, partenza_date|None, valore, fee, markup)] for 2023+."""
+    wb = openpyxl.load_workbook(contracts_path, read_only=True, data_only=True)
+    out = []
+    for sh in ANALYSIS_SHEETS:
+        if sh not in wb.sheetnames:
+            continue
+        ws = wb[sh]
+        hr = SHEET_HEADER_ROW.get(sh, 1)
+        hdr = [" ".join(str(c.value).split()) if c.value is not None else ""
+               for c in ws[hr]]
+        ci_f = _acol(hdr, "DATA FIRMA")
+        if ci_f is None:
+            for i, h in enumerate(hdr):
+                if h.strip().upper() == "DEL":
+                    ci_f = i
+                    break
+        ci_p = (_acol(hdr, "DATA PARTENZA") or _acol(hdr, "DATA DI VIAGGIO")
+                or _acol(hdr, "DATA DI RIENTRO"))
+        ci_v = _acol(hdr, "VALORE CONTRATTO")
+        ci_fee = _acol(hdr, "FEE", "NETTO")
+        if ci_fee is None:
+            ci_fee = _acol(hdr, "FEE", exclude=("%", "JOULE", "TOTALE", "MARK", "NOME"))
+        ci_mk = _acol(hdr, "MARK UP", "ONIVA") or _acol(hdr, "MARK UP", exclude=("NOME",))
+
+        def dt(v):
+            if isinstance(v, datetime.datetime):
+                return v.date()
+            return v if isinstance(v, datetime.date) else None
+
+        for row in ws.iter_rows(min_row=hr + 1, values_only=True):
+            if not row or not is_contract_row(row[0]):
+                continue
+            f = dt(row[ci_f]) if ci_f is not None else None
+            if not f:
+                continue
+            p = dt(row[ci_p]) if ci_p is not None else None
+            out.append((f, p,
+                        num(row[ci_v]) if ci_v is not None else 0,
+                        num(row[ci_fee]) if ci_fee is not None else 0,
+                        num(row[ci_mk]) if ci_mk is not None else 0))
+    wb.close()
+    return out
+
+
+def compute_forecast(contracts_path):
+    recs = _contract_records(contracts_path)
+    if not recs:
+        return None
+    as_of = max(f for f, *_ in recs)
+    Y = as_of.year
+
+    # --- seasonality from BASE_YEARS ---
+    tot_n = {y: 0 for y in BASE_YEARS}
+    mon_n = {m: {y: 0 for y in BASE_YEARS} for m in range(1, 13)}
+    same_y = {m: [0, 0] for m in range(1, 13)}          # [signed, departed same yr]
+    for f, p, v, fe, mk in recs:
+        if f.year in tot_n:
+            tot_n[f.year] += 1
+            mon_n[f.tm_mon if hasattr(f, "tm_mon") else f.month][f.year] += 1
+            if p:
+                same_y[f.month][0] += 1
+                if p.year == f.year:
+                    same_y[f.month][1] += 1
+    nb = len([y for y in BASE_YEARS if tot_n[y]])
+    share = [sum(mon_n[m][y] / tot_n[y] for y in BASE_YEARS if tot_n[y]) / max(nb, 1)
+             for m in range(1, 13)]
+    ssum = sum(share) or 1.0
+    share = [s / ssum for s in share]
+    sy_rate = [(same_y[m][1] / same_y[m][0]) if same_y[m][0] else 0.0
+               for m in range(1, 13)]
+
+    # --- actuals for the current year ---
+    cur = [r for r in recs if r[0].year == Y]
+    ytd_n = len(cur)
+    ytd_v = sum(r[2] for r in cur)
+    ytd_fee = sum(r[3] for r in cur)
+    complete_m = as_of.month - 1                       # fully elapsed months
+    comp = [r for r in cur if r[0].month <= complete_m]
+    comp_share = sum(share[:complete_m]) or (sum(share[:1]))
+    # full-year signings estimate from complete months
+    full_n = (len(comp) / comp_share) if comp_share else ytd_n
+    full_n = max(full_n, ytd_n)
+
+    # per-trip economics from the current year (fallback to 2025)
+    def avg(seq, idx):
+        s = [r[idx] for r in seq if r[idx]]
+        return (sum(s) / len(s)) if s else 0
+    av_v = avg(cur, 2) or avg([r for r in recs if r[0].year == Y - 1], 2)
+    av_fee = avg(cur, 3) or avg([r for r in recs if r[0].year == Y - 1], 3)
+    # markup ratio from mature years (current year's markup is not yet final)
+    mk_num = sum(r[4] for r in recs if r[0].year in (Y - 2, Y - 1))
+    mk_den = sum(r[2] for r in recs if r[0].year in (Y - 2, Y - 1)) or 1
+    mk_ratio = mk_num / mk_den
+
+    # --- remaining-months breakdown (signings + where they depart) ---
+    # Expected volume per month; for the partial month only the missing part.
+    dep_same, dep_next = 0.0, 0.0
+    months = []
+    rest_n = 0.0
+    for m in range(1, 13):
+        act = sum(1 for r in cur if r[0].month == m)
+        if m < as_of.month:
+            months.append({"m": m, "act": act, "fc": 0})
+            continue
+        expected = full_n * share[m - 1]
+        fc = max(expected - act, 0) if m == as_of.month else expected
+        months.append({"m": m, "act": act, "fc": round(fc, 1)})
+        rest_n += fc
+        dep_same += fc * sy_rate[m - 1]
+        dep_next += fc * (1 - sy_rate[m - 1])
+
+    # --- departures ---
+    dep_done = [r for r in recs if r[1] and r[1].year == Y and r[1] <= as_of]
+    dep_book = [r for r in recs if r[1] and r[1].year == Y and r[1] > as_of]
+    nxt_book = [r for r in recs if r[1] and r[1].year == Y + 1]
+
+    def sums(rows):
+        """(n, valore, fee, markup) for real contracts. Markup is taken from the
+        sheet when present and modelled (ratio x valore) contract-by-contract
+        where it is still blank — recent contracts get it filled at consuntivo."""
+        v = sum(r[2] for r in rows)
+        fe = sum(r[3] for r in rows)
+        mk = sum(r[4] if r[4] else r[2] * mk_ratio for r in rows)
+        return len(rows), v, fe, mk
+
+    # next year's own signings that also depart next year
+    same_year_w = sum(share[m - 1] * sy_rate[m - 1] for m in range(1, 13))
+    nxt_sign = full_n                                   # flat assumption; UI scales it
+    nxt_from_own = nxt_sign * same_year_w
+
+    def blk(n, v, fee=None, mk=None):
+        d = {"n": round(n, 1), "v": int(round(v))}
+        if fee is not None:
+            d["fee"] = int(round(fee))
+        if mk is not None:
+            d["mk"] = int(round(mk))
+        return d
+
+    # departures in Y broken down by SIGNING year (carry-over vs same-year)
+    dep_Y = dep_done + dep_book
+    per_firma = {}
+    for sy in sorted({r[0].year for r in dep_Y}):
+        rows = [r for r in dep_Y if r[0].year == sy]
+        done = [r for r in rows if r[1] <= as_of]
+        per_firma[str(sy)] = {
+            **{k: v for k, v in zip(("n", "v", "fee", "mk"),
+                                    [round(x, 1) if i == 0 else int(round(x))
+                                     for i, x in enumerate(sums(rows))])},
+            "nPartiti": len(done),
+        }
+
+    return {
+        "asOf": as_of.isoformat(),
+        "anno": Y,
+        "firme": {
+            "ytd": blk(ytd_n, ytd_v, ytd_fee, ytd_v * mk_ratio),
+            "resto": blk(rest_n, rest_n * av_v, rest_n * av_fee, rest_n * av_v * mk_ratio),
+            "anno": blk(full_n, ytd_v + rest_n * av_v,
+                        ytd_fee + rest_n * av_fee, (ytd_v + rest_n * av_v) * mk_ratio),
+            "mesi": months,
+        },
+        "partenze": {
+            "fatte": blk(*sums(dep_done)),
+            "portafoglio": blk(*sums(dep_book)),
+            "daNuove": blk(dep_same, dep_same * av_v, dep_same * av_fee,
+                           dep_same * av_v * mk_ratio),
+            "tot": blk(len(dep_done) + len(dep_book) + dep_same,
+                       sums(dep_done)[1] + sums(dep_book)[1] + dep_same * av_v,
+                       sums(dep_done)[2] + sums(dep_book)[2] + dep_same * av_fee,
+                       sums(dep_done)[3] + sums(dep_book)[3] + dep_same * av_v * mk_ratio),
+        },
+        "partenzePerFirma": per_firma,
+        # share of contracts whose MARK UP cell is filled, per signing year
+        # (markup is entered a consuntivo, so recent years are partial and 2023
+        #  was never tracked at all)
+        "mkCoverage": {
+            str(y): round(
+                sum(1 for r in recs if r[0].year == y and r[4])
+                / max(sum(1 for r in recs if r[0].year == y), 1), 3)
+            for y in sorted({r[0].year for r in recs})
+        },
+        "firmeProssimo": blk(nxt_sign, nxt_sign * av_v, nxt_sign * av_fee,
+                             nxt_sign * av_v * mk_ratio),
+        "prossimo": {
+            "anno": Y + 1,
+            "portafoglio": blk(*sums(nxt_book)),
+            "daFirmeAnno": blk(dep_next, dep_next * av_v, dep_next * av_fee,
+                               dep_next * av_v * mk_ratio),
+            "daFirmeProssimo": blk(nxt_from_own, nxt_from_own * av_v,
+                                   nxt_from_own * av_fee, nxt_from_own * av_v * mk_ratio),
+            "tot": blk(len(nxt_book) + dep_next + nxt_from_own,
+                       sums(nxt_book)[1] + (dep_next + nxt_from_own) * av_v,
+                       sums(nxt_book)[2] + (dep_next + nxt_from_own) * av_fee,
+                       sums(nxt_book)[3] + (dep_next + nxt_from_own) * av_v * mk_ratio),
+        },
+        "storico": {
+            "anni": BASE_YEARS,
+            "firme": [tot_n[y] for y in BASE_YEARS],
+            "partenze": [sum(1 for r in recs if r[1] and r[1].year == y) for y in BASE_YEARS],
+        },
+        "ipotesi": {
+            "avgValore": int(round(av_v)),
+            "avgFee": int(round(av_fee)),
+            "mkRatio": round(mk_ratio, 4),
+            "quotaStessoAnno": round(same_year_w, 3),
+        },
+    }
+
+
+def serialize_forecast(fc):
+    return json.dumps(fc, ensure_ascii=False, indent=2)
 
 
 # --------------------------------------------------------------------------- #
