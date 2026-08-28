@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<title>Radar bandi Onivà</title>
+<style>
+:root{
+  color-scheme: light;
+  --surface-1:#fdfcfa; --plane:#f7f6f2;
+  --ink-1:#14201c; --ink-2:#55605b; --ink-3:#8d948f;
+  --rule:#e4e0d6; --ring:rgba(20,32,28,0.10);
+  --teal:#82BEAA; --teal-d:#3f8570; --gold:#F4D7AD; --gold-d:#a97e2f;
+  --c-liq:#3f8570; --c-inv:#2a6fa8; --c-per:#a4562c; --c-com:#8a5ba8; --c-est:#1f7a86; --c-gen:#c2185b;
+  --st-good:#0f8f52; --st-warn:#c98a12; --st-crit:#c0392b;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --surface-1:#1c211f; --plane:#101413;
+    --ink-1:#f4f2ec; --ink-2:#bcc4bf; --ink-3:#8d948f;
+    --rule:#2c332f; --ring:rgba(244,242,236,0.12);
+    --teal:#82BEAA; --teal-d:#82BEAA; --gold:#F4D7AD; --gold-d:#F4D7AD;
+    --c-liq:#63b79b; --c-inv:#68a8dd; --c-per:#d98a55; --c-com:#b98cd6; --c-est:#4fb6c2; --c-gen:#ef6f9d;
+    --st-good:#3fc07f; --st-warn:#e2ad3c; --st-crit:#e8695a;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface-1:#1c211f; --plane:#101413;
+  --ink-1:#f4f2ec; --ink-2:#bcc4bf; --ink-3:#8d948f;
+  --rule:#2c332f; --ring:rgba(244,242,236,0.12);
+  --teal:#82BEAA; --teal-d:#82BEAA; --gold:#F4D7AD; --gold-d:#F4D7AD;
+  --c-liq:#63b79b; --c-inv:#68a8dd; --c-per:#d98a55; --c-com:#b98cd6; --c-est:#4fb6c2; --c-gen:#ef6f9d;
+  --st-good:#3fc07f; --st-warn:#e2ad3c; --st-crit:#e8695a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--plane); color:var(--ink-1);
+  font:15px/1.58 Calibri,"Segoe UI",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 20px 80px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+.brand{display:flex;align-items:center;gap:20px}
+.brandmark{flex:0 0 auto;line-height:0}
+.brandmark img{height:64px;width:auto;display:block}
+.brandmark img.lw{display:none}
+.brandtext{padding-left:20px;border-left:1px solid var(--rule)}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:29px;margin:0 0 5px;letter-spacing:-.01em;font-weight:normal}
+h1 em{font-style:normal;color:var(--teal-d)}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])) .brandmark img.li{display:none}
+  :root:where(:not([data-theme="light"])) .brandmark img.lw{display:block}
+}
+:root[data-theme="dark"] .brandmark img.li{display:none}
+:root[data-theme="dark"] .brandmark img.lw{display:block}
+:root[data-theme="light"] .brandmark img.li{display:block}
+:root[data-theme="light"] .brandmark img.lw{display:none}
+.sub{color:var(--ink-2);font-size:14px;margin:0;max-width:70ch}
+.theme-btn{background:var(--surface-1);border:1px solid var(--ring);color:var(--ink-2);
+  border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;cursor:pointer}
+.theme-btn:hover{color:var(--ink-1);border-color:var(--teal)}
+
+.note{background:var(--surface-1);border:1px solid var(--ring);border-left:3px solid var(--gold-d);
+  border-radius:10px;padding:15px 17px;margin:22px 0;font-size:14px;color:var(--ink-2)}
+.note b{color:var(--ink-1)}
+.note.key{border-left-color:var(--c-gen)}
+.note.tealb{border-left-color:var(--teal-d)}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0 28px}
+.tile{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;padding:16px}
+.tile .n{font-family:Georgia,serif;font-size:31px;line-height:1.1;letter-spacing:-.02em;color:var(--ink-1)}
+.tile .l{font-size:12.5px;color:var(--ink-2);margin-top:6px}
+.tile.hot .n{color:var(--st-crit)}
+
+h2{font-family:Georgia,serif;font-size:12px;text-transform:uppercase;letter-spacing:.11em;color:var(--ink-3);
+  margin:40px 0 14px;font-weight:normal}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 18px;
+  padding:14px;background:var(--surface-1);border:1px solid var(--ring);border-radius:12px}
+.filters .grp{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.filters .grp+.grp{margin-left:4px;padding-left:14px;border-left:1px solid var(--rule)}
+.flabel{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin-right:2px}
+.chip{background:transparent;border:1px solid var(--ring);color:var(--ink-2);border-radius:99px;
+  padding:5px 11px;font:inherit;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{border-color:var(--teal);color:var(--ink-1)}
+.chip[aria-pressed="true"]{background:var(--ink-1);color:var(--plane);border-color:var(--ink-1)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+.legenda{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;
+  padding:14px 18px;margin:0 0 18px;font-size:13.5px;color:var(--ink-2)}
+.legenda b{color:var(--ink-1)}
+.legenda ul{margin:9px 0 0;padding-left:18px}
+.legenda li{margin-bottom:5px}
+
+.card{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;padding:17px 19px;margin-bottom:12px}
+.card.urgent{border-left:3px solid var(--st-crit)}
+.chead{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:baseline}
+.cname{font-family:Georgia,serif;font-size:17.5px;line-height:1.3;color:var(--ink-1)}
+.cname a{color:inherit;text-decoration:none;border-bottom:1px solid var(--ring)}
+.cname a:hover{border-bottom-color:var(--teal)}
+.cente{font-size:12.5px;color:var(--ink-3)}
+.cbody{font-size:14px;color:var(--ink-2);margin:9px 0 0}
+.cbody b{color:var(--ink-1);font-weight:600}
+.meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:11px;font-size:12.5px;color:var(--ink-3)}
+.meta span b{color:var(--ink-2);font-weight:600;font-variant-numeric:tabular-nums}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px;align-items:center}
+.b{font-size:11.5px;padding:3px 9px;border-radius:99px;border:1px solid var(--ring);color:var(--ink-2);white-space:nowrap}
+.b.cat{border-color:transparent;color:#fff}
+.b.cat[data-c="liquidità"]{background:var(--c-liq)}
+.b.cat[data-c="investimenti"]{background:var(--c-inv)}
+.b.cat[data-c="persone"]{background:var(--c-per)}
+.b.cat[data-c="comunicazione"]{background:var(--c-com)}
+.b.cat[data-c="estero"]{background:var(--c-est)}
+.b.st{font-weight:600}
+.b.st[data-v="aperto"]{color:var(--st-good);border-color:var(--st-good)}
+.b.st[data-v="sportello"]{color:var(--st-good);border-color:var(--st-good)}
+.b.st[data-v="atteso"]{color:var(--ink-2);border-color:var(--st-warn)}
+.b.st[data-v="incerto"]{color:var(--st-warn);border-color:var(--st-warn)}
+.b.st[data-v="supporto"]{color:var(--ink-3)}
+.b.donne{background:var(--gold);color:#4a3410;border-color:transparent;font-weight:600}
+.b.warnflag{color:var(--st-crit);border-color:var(--st-crit)}
+.b.ver{font-size:11px}
+.b.ver[data-v="ok"]{color:var(--st-good);border-color:var(--st-good)}
+.b.ver[data-v="nonuscita"]{color:var(--st-good);border-color:var(--st-good);border-style:dashed}
+.b.ver[data-v="prev"]{color:var(--ink-3);border-style:dashed}
+.b.ver[data-v="sec"]{color:var(--ink-3)}
+.urg{font-variant-numeric:tabular-nums;font-weight:600}
+.urg.hot{color:var(--st-crit)}
+.urg.warm{color:var(--st-warn)}
+
+table.cal{width:100%;border-collapse:collapse;background:var(--surface-1);border:1px solid var(--ring);
+  border-radius:12px;overflow:hidden;font-size:14px}
+table.cal th{text-align:left;padding:11px 16px;font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--ink-3);border-bottom:1px solid var(--rule);font-weight:600}
+table.cal td{padding:11px 16px;border-bottom:1px solid var(--rule);color:var(--ink-2);vertical-align:top}
+table.cal tr:last-child td{border-bottom:none}
+table.cal td:first-child{color:var(--ink-1);white-space:nowrap;width:120px;font-weight:600}
+table.cal td b{color:var(--ink-1);font-weight:600}
+
+.blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.block{background:var(--surface-1);border:1px solid var(--ring);border-left:3px solid var(--teal);
+  border-radius:12px;padding:16px 18px}
+.block h3{font-family:Georgia,serif;font-size:16px;margin:0 0 8px;color:var(--ink-1);font-weight:normal}
+.block p{margin:0;font-size:13.8px;color:var(--ink-2)}
+.block p b{color:var(--ink-1)}
+
+details.dead-list{background:var(--surface-1);border:1px solid var(--ring);border-radius:12px;padding:14px 18px}
+details.dead-list summary{cursor:pointer;font-size:14px;color:var(--ink-2)}
+details.dead-list summary:hover{color:var(--ink-1)}
+details.dead-list ul{margin:14px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink-2)}
+details.dead-list li{margin-bottom:7px}
+details.dead-list li b{color:var(--ink-1);font-weight:600}
+details.dead-list li i{font-style:normal;color:var(--ink-3)}
+
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--ink-3);max-width:85ch}
+.empty{padding:26px;text-align:center;color:var(--ink-3);font-size:14px}
+@media (max-width:640px){
+  .filters .grp+.grp{margin-left:0;padding-left:0;border-left:none}
+  h1{font-size:23px}
+  .brand{gap:14px}
+  .brandmark img{height:48px}
+  .brandtext{padding-left:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="brand">
+    <div class="brandmark">
+      <img class="li" src="data:image/png;base64,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" alt="Onivà" width="280" height="198">
+      <img class="lw" src="data:image/png;base64,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" alt="" width="280" height="198" aria-hidden="true">
+    </div>
+    <div class="brandtext">
+      <h1>Radar bandi</h1>
+      <p class="sub">Mappa della finanza agevolata per il tour operator — Lazio, Italia, Europa. Aggiornata al <b>26 agosto 2026</b>.</p>
+    </div>
+  </div>
+  <button class="theme-btn" id="themeBtn" type="button">Tema</button>
+</header>
+
+<div class="note">
+  <b>Cosa contiene e cosa no.</b> Solo misure per cui un tour operator ATECO 79.12 con sede nel Lazio
+  è ammissibile o quasi: ho verificato uno per uno gli elenchi ATECO e i perimetri territoriali,
+  perché è il punto in cui si perde più tempo. Le misure controllate e scartate stanno in fondo, col motivo,
+  per non ripensarci. Il ritmo qui non è settimanale ma stagionale: gran parte di quello che conta esce
+  tra settembre e dicembre, e alcune misure si esauriscono in ore.
+</div>
+
+<div class="note key">
+  <b>La leva di genere: cosa sblocca davvero, e cosa serve per sbloccarla.</b>
+  Vale la pena impararla a memoria perché tre soglie diverse vengono chiamate tutte "impresa femminile".
+  <b>Il personale non conta mai</b>: nessuna delle definizioni di legge guarda a quante donne sono assunte —
+  guardano solo la compagine sociale e gli organi. Le soglie sono tre:
+  <b>SIMEST</b> chiede il <b>60% delle quote</b>; la <b>legge nazionale</b> (Fondo Impresa Femminile) e i
+  <b>bandi Lazio Innova</b> chiedono <b>almeno 2/3 delle quote <i>e</i> almeno 2/3 dei componenti
+  dell'organo amministrativo</b>, mantenuti per 3 anni dopo l'erogazione.
+  Il salto dalla quota attuale della socia di riferimento a "sopra i due terzi" copre la prima soglia e sfiora la seconda — ma <b>i due terzi vanno
+  superati su entrambi i fronti</b>, e con l'attuale amministratore unico uomo il secondo requisito resta
+  a zero. Se quel passaggio si fa, va fatto sui due piani insieme, altrimenti non apre nulla in più.
+  Il posto dove la maggioranza femminile del personale <i>sì</i> che pesa è la certificazione
+  <b>UNI/PdR 125:2022</b>: nella fascia fino a 49 dipendenti sono 6 KPI su 33, e Onivà parte avvantaggiata.
+</div>
+
+<div class="tiles" id="tiles"></div>
+
+<h2>Le misure, filtrabili</h2>
+<div class="filters">
+  <div class="grp">
+    <span class="flabel">Ambito</span>
+    <button class="chip" data-f="cat" data-v="all" aria-pressed="true" type="button">Tutti</button>
+    <button class="chip" data-f="cat" data-v="liquidità" aria-pressed="false" type="button"><span class="dot" style="background:var(--c-liq)"></span>Liquidità e patrimonio</button>
+    <button class="chip" data-f="cat" data-v="investimenti" aria-pressed="false" type="button"><span class="dot" style="background:var(--c-inv)"></span>Investimenti e digitale</button>
+    <button class="chip" data-f="cat" data-v="persone" aria-pressed="false" type="button"><span class="dot" style="background:var(--c-per)"></span>Persone e formazione</button>
+    <button class="chip" data-f="cat" data-v="comunicazione" aria-pressed="false" type="button"><span class="dot" style="background:var(--c-com)"></span>Comunicazione e mercato</button>
+    <button class="chip" data-f="cat" data-v="estero" aria-pressed="false" type="button"><span class="dot" style="background:var(--c-est)"></span>Estero</button>
+  </div>
+  <div class="grp">
+    <span class="flabel">Stato</span>
+    <button class="chip" data-f="st" data-v="all" aria-pressed="true" type="button">Tutti</button>
+    <button class="chip" data-f="st" data-v="aperto" aria-pressed="false" type="button">Aperto ora</button>
+    <button class="chip" data-f="st" data-v="sportello" aria-pressed="false" type="button">Sempre aperto</button>
+    <button class="chip" data-f="st" data-v="atteso" aria-pressed="false" type="button">Atteso</button>
+  </div>
+  <div class="grp">
+    <span class="flabel">Leva</span>
+    <button class="chip" data-f="donne" data-v="all" aria-pressed="true" type="button">Tutte</button>
+    <button class="chip" data-f="donne" data-v="si" aria-pressed="false" type="button">Solo leva di genere</button>
+  </div>
+  <div class="grp">
+    <span class="flabel">Verifica</span>
+    <button class="chip" data-f="ver" data-v="all" aria-pressed="true" type="button">Tutte</button>
+    <button class="chip" data-f="ver" data-v="ok" aria-pressed="false" type="button">Solo confermate alla fonte</button>
+  </div>
+</div>
+
+<div class="legenda">
+  <b>Come leggere il badge di verifica.</b> Ho riaperto una per una le pagine ufficiali degli enti il
+  <b>26 agosto 2026</b>. Ne risulta che:
+  <ul>
+    <li><b>✓ confermata alla fonte</b> — pagina dell'ente aperta e dati corrispondenti. Sono la maggioranza,
+      e comprendono tutte quelle su cui c'è da muoversi adesso.</li>
+    <li><b>✓ non ancora uscita</b> — verificato che al 26 agosto <i>non</i> esiste un atto pubblicato.
+      La data indicata è una previsione, ma la verifica dell'assenza è reale.</li>
+    <li><b>◷ previsione</b> — data o parametro ricostruito dalla ricorrenza storica o da fonte qualificata
+      non ufficiale. Serve a presidiare, non a pianificare.</li>
+    <li><b>fonte secondaria</b> — dato raccolto da stampa specializzata concordante ma non riaperto sulla
+      pagina istituzionale (spesso perché l'ente blocca l'accesso automatico). Da riverificare prima di
+      impegnarci lavoro.</li>
+  </ul>
+</div>
+
+<div id="cards"></div>
+
+<h2>Calendario dei ricorrenti — quando aspettarseli</h2>
+<table class="cal">
+  <thead><tr><th>Quando</th><th>Cosa esce, o cosa scade</th></tr></thead>
+  <tbody id="calBody"></tbody>
+</table>
+
+<h2>I nodi da sciogliere prima di qualsiasi domanda</h2>
+<div class="blocks">
+
+  <div class="block" style="border-left-color:var(--st-crit)">
+    <h3>Il numero che apre o chiude tutto il dossier SIMEST</h3>
+    <p>Sembrava che un tour operator <i>outgoing</i> fosse fuori da SIMEST — vende in Italia, compra
+    all'estero, non esporta. Non è così: la circolare 4/394/2023 aggiornata al 30 aprile 2026 include
+    <b>il rigo VE32 nel calcolo della quota estera «per i soli settori turistico e dell'editoria»</b>.
+    VE32 è dove il regime 74-ter espone i corrispettivi dei pacchetti eseguiti fuori UE. Serve quindi che
+    Alessandra calcoli <b>(VE30 + VE34 + VE32) / VE50</b> sulle ultime due dichiarazioni IVA:
+    <b>sopra il 10% si entra, sopra il 20% si entra col fondo perduto</b>. Con il lungo raggio in portafoglio
+    è probabile che siano entrambe superate, ma finché il numero non c'è tutto il resto è teoria.
+    Tetto complessivo verso il Fondo 394: <b>35% dei ricavi medi</b> degli ultimi due bilanci.</p>
+  </div>
+
+  <div class="block" style="border-left-color:var(--st-crit)">
+    <h3>La polizza CAT-NAT, che blocca le domande a monte</h3>
+    <p>Dal <b>1° gennaio 2026</b> le micro e piccole imprese devono avere in essere una <b>polizza contro
+    le calamità naturali</b> (ex L. 213/2023) per accedere ai nuovi finanziamenti SIMEST, e lo stesso
+    requisito compare nei fondi regionali del Lazio. Senza polizza la domanda è irricevibile, e non è
+    qualcosa che si sistema nella settimana dello sportello. È il primo controllo da fare, prima ancora
+    di scegliere la misura.</p>
+  </div>
+
+  <div class="block">
+    <h3>Il de minimis è un plafond unico</h3>
+    <p>Buona parte di quello che c'è in questa pagina viaggia in <b>de minimis: 300.000 € su tre esercizi</b>,
+    contati per <b>impresa unica</b> — quindi società collegate e controllate condividono lo stesso plafond.
+    Voucher camerali, bandi Lazio Innova, Marchi+, decontribuzioni: sommano tutti lì dentro. Prima di
+    impostare più domande in parallelo serve il <b>registro nazionale aiuti di Stato</b> consolidato e una
+    decisione su chi ha la precedenza. Vale anche per la soglia dimensionale di PMI, che va letta
+    consolidando associate e collegate — inclusi i rapporti dentro la rete Joule.</p>
+  </div>
+
+  <div class="block">
+    <h3>L'adesione al fondo interprofessionale, che costa zero</h3>
+    <p>Onivà versa già lo <b>0,30% del monte salari</b> ex art. 12 L. 160/1975. Aderire a un fondo
+    interprofessionale non aggiunge un euro: <b>dirotta un contributo già obbligatorio</b>, con una riga nel
+    flusso UniEmens che può fare il consulente del lavoro in qualsiasi momento. Per il CCNL turismo il fondo
+    coerente è <b>Fon.Ter</b> (codice FTUS). Finché l'adesione non c'è, tutti gli avvisi del blocco formazione
+    sono chiusi — e sono gli unici in cui non conta quanto hai versato ma quanto sai progettare.
+    Il conto aziendale, su un organico di questa dimensione, vale poco: il valore sta negli
+    avvisi di sistema.</p>
+  </div>
+
+  <div class="block">
+    <h3>Il vero collo di bottiglia non è l'ammissibilità: sono le finestre</h3>
+    <p>In Lazio l'ATECO 79.12 non è quasi mai il problema — negli avvisi Lazio Innova le attività escluse
+    sono solo quelle de minimis e DNSH, e in un caso il turismo è settore <i>prioritario</i>. Il problema è
+    la durata: <b>Fondo Piccolo Credito 7 giorni, Patrimonializzazione ~30, Voucher camerale 10</b>. Tutte e
+    tre si sono chiuse per esaurimento nella primavera 2026, prima che chi non era pronto potesse reagire.
+    Conseguenza operativa: visure, ultimi due bilanci, DURC, polizza CAT-NAT, preventivi firmati e SPID del
+    legale rappresentante vanno tenuti pronti <b>fuori</b> dalle finestre, non dentro.</p>
+  </div>
+
+  <div class="block">
+    <h3>Due decisioni societarie con un valore misurabile</h3>
+    <p>La <b>certificazione UNI/PdR 125:2022</b> vale <b>+10 punti su 100</b> nella graduatoria del Voucher
+    Digitalizzazione PMI del Lazio, 5 punti nel Voucher Internazionalizzazione, il passaggio da 80% a 85%
+    su Marchi+, e l'esonero contributivo dell'1% (tetto 50.000 €/anno, che su un organico di questa dimensione vale poche migliaia di euro). Oggi <b>non esiste un contributo aperto che ne copra il costo</b>: si paga per intero, salvo
+    riapertura di <i>Impresa Rosa</i>. Se si fa, chiuderla entro il <b>31/12/2026</b> apre la campagna INPS 2027.
+    Il salto della socia oltre i due terzi, invece, va valutato per ragioni proprie: oggi nessuna misura
+    <i>nazionale</i> lo remunera (il Fondo Impresa Femminile è chiuso dal 2022), ma apre i bandi regionali
+    dedicati — a condizione che si muova anche l'organo amministrativo.</p>
+  </div>
+
+</div>
+
+<h2>Verificato e scartato — per non ripensarci</h2>
+<details class="dead-list">
+  <summary id="deadSummary">misure controllate e messe da parte, con il motivo</summary>
+  <ul id="deadList"></ul>
+</details>
+
+<footer>
+  Dati raccolti e verificati il 26 agosto 2026 su fonti ufficiali (MIMIT, Invitalia, Mediocredito Centrale,
+  Agenzia delle Entrate, INPS, Ministero del Lavoro, Ministero del Turismo, Regione Lazio, Lazio Innova,
+  LazioEuropa, Camera di commercio di Roma, Unioncamere, SIMEST, ICE, EISMEA, HaDEA, CINEA, Fon.Ter, For.Te).
+  Ogni scheda linka la fonte. Gli stati "atteso" senza badge di conferma sono previsioni basate sulla
+  ricorrenza storica, non su date pubblicate: vanno riverificati prima di contarci. Gli importi e le
+  intensità sono ordini di grandezza per decidere dove guardare — nessun dato qui sostituisce la lettura
+  del bando. Le soglie di ammissibilità legate alla compagine sociale vanno confermate su visura aggiornata
+  prima di qualsiasi impegno.
+</footer>
+
+</div>
+
+<script>
+const OGGI = new Date(2026, 7, 26);
+
+const M = [
+
+/* ============ APERTE E ATTIVABILI ORA ============ */
+
+{n:"Voucher Cloud Computing e Cybersecurity", e:"MIMIT — attuazione Infratel", st:"aperto",
+ d:"2026-10-20", dlab:"precompilazione", cat:["investimenti"], forma:"Fondo perduto 50%", imp:"4.000 – 20.000 €",
+ t:"La misura nazionale più adatta al profilo di Onivà: nessun vincolo settoriale, PMI di ogni settore, e copre esattamente ciò che un TO digitale consuma — servizi cloud <b>IaaS/PaaS/SaaS inclusi gestionali, CRM, HR ed e-commerce</b>, sicurezza hardware e software, supporto professionale entro il 30% del piano. Dotazione 150 M€, di cui 71 riservati al Mezzogiorno: il Lazio concorre sui restanti ~79 M€. Precompilazione dal <b>20 ottobre ore 12:00</b>, domande dal <b>10 novembre al 20 gennaio 2027</b> in ordine cronologico. Richiede connettività ≥30 Mbps. Due trappole: i <b>fornitori devono essere nell'elenco abilitato MIMIT</b> (D.D. 29/07/2026), e i meri rinnovi di servizi già in essere non sono ammessi — serve avanzamento tecnologico.",
+ flag:"Ordine cronologico — e i fornitori vanno verificati nell'elenco prima del 20 ottobre", ver:"ok",
+ url:"https://www.mimit.gov.it/it/incentivi/sostegno-alla-domanda-di-servizi-di-cloud-computing-e-cyber-security"},
+
+{n:"Rafforzamento delle capacità manageriali", e:"Regione Lazio — PR FSE+", st:"aperto",
+ d:"2026-12-22", cat:["persone","liquidità"], forma:"Voucher a fondo perduto", imp:"22.000 € → 26.000 € se donna", donne:true,
+ t:"Voucher per inserire una figura manageriale: Linea A assunzione di quadro o dirigente con contratto ≥12 mesi, Linea B consulenza manageriale ≥12 mesi e ≥100 giornate (max 50 €/h). Per la fascia 11–50 dipendenti sono <b>22.000 €, che diventano 26.000 se il manager o la consulente è donna</b> (o over 55). L'avviso dà <b>priorità esplicita al settore turismo</b>. Sportello con finestre di valutazione a 30 giorni, dotazione 5 M€, aperto da febbraio: il rischio esaurimento è concreto. <b>Da verificare l'Allegato 3</b> (file .xls con l'elenco ATECO puntuale) prima di impegnare lavoro — è l'unico punto non confermabile online.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioeuropa.it/bandi/rafforzamento-delle-capacita-manageriali-delle-imprese/"},
+
+{n:"Bonus Donne — esonero contributivo totale", e:"INPS — D.L. 60/2024 «Coesione»", st:"aperto",
+ d:"2026-12-31", cat:["persone"], forma:"Esonero 100% contributi datore", imp:"fino a 15.600 € per assunzione", donne:true,
+ t:"Esonero del <b>100% dei contributi previdenziali a carico dell'azienda</b>, tetto 650 €/mese per <b>24 mesi</b> — fino a 15.600 € per ogni assunzione. Richiede assunzione a <b>tempo indeterminato</b>, incremento occupazionale netto e nessun licenziamento nella stessa unità produttiva nei 6 mesi precedenti. La lavoratrice deve essere priva di impiego regolarmente retribuito <b>da almeno 24 mesi</b> (qualsiasi età, ovunque residente), oppure da 12 mesi se rientra nelle categorie svantaggiate del Reg. UE 651/2014 — tra cui <b>l'essere occupata in un settore con disparità di genere ≥25%</b>. <b>Cumulabile con la maxi-deduzione al 130%</b>, che agisce sull'IRES e non sui contributi.",
+ flag:"La finestra si chiude il 31/12/2026 e non è confermata oltre: le assunzioni femminili previste per il 2027 vanno valutate per anticipo", ver:"ok",
+ url:"https://lavoro.gov.it/pn-giovani-donne-lavoro/progetti/bonus-donne-2026"},
+
+{n:"Acchiappa Talenti", e:"Regione Lazio — PR FSE+", st:"aperto",
+ d:"2026-09-30", cat:["persone"], forma:"Contributo a fondo perduto", imp:"fino a 10 assunzioni agevolabili",
+ t:"Incentivo per l'inserimento lavorativo a tempo indeterminato o determinato ≥12 mesi, dotazione 11 M€, fino a 10 assunzioni agevolabili per PMI e fino a 3 domande in finestre mensili distinte. Destinatari: disoccupati e inoccupati, con priorità agli under 35 residenti nel Lazio e ai profili altamente qualificati. Nessuna esclusione del turismo. <b>Gli importi unitari non sono esposti sulle pagine ufficiali</b> — fonti secondarie parlano di 26.000 € per assunzione, ma vanno letti sull'allegato tecnico prima di costruirci sopra un business case.",
+ flag:"Scade tra poche settimane: se ci sono assunzioni programmate per l'autunno, si decide ora", ver:"ok",
+ url:"https://www.lazioeuropa.it/bandi/acchiappa-talenti-incentivi-alle-imprese-per-linserimento-lavorativo-di-giovani-e-adulti/"},
+
+{n:"Fon.Ter — Avvisi 4/2026 «Generalista», 3/2026 «Fast Neo», 1/2026 «Aperto»", e:"Fondo interprofessionale del terziario", st:"sportello",
+ d:"", cat:["persone"], forma:"Fondo perduto su piani formativi", imp:"dotazioni da 0,5 a 7 M€",
+ t:"Tre avvisi aperti a sportello fino a esaurimento: <b>Generalista</b> (7 M€, piani formativi aziendali e settoriali), <b>Fast Neo</b> (500.000 €, pensato per le neo-aderenti — il più rapido da attivare), <b>Aperto</b> (1 M€, percorsi a catalogo: la formula più leggera, si sceglie invece di progettare). Coprono competenze digitali, lingue, commerciale. <b>Prerequisito assoluto: l'adesione a Fon.Ter deve essere già perfezionata</b> — si fa via UniEmens, costa zero, ma va fatta prima. Chi migra da un altro fondo porta con sé il 70% delle risorse maturate nel triennio.",
+ flag:"L'avviso 2/2026 «Kit Generalista» è precluso: richiedeva adesione entro il 30/04/2026", ver:"ok",
+ url:"https://www.fonter.it/avvisi-di-gara/"},
+
+{n:"Fondo di garanzia PMI", e:"MIMIT — gestore Mediocredito Centrale", st:"sportello",
+ d:"", cat:["liquidità"], forma:"Garanzia pubblica", imp:"fino a 5 M€ garantiti",
+ t:"La leva di liquidità principale e l'unica sempre disponibile. Copertura <b>50% sui finanziamenti per liquidità e capitale circolante, 80% su quelli per investimento</b> (e su Nuova Sabatini). Operatività 2025 prorogata integralmente <b>fino al 31/12/2026</b> dal Milleproroghe. Nuovo fattore di rischio in vigore dal 22/05/2026. Attenzione a una clausola utile: la circolare MCC 2/2026 ha introdotto un premio aggiuntivo <b>a carico del finanziatore, non ribaltabile sull'impresa</b> — i contratti stipulati dopo il 20/02/2026 devono contenere la clausola di invarianza di costo. Esiste una <b>sezione speciale per le imprese a prevalente partecipazione femminile</b> con istruttoria semplificata, di cui però non ho potuto verificare le condizioni puntuali.",
+ flag:"", ver:"ok", donne:true,
+ url:"https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi"},
+
+{n:"Nuova Sabatini — linea Capitalizzazione", e:"MIMIT", st:"sportello",
+ d:"", cat:["liquidità","investimenti"], forma:"Contributo in conto impianti al 5%", imp:"finanziamento 20.000 – 4.000.000 €",
+ t:"È <b>l'unica misura nazionale che paga esplicitamente la patrimonializzazione</b>. Contributo maggiorato al <b>5%</b> per le micro e piccole imprese (contro il 2,75% ordinario e il 3,575% per gli investimenti 4.0 e green), a fronte di un <b>aumento di capitale sociale pari ad almeno il 30% dell'importo finanziato</b>, da sottoscrivere entro 30 giorni dalla concessione. È il punto in cui l'esigenza di rafforzamento patrimoniale e quella di investimento digitale coincidono — e se l'aumento di capitale serve comunque per altre ragioni, farlo dentro questa misura lo paga due volte. Cumulabile con la garanzia MCC all'80%.",
+ flag:"", ver:"ok",
+ url:"https://www.mimit.gov.it/it/incentivi/agevolazioni-per-gli-investimenti-delle-pmi-in-beni-strumentali-nuova-sabatini"},
+
+{n:"Nuova Sabatini — linea ordinaria beni strumentali", e:"MIMIT", st:"sportello",
+ d:"", cat:["investimenti"], forma:"Contributo in conto impianti 2,75% / 3,575%", imp:"20.000 – 4.000.000 €",
+ t:"Rifinanziata con <b>650 M€</b> dalla Legge di Bilancio 2026 (avviso MIMIT del 24/03/2026), dotazione residua ampia. Ammessi <b>hardware, software e tecnologie digitali nuovi</b> purché dotati di autonomia funzionale: è la via più diretta per finanziare CRM, gestionale e infrastruttura. Tutti i settori tranne il finanziario e assicurativo, nessun vincolo territoriale. Esclusi terreni, fabbricati, beni usati e componenti privi di autonomia funzionale.",
+ flag:"", ver:"ok",
+ url:"https://www.mimit.gov.it/it/incentivi/agevolazioni-per-gli-investimenti-delle-pmi-in-beni-strumentali-nuova-sabatini"},
+
+{n:"SIMEST — Transizione Digitale o Ecologica", e:"SIMEST (Gruppo CDP) — Fondo 394/81", st:"sportello",
+ d:"2026-12-31", dlab:"fine potenziamento", cat:["investimenti","estero"], forma:"Finanziamento allo 0,371% + fondo perduto fino al 10%", imp:"fino al 35% dei ricavi medi",
+ t:"Il tetto è il minore tra 2,5 M€ e il <b>35% dei ricavi medi degli ultimi due bilanci</b>, a un tasso dello 0,371% su 6 anni con 2 di preammortamento. Almeno il 50% va in transizione digitale o ecologica (processi digitali, attrezzature tecnologiche, disaster recovery, certificazioni, efficientamento), il resto in rafforzamento patrimoniale. Consulenze fino al 5%, <b>inclusa quella per la presentazione della domanda</b>. Il <b>fondo perduto al 10% (max 100.000 €) non è automatico</b>: serve almeno uno dei requisiti previsti — quota export media ≥20%, oppure una certificazione ambientale, oppure il 60% delle quote in mano a donne. <b>Esclusa la pubblicità</b>: la spesa su Google e Meta non è finanziabile su questa linea.",
+ flag:"Il potenziamento scade il 31/12/2026. Senza polizza CAT-NAT la domanda è irricevibile", ver:"ok", donne:true,
+ url:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/transizione-digitale-o-ecologica/"},
+
+{n:"SIMEST — Certificazioni e Consulenze", e:"SIMEST — Circ. 7/394/2023", st:"sportello",
+ d:"", cat:["estero","investimenti"], forma:"Finanziamento allo 0,371% + fondo perduto fino al 10%", imp:"10.000 – 500.000 €",
+ t:"<b>Nessun fatturato estero minimo per accedere</b> — la soglia serve solo per il cofinanziamento a fondo perduto. Copre certificazioni ambientali e di sostenibilità (ISO 14001, ISO 45001, SA8000), tutela della proprietà intellettuale e dei marchi, consulenze specialistiche, studi di fattibilità, formazione su export e internazionalizzazione; fino al 20% in viaggi e incoming di partner. Si dichiarano al massimo 3 Paesi di destinazione. <b>È la mossa a incastro</b>: finanzia la certificazione ambientale che a sua volta sblocca il fondo perduto sulle altre linee SIMEST. Su <b>Travelife</b>, standard GSTC di settore, l'ammissibilità è plausibile ma non scritta: la circolare cita gli standard «ad esempio», quindi va chiesta in istruttoria. ISO 14001 è invece certa e ha lo stesso effetto.",
+ flag:"", ver:"ok",
+ url:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/certificazioni-consulenze/"},
+
+{n:"SIMEST — Temporary Manager", e:"SIMEST — Circ. 8/394/2023", st:"sportello",
+ d:"", cat:["persone","estero"], forma:"Finanziamento allo 0,371% + fondo perduto fino al 10%", imp:"10.000 – 500.000 €",
+ t:"Anche qui <b>nessun fatturato estero minimo per l'accesso</b>. Almeno il 60% va nelle prestazioni di un temporary manager con contratto di durata minima 6 mesi e ruolo, oggetto, calendario e corrispettivo definiti; il restante 40% in spese connesse — <b>marketing, digitalizzazione, formazione, certificazioni internazionali, consulenze ambientali</b>. È la linea che consente di portare dentro competenze manageriali senza assumerle, e di finanziare intorno a quelle una parte di sviluppo commerciale.",
+ flag:"", ver:"ok",
+ url:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/temporary-manager/"},
+
+{n:"Maxi-deduzione del costo del lavoro (120% / 130%)", e:"Agenzia delle Entrate — D.Lgs. 216/2023", st:"sportello",
+ d:"2027-12-31", cat:["persone"], forma:"Deduzione IRES maggiorata", imp:"+20% / +30% del costo del lavoro", donne:true,
+ t:"Deduzione IRES al <b>120%</b> del costo del personale assunto a tempo indeterminato, che sale al <b>130%</b> per i lavoratori «meritevoli di maggiore tutela» — categoria che include <b>donne con almeno due figli minori, donne prive di impiego da almeno 6 mesi, disoccupati di lunga durata, persone con disabilità</b>. Serve un incremento effettivo del numero di dipendenti a tempo indeterminato rispetto all'esercizio precedente. Confermata dalla Legge di Bilancio 2026 ed estesa fino al 31/12/2027. <b>Cumulabile con gli esoneri contributivi</b> perché agisce su base IRES. L'elenco puntuale delle categorie va riscontrato sull'allegato prima di quantificare.",
+ flag:"", ver:"sec",
+ url:"https://www.fiscoetasse.com/approfondimenti/17074-bonus-assunzioni-2026-gli-incentivi-strutturali-attivi.html"},
+
+{n:"Sgravio donne svantaggiate e over 50", e:"INPS — art. 4 L. 92/2012", st:"sportello",
+ d:"", cat:["persone"], forma:"Riduzione 50% contributi datore", imp:"12–18 mesi di beneficio", donne:true,
+ t:"Misura strutturale senza scadenza: <b>riduzione del 50% dei contributi a carico dell'azienda</b>, per 12 mesi se l'assunzione è a termine (18 se poi trasformata a tempo indeterminato), 18 mesi se l'assunzione è direttamente a tempo indeterminato. Requisiti di svantaggio meno stringenti del Bonus Donne, beneficio dimezzato. <b>Non cumulabile</b> con l'esonero al 100%: si sceglie il più favorevole caso per caso. È l'alternativa di ripiego quando il Bonus Donne non è attivabile — e diventa l'unica strada dal 1° gennaio 2027 se la finestra del Bonus non viene prorogata.",
+ flag:"", ver:"sec",
+ url:"https://www.fiscoetasse.com/approfondimenti/17074-bonus-assunzioni-2026-gli-incentivi-strutturali-attivi.html"},
+
+{n:"Esonero per sostituzione maternità", e:"INPS — art. 4 D.Lgs. 151/2001", st:"sportello",
+ d:"", cat:["persone"], forma:"Riduzione 50% contributi datore", imp:"per tutta la sostituzione", donne:true,
+ t:"Riduzione del <b>50% dei contributi datoriali</b> per le assunzioni a termine in sostituzione di personale in congedo di maternità o parentale. Riservato alle aziende <b>con meno di 20 dipendenti</b>: Onivà, con circa 13, rientra pienamente. Dato l'organico a larghissima maggioranza femminile è la misura più ricorrente e più facilmente dimenticata di tutto questo elenco — vale la pena che Ludovica la metta in checklist ogni volta che si apre una sostituzione.",
+ flag:"", ver:"sec",
+ url:"https://www.fiscoetasse.com/approfondimenti/17074-bonus-assunzioni-2026-gli-incentivi-strutturali-attivi.html"},
+
+{n:"Bando Sviluppo Impresa 2026", e:"Camera di commercio di Roma", st:"aperto",
+ d:"2026-12-31", cat:["liquidità","investimenti"], forma:"Voucher a fondo perduto", imp:"fino a 15.000 € cumulando le misure",
+ t:"Tre misure alternative da <b>max 5.000 €</b> (accompagnamento e mentoring, monitoraggio e supporto PMI, <b>digitalizzazione e innovazione</b>) più due misure cumulabili da 5.000 € ciascuna: <b>abbattimento del tasso di interesse</b> e <b>abbattimento dei costi di garanzia</b>. Dotazione 2 M€, 25% riservato all'imprenditoria under 35. Il vincolo che decide tutto: l'impresa deve aver ottenuto, <b>a partire dal 3 novembre 2025, un finanziamento garantito o co-garantito da un Confidi soggetto attuatore</b>, e <b>la domanda la presenta il Confidi, non l'impresa</b>. Se Onivà sta valutando linee di credito, conviene incardinarle su un Confidi in elenco: il voucher poi arriva quasi da sé.",
+ flag:"La porta d'ingresso è il Confidi — senza un rapporto già attivo servono settimane di istruttoria", ver:"ok",
+ url:"https://www.rm.camcom.it/archivio43_bandi-altri-bandi_0_278.html"},
+
+{n:"IRES premiale 2026 (mini-IRES al 20%)", e:"MEF — Legge di Bilancio 2026", st:"aperto",
+ d:"", cat:["liquidità"], forma:"Aliquota IRES 20% anziché 24%", imp:"−4 punti sull'imponibile",
+ t:"Aliquota al <b>20% invece del 24%</b> a tre condizioni cumulative: accantonare a riserva <b>almeno l'80% dell'utile</b> destinandone almeno il 30% a beni strumentali nuovi 4.0/5.0; <b>incremento occupazionale ≥1%</b> mantenendo la media del triennio; nessun ricorso alla cassa integrazione. Il collo di bottiglia è il primo requisito: configurare beni 4.0 «interconnessi» per un tour operator è difficile. Va però modellata insieme alla Nuova Sabatini Capitalizzazione, perché entrambe premiano lo stesso comportamento — trattenere utile in azienda. È una scelta che si fa in sede di destinazione dell'utile 2026, quindi entro la primavera 2027.",
+ flag:"", ver:"sec",
+ url:"https://quifinanza.it/fisco-tasse/ires-premiale-manovra-2026-rinnovo/933276/"},
+
+{n:"Bonus occupazionale SALGO e RI-SALGO", e:"Regione Lazio — PR FSE+", st:"aperto",
+ d:"2026-12-04", cat:["persone"], forma:"Contributo a fondo perduto", imp:"3.000 – 12.000 € per assunzione",
+ t:"12.000 € per un tempo indeterminato full time, 6.000 € per part time ≥50% o determinato full time ≥12 mesi. Dotazione 7 M€ con almeno il 60% riservato alle PMI, domanda entro 45 giorni dall'assunzione. <b>Non è attivabile a freddo</b>: presuppone che l'azienda abbia ospitato un tirocinante del programma SALGO (18-35 anni) o RI-SALGO (adulti) e lo assuma entro 3 mesi dalla fine del percorso. Ha senso solo se Onivà entra ora nella rete dei soggetti ospitanti, con orizzonte di beneficio 2027. Considerato il turnover tipico del booking, è un canale di reclutamento che si ripaga.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioeuropa.it/bandi/bonus-occupazionale-salgo/"},
+
+/* ============ ATTESE — DA PRESIDIARE ============ */
+
+{n:"SIMEST — Investimenti in IA e Quantum Computing", e:"SIMEST — nuova sezione Fondo 394/81", st:"atteso",
+ d:"2026-09-21", dlab:"apertura sportello", cat:["investimenti","estero"], forma:"Finanziamento agevolato + fondo perduto 10%", imp:"dotazione 200 M€",
+ t:"La finestra più favorevole del calendario. Dotazione <b>200 milioni</b>, durata fino a 8 anni con 2 di preammortamento e prima tranche del 50% erogata in anticipo. Il punto che la rende speciale: il <b>requisito di fatturato estero scenderebbe al 3%</b> contro il 10% ordinario — con il carve-out VE32 sul turismo, Onivà lo supererebbe quasi certamente. Copre hardware, licenze, infrastruttura dati, integrazione con i gestionali, compliance AI Act, cybersecurity e <b>formazione del personale</b>. Per un'azienda che costruisce itinerari su misura e lavora su lead digitali, gli usi difendibili non mancano: scoring dei lead, personalizzazione dell'offerta, assistenza alla costruzione degli itinerari. <b>Data e soglia del 3% vengono da fonte qualificata non ufficiale</b>: le condizioni definitive escono con l'aggiornamento della circolare, da rileggere il 21 settembre prima di muoversi.",
+ flag:"Apertura attesa il 21 settembre — tra meno di un mese", ver:"prev",
+ url:"https://www.simest.it/media/mondo-simest/simest-lancia-una-nuova-misura-da-200-milioni-di-euro-dedicata-agli-investimenti-in-intelligenza-artificiale-per-le-pmi-italiane/"},
+
+{n:"Nuovo Fondo Piccolo Credito", e:"Regione Lazio / Lazio Innova — Fare Lazio", st:"atteso",
+ d:"", cat:["liquidità"], forma:"Finanziamento a tasso zero", imp:"10.000 – 50.000 €",
+ t:"<b>Tasso zero</b>, 60 mesi con 12 di preammortamento, copertura fino al 100% del costo del progetto, e — cosa rara — tra le spese ammissibili c'è il <b>capitale circolante</b> accanto a investimenti e consulenze. ATECO 79.12 ammesso. Requisiti: due bilanci depositati, esposizione bancaria contenuta, regolarità contributiva, polizza catastrofale. L'edizione 2026 ha aperto l'11 maggio alle 10:00 e ha <b>chiuso il 18 maggio</b>: 51,7 M€ bruciati in sette giorni. La misura è stata riaperta nel 2023, 2024 e 2026, quindi una nuova edizione è ragionevole ma non annunciata. La pre-registrazione su farelazio.it apre 4 giorni prima dello sportello: <b>chi si accorge dell'apertura dalla stampa arriva tardi</b>.",
+ flag:"Click-day di fatto: sette giorni di finestra. È il canale più diretto per la liquidità", ver:"prev",
+ url:"https://www.lazioinnova.it/bandi/nuovo-fondo-piccolo-credito-2026/"},
+
+{n:"Fondo Patrimonializzazione PMI", e:"Regione Lazio / Lazio Innova — Fare Lazio", st:"atteso",
+ d:"", cat:["liquidità"], forma:"Finanziamento a tasso zero", imp:"50.000 – 500.000 €",
+ t:"<b>Tasso zero</b> su 84 mesi con 12 di preammortamento, erogazione unica, a copertura del <b>50% del costo di progetto</b> — l'altro 50% deve venire da un <b>aumento di capitale di almeno 50.000 €</b> sottoscritto e versato prima della domanda. Costo minimo di progetto 100.000 €; spese ammissibili investimenti materiali e immateriali, consulenze fino al 10%, circolante fino al 30%. È lo strumento che risolve <b>due problemi in una mossa</b>: rafforza il PN e porta liquidità gratuita. E se la socia deve comunque salire di quota, farlo dentro un aumento di capitale agganciato a questo fondo vale il doppio. Edizione 2026 chiusa il 15 maggio per esaurimento dopo circa un mese.",
+ flag:"", ver:"prev",
+ url:"https://www.lazioinnova.it/bandi/fondo-patrimonializzazione-pmi-2026/"},
+
+{n:"Voucher Digitalizzazione PMI — III edizione", e:"Regione Lazio / Lazio Innova — PR FESR", st:"atteso",
+ d:"", cat:["investimenti"], forma:"Fondo perduto a costi standard", imp:"8.125 – 100.000 €", donne:true,
+ t:"Il bando più capiente sul fronte digitale, e l'unico dove <b>la certificazione di parità di genere si monetizza direttamente: +10 punti su 100 in graduatoria</b>. ATECO 79.12 verificato ammissibile sull'Appendice 1 dell'avviso (le esclusioni sono solo de minimis e DNSH). Copre diagnosi digitale, digital workplace, <b>sistemi di e-commerce</b>, migrazione cloud, cybersecurity — e Onivà, essendo piccola impresa e non micro, accede a tutte le voci. Soglia minima di progetto 14.000 €. Non è click-day ma graduatoria a punteggio: gli altri criteri sono valore aggiunto per addetto, numero di addetti, complessità progettuale, certificazioni ambientali. II edizione chiusa a novembre 2025, prima graduatoria approvata a maggio 2026, terza edizione non ancora pubblicata.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioinnova.it/bandi/voucher-digitalizzazione-pmi-ii-edizione-2025/"},
+
+{n:"Donne e Impresa", e:"Regione Lazio / Lazio Innova", st:"atteso",
+ d:"", cat:["investimenti","comunicazione"], forma:"Fondo perduto 50–70%", imp:"fino a 100.000 €", donne:true,
+ t:"<b>50–70% a fondo perduto fino a 100.000 €</b> su macchinari, attrezzature, software e piattaforme digitali incluso il SaaS, con spese generali forfettarie al 20% e un bonus aggiuntivo di circa 4.950 € per soluzioni di <i>digital commerce & engagement</i>. Turismo ammesso. Il punteggio premia anzianità d'impresa (30 punti) e fatturato (30): su entrambi Onivà si presenta bene. <b>Il requisito che decide è l'assetto</b>: per le società di capitali servono <b>almeno 2/3 delle quote in mano a donne <i>e</i> almeno 2/3 degli amministratori donne</b>, da mantenere per 3 anni dopo l'erogazione. È il bando che il salto oltre i due terzi sbloccherebbe — ma solo se si muove anche l'organo amministrativo. Edizione 2026 chiusa il 10 giugno; la misura è ricorrente, prossima edizione ragionevolmente attesa nella primavera 2027.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioinnova.it/bandi/donne-e-impresa-2026/"},
+
+{n:"Voucher Doppia Transizione Digitale ed Ecologica", e:"Camera di commercio di Roma", st:"incerto",
+ d:"", cat:["investimenti","persone"], forma:"Fondo perduto 70%", imp:"fino a 10.000 €",
+ t:"Piccolo ma facile, e copre una combinazione insolita: <b>beni e servizi digitali + consulenza + formazione, al 70%</b>, con investimento minimo 3.000 €. Nell'edizione 2025 la Camera di Roma aveva 10 M€ e la finestra è durata <b>dieci giorni</b> (15–25 settembre), in ordine cronologico. <b>Stato al 26 agosto</b>: sulla pagina bandi della Camera di Roma <b>l'edizione 2026 non è pubblicata</b> — c'è solo la 2025 in fase di liquidazione. Altre camere hanno già aperto con scadenze tra fine agosto e metà ottobre (Caltanissetta 31/8, Aosta e Gran Sasso 30/9, Bari 15/10), quindi la finestra romana, se arriva, arriva adesso. Sull'elenco nazionale PID la posizione di Roma risulta ambigua e non l'ho potuta risolvere con certezza: <b>vale una telefonata al PID di Roma</b>, che costa dieci minuti e toglie il dubbio. <b>Il dossier è già pronto</b> — relazione descrittiva e presentazione sono nella cartella Onivà dallo scorso aprile: quello che manca è la finestra. Da presidiare settimanalmente da inizio settembre, tenendo pronti SPID del legale rappresentante e accesso a restart.infocamere.it. Se Roma non pubblica, gran parte di quel dossier si ricicla quasi tale e quale sul <b>Voucher Cloud e Cybersecurity</b> del MIMIT, che apre il 20 ottobre e ha un massimale doppio.",
+ flag:"Edizione 2026 non ancora pubblicata da Roma: se apre, apre in queste settimane", ver:"nonuscita",
+ url:"https://www.rm.camcom.it/pagina4098_bando-voucher-doppia-transizione-digitale-e-ecologica-2025.html"},
+
+{n:"Impresa Rosa", e:"Regione Lazio / Lazio Innova", st:"atteso",
+ d:"", cat:["persone"], forma:"Fondo perduto", imp:"3.000 € nella fascia 10–15 dipendenti", donne:true,
+ t:"Contributo dedicato all'<b>ottenimento della certificazione UNI/PdR 125:2022</b>, a scaglioni sul numero di dipendenti: <b>3.000 € per la fascia 10–15</b>, 3.600 € per 15–25. Requisiti: micro o piccola impresa con sede operativa nel Lazio, almeno un dipendente ULA, <b>priva di precedente certificazione</b>. Onivà era pienamente ammissibile e lo sportello è rimasto aperto sedici mesi, fino al <b>20 dicembre 2025</b>: è l'occasione mancata più rilevante di questo dossier. Le determinazioni di concessione sono ancora in corso nel 2026, segno che la misura è viva; una riedizione non è annunciata ma è la più plausibile tra quelle attese, perché coprirebbe circa un terzo del costo di certificazione.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioinnova.it/bandi/impresa-rosa-regione-lazio/"},
+
+{n:"Esonero contributivo 1% per parità di genere", e:"INPS — art. 5 L. 162/2021", st:"atteso",
+ d:"2027-04-30", dlab:"finestra attesa", cat:["persone"], forma:"Esonero contributivo", imp:"1% dei contributi, tetto 50.000 €/anno", donne:true,
+ t:"Esonero dell'<b>1% dei contributi previdenziali a carico del datore</b>, tetto 50.000 € l'anno per azienda, stanziamento nazionale 50 M€ con riparto proporzionale. Presuppone la <b>certificazione UNI/PdR 125:2022 già conseguita</b>. Va detto con franchezza: su un organico di questa dimensione l'1% vale un ordine di grandezza di poche migliaia di euro l'anno, quindi non è questa la ragione per certificarsi — la ragione sono i punti in graduatoria e il posizionamento. La finestra 2026 (per certificazioni ottenute entro il 31/12/2025) si è chiusa il 30 aprile; <b>la prossima è attesa tra gennaio e aprile 2027</b>, per chi si certifica entro fine 2026. Domanda telematica sul Portale delle Agevolazioni INPS, modulo SGRAVIO PAR_GEN; chi lo ottiene e mantiene la certificazione non deve ripresentare domanda.",
+ flag:"", ver:"sec",
+ url:"https://www.consulentidellavoro.it/home/storico-articoli/19184-sgravio-parita-di-genere-domande-fino-al-30-aprile-2026"},
+
+{n:"Contratti di filiera del turismo", e:"Ministero del Turismo — Legge di Bilancio 2026", st:"atteso",
+ d:"", cat:["investimenti"], forma:"Contributi a fondo perduto", imp:"50 M€ l'anno per 2026-2028",
+ t:"<b>150 milioni complessivi</b> stanziati dalla Legge di Bilancio 2026 per incentivare investimenti privati nella filiera turistica, 50 all'anno per tre anni. <b>Il decreto attuativo non è ancora pubblicato</b>, verificato assente ad agosto 2026, quindi l'ammissibilità dei tour operator non è determinabile: le fonti secondarie indicano che i destinatari includerebbero anche agenzie di viaggio e TO, ma la scheda ufficiale del Ministero non li nomina. Va presidiata perché <b>è l'unico canale turismo potenzialmente aperto a un TO senza strutture ricettive</b> — tutto il resto del comparto (FRI-Tur, Green Tour, contratti di sviluppo) è tarato su immobili e soglie da milioni.",
+ flag:"", ver:"nonuscita",
+ url:"https://www.ministeroturismo.gov.it/legge-di-bilancio-ministero-del-turismo-le-misure-presenti-in-manovra-2026/"},
+
+{n:"Marchi+", e:"MIMIT / UIBM", st:"atteso",
+ d:"", cat:["comunicazione"], forma:"Fondo perduto 80% / 85%", imp:"6.000 € per marchio UE, 9.000 € internazionale", donne:true,
+ t:"Misura A per il marchio UE via EUIPO: <b>80%</b>, max 6.000 € per marchio. Misura B per il marchio internazionale via WIPO: <b>90%</b>, max 9.000 €. Con la <b>certificazione UNI/PdR 125:2022 le aliquote salgono a 85% e 95%</b>. PMI di tutti i settori, tutto il territorio nazionale. L'ultimo sportello ha aperto il <b>4 dicembre 2025 e si è chiuso il giorno dopo</b> per esaurimento dei 2 M€: la pratica deve essere pronta e caricata prima dell'apertura, non dopo. Edizione 2026 non annunciata. Rilevante solo se c'è un tema di tutela del marchio Onivà — ma se c'è, questa è la via.",
+ flag:"Lo sportello 2025 è durato un giorno", ver:"nonuscita",
+ url:"https://www.mimit.gov.it/it/incentivi/marchi-2025"},
+
+{n:"Voucher Internazionalizzazione PMI", e:"Regione Lazio / Lazio Innova — PR FESR", st:"atteso",
+ d:"", cat:["estero","comunicazione"], forma:"Fondo perduto 100%", imp:"15.240 € per fiera, fino a 3 fiere", donne:true,
+ t:"<b>100% a fondo perduto</b> in de minimis, 15.240 € per fiera internazionale B2B, fino a 3 fiere. Dotazione 10 M€, ATECO 79 ammesso, e <b>5 punti di premialità per la certificazione di parità di genere</b>. Il rapporto sforzo/rendimento è il migliore del gruppo. La riserva è sostanziale, non formale: le fiere B2B servono a promuoversi <i>presso clientela estera</i>, e Onivà oggi vende a italiani. Diventa una misura sensata solo se e quando si apre davvero un canale verso l'estero — altrimenti è un progetto fragile in istruttoria e, peggio, un impegno di lavoro senza ritorno. Edizione chiusa il 28 novembre 2025.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioinnova.it/bandi/voucher-internazionalizzazione-pmi-2026/"},
+
+{n:"Fondo Nuove Competenze — quarta edizione", e:"Ministero del Lavoro", st:"incerto",
+ d:"", cat:["persone"], forma:"Rimborso del costo del lavoro in formazione", imp:"fino al 100% delle ore",
+ t:"Il meccanismo è il più generoso del panorama formazione: lo Stato <b>rimborsa il costo del lavoro delle ore che i dipendenti passano in formazione</b> anziché in produzione, previo accordo collettivo di rimodulazione dell'orario. La terza edizione, chiusa nell'aprile 2025 con oltre un miliardo di dotazione, ha visto l'ultimo elenco di beneficiari pubblicato il 19 agosto 2026 — ma il rifinanziamento di gennaio serviva solo allo scorrimento, non a nuove domande. <b>Di una quarta edizione non esiste avviso, decreto né dotazione</b>: solo anticipazioni di operatori privati che la collocano tra fine 2026 e inizio 2027. Se interessa, il lavoro preparatorio — <b>l'accordo sindacale</b> — va avviato prima dell'avviso, non dopo.",
+ flag:"", ver:"nonuscita",
+ url:"https://www.lavoro.gov.it/temi-e-priorita/orientamento-e-formazione/focus/fondi-alle-imprese-la-formazione-continua/pagine-0"},
+
+{n:"Formazione continua per occupati — tipo «Confluenze»", e:"Regione Lazio — PR FSE+", st:"atteso",
+ d:"", cat:["persone"], forma:"Fondo perduto su percorsi formativi", imp:"fino a 19.700 € per percorso",
+ t:"Oggi <b>non risulta aperto alcun avviso FSE+ del Lazio per la formazione continua di occupati in imprese private</b>: gli avvisi attivi riguardano IeFP duale, ITS Academy, disoccupati e voucher a persone fisiche. Il modello da attendere in riedizione è «Confluenze» Misura B — percorsi di aggiornamento e riqualificazione da 20 a 150 ore per occupati aziendali, costo massimo 19.700 €, con temi che includevano espressamente <b>turismo sostenibile, digitale e lingue straniere</b>. Chiuso dal dicembre 2023. Da monitorare sul <a href=\"https://www.lazioeuropa.it/calendari-di-preavviso-e-opportunita-di-finanziamento/\">calendario di preavviso FSE+</a>, che la Regione aggiorna periodicamente e che è il posto giusto per accorgersi in anticipo.",
+ flag:"", ver:"ok",
+ url:"https://www.lazioeuropa.it/pr-fse/fse-bandi-e-graduatorie/"},
+
+{n:"Sotto-sovvenzioni SMP-COSME per PMI del turismo", e:"EISMEA — Single Market Programme", st:"atteso",
+ d:"", cat:["investimenti","estero"], forma:"Lump sum a fondo perduto", imp:"7.000 – 15.000 €",
+ t:"È la risposta concreta alla domanda «ci sono soldi europei aggredibili senza costruire un consorzio». Sì, ma indiretti e piccoli. La call madre (6,9 M€, circa 5 progetti) è chiusa dal 20 maggio 2026 e richiedeva consorzi di DMO e business support organisation: <b>Onivà non può parteciparvi come partner</b>. Però ogni progetto vincitore <b>è obbligato</b> a selezionare tra 10 e 30 PMI turistiche e ad assegnare loro <b>7.000–15.000 € in lump sum</b> con procedura competitiva e trasparente. Quelle open call a cascata sono candidature snelle, in inglese, alla portata di 13 persone. I vincitori saranno noti nei prossimi mesi; le open call sono attese <b>presumibilmente nel 2027</b>. Il presidio consiste nel farsi trovare pronti.",
+ flag:"", ver:"prev",
+ url:"https://eismea.ec.europa.eu/funding-opportunities/calls-proposals/supporting-sustainable-competitiveness-tourism-smp-cosme-2026-toursme-01_en"},
+
+/* ============ SUPPORTO — NON SONO CONTRIBUTI ============ */
+
+{n:"R.O.M.E. Digital Hub — EDIH", e:"European Digital Innovation Hub — MIMIT / Commissione UE", st:"supporto",
+ d:"", cat:["investimenti"], forma:"Servizi, non contributi", imp:"de minimis o gratuiti",
+ t:"È l'EDIH di riferimento territoriale per il Lazio. Offre <b>Test Before Invest</b> — un ambiente per provare tecnologie prima di comprarle — formazione su misura inclusa IA, e supporto all'identificazione delle strategie di finanziamento. Nessun contributo diretto. <b>Il valore vero non sono i soldi</b>: l'EDIH produce l'assessment tecnico e la documentazione di maturità digitale che rendono credibile una domanda SIMEST sulla sezione IA. Ordine corretto delle mosse: <b>prima l'EDIH, poi il 21 settembre</b>. La gratuità non è dichiarata sul sito, va chiesta al primo contatto.",
+ flag:"", ver:"prev",
+ url:"https://www.romedigitalhub.com/"},
+
+{n:"Enterprise Europe Network — Lazio Innova", e:"EEN Lazio / EISMEA", st:"supporto",
+ d:"", cat:["estero"], forma:"Servizi, non contributi", imp:"—",
+ t:"Ricerca di partner commerciali e tecnologici tramite il database UE, supporto all'innovation management, workshop su proprietà intellettuale e internazionalizzazione, informazione sui programmi comunitari. Punti di contatto in tutte le sedi Spazio Attivo del Lazio, contatto een@lazioinnova.it. Aspettativa realistica: <b>è un canale di monitoraggio bandi e partner search, non un finanziatore</b> — e il turismo non è tra i settori con esperti dedicati sul portale europeo. Utile da agganciare una volta, a costo quasi nullo, per non doversi accorgere delle finestre dalla stampa.",
+ flag:"", ver:"prev",
+ url:"https://www.lazioinnova.it/spazioattivo/enterprise-europe-network/"}
+
+];
+
+const CAL = [
+ ["Settembre","<b>SIMEST IA & Quantum</b> apre lo sportello il 21 (200 M€, soglia export al 3%). <b>Acchiappa Talenti</b> scade il 30. Storicamente è il mese del <b>Voucher Doppia Transizione</b> camerale, e altre camere hanno già aperto: se Roma pubblica, è ora."],
+ ["Ottobre","<b>Voucher Cloud e Cybersecurity</b>: precompilazione dal 20. Prima di allora vanno verificati i fornitori nell'elenco abilitato MIMIT."],
+ ["Novembre","<b>Voucher Cloud e Cybersecurity</b>: invio domande dal 10, ordine cronologico. Finestra storica dei voucher regionali di internazionalizzazione."],
+ ["Dicembre","Chiusura di <b>SALGO</b> (4), <b>Rafforzamento capacità manageriali</b> (22), <b>Bando Sviluppo Impresa</b> camerale (31). Ultimo giorno utile per il <b>Bonus Donne</b> e per il potenziamento SIMEST (31). Storicamente esce <b>Marchi+</b>, con sportelli che durano un giorno."],
+ ["Gennaio – aprile","Finestra INPS per l'<b>esonero 1% parità di genere</b>, per chi si è certificato entro il 31 dicembre. Possibile pubblicazione del decreto attuativo dei <b>contratti di filiera turismo</b>."],
+ ["Aprile – giugno","La stagione dei fondi Lazio Innova: nel 2026 sono usciti e si sono esauriti <b>Piccolo Credito</b> (11–18 maggio), <b>Patrimonializzazione</b> (chiuso il 15 maggio) e <b>Donne e Impresa</b> (22 aprile – 10 giugno). È il trimestre in cui il dossier deve essere già pronto."],
+ ["Nel corso del 2027","Open call a cascata dei progetti <b>SMP-COSME turismo</b> (7–15 k€ per PMI). Possibile <b>III edizione del Voucher Digitalizzazione PMI</b> del Lazio, dove la certificazione di parità vale 10 punti."]
+];
+
+const DEAD = [
+ ["Fondo Impresa Femminile","MIMIT / Invitalia","chiuso dal 2022 e risorse esaurite (~299 M€), nessuna riapertura annunciata. Il turismo sarebbe settore ammesso: è la misura da riaprire d'occhio se la compagine cambia"],
+ ["Green Tour — Fondo turismo 2026","Ministero del Turismo","investimento minimo 1 M€ e obbligo di destinare almeno il 51% a efficientamento energetico su immobili. Un'impresa d'ufficio da 13 persone non ha né la scala né l'oggetto. È la misura dal titolo più seducente e dalla soglia più inaccessibile"],
+ ["FRI-Tur","Ministero del Turismo","riservato a strutture ricettive e imprese con immobili turistici; finestre chiuse"],
+ ["DigiTour — credito d'imposta digitalizzazione agenzie e TO","Min. Turismo / Invitalia","chiuso: sportello 2022, ultimo termine per le erogazioni 30/09/2025. Era la misura perfetta per l'ATECO 79.12 (50%, max 25.000 €) e non è stata rifinanziata"],
+ ["Contratti di sviluppo — turismo","Invitalia","soglia minima 7,5 M€ di investimento. Fuori scala"],
+ ["Bonus pubblicità (credito d'imposta investimenti pubblicitari)","Dip. Editoria / AdE","ammette solo stampa quotidiana e periodica, anche online: <b>Google e Meta sono esclusi</b>. Per un'acquisizione 100% su quei canali la misura è inutile, salvo aprire una linea su testate giornalistiche. Finestra 2026 comunque chiusa il 1° aprile"],
+ ["Transizione 5.0","MIMIT / GSE","chiusa, risorse esaurite il 06/11/2025"],
+ ["Iperammortamento 2026","MEF / GSE","attivo, ma i beni ammessi sono quelli degli Allegati IV e V: macchinari 4.0 interconnessi. Senza oggetto agevolabile per un tour operator"],
+ ["Credito d'imposta formazione 4.0","MIMIT / AdE","cessato: non applicabile alle spese sostenute dopo il 31/12/2022"],
+ ["Credito d'imposta ZES unica e decontribuzione Sud","AdE / INPS","solo Mezzogiorno. Il Lazio è regione «più sviluppata» e resta fuori — vale per tutta la programmazione MIMIT finanziata dal PN Ricerca e Competitività"],
+ ["Resto al Sud 2.0","Invitalia","solo Mezzogiorno"],
+ ["ON — Oltre Nuove imprese a tasso zero","Invitalia","riservata a imprese costituite da non più di 60 mesi; risorse a fondo perduto esaurite dal 30/06/2026. Serve inoltre oltre metà dei soci <i>e</i> delle quote in capo a donne o under 35"],
+ ["Smart&Start Italia","Invitalia","riservata alle startup innovative iscritte alla sezione speciale, costituite da meno di 60 mesi"],
+ ["Bonus Giovani under 35","INPS","assunzioni agevolabili fino al 30/04/2026: finestra scaduta"],
+ ["Bonus Mamme 2026","INPS","il beneficio è in capo alla lavoratrice, non al datore: nessun risparmio per l'impresa"],
+ ["SIMEST E-commerce","SIMEST","la piattaforma deve essere finalizzata alla commercializzazione <i>sui mercati esteri</i> di beni e servizi italiani, con dominio localizzato nel Paese estero. Il sito di Onivà vende a italiani: è l'esatto opposto della fattispecie"],
+ ["SIMEST Inserimento Mercati Esteri","SIMEST","finanzia l'apertura o il potenziamento di strutture commerciali all'estero. Non pertinente senza una sede estera"],
+ ["SIMEST Fiere ed Eventi","SIMEST","formalmente ammissibile e senza export minimo, ma presuppone che si vada in fiera a vendere all'estero. Andare a ITB o WTM come compratori di servizi non è l'uso previsto: progetto fragile in istruttoria"],
+ ["Bonus Export Digitale Plus","ICE / Invitalia","chiuso dal 12/04/2024 e comunque riservato al manifatturiero"],
+ ["ICE Agenzia — voucher","ICE","nessuna misura contributiva generalista aperta ad agosto 2026: solo servizi (Export Front Desk, Train2Markets, TenderPlus) e bandi puntuali per startup"],
+ ["Interreg Europe","Programma UE","testo ufficiale: le organizzazioni private a scopo di lucro non possono essere partner e non possono ricevere fondi. Solo stakeholder group, senza soldi"],
+ ["LIFE 2026","CINEA","nessun topic dedicato al turismo; progetti da milioni con consorzi multi-Paese e istruttorie oltre i 12 mesi"],
+ ["Digital Europe — call 2026","HaDEA","i topic pubblicati riguardano IA in sanità, competenze, EdTech, cartelle cliniche, Safer Internet. Per una PMI il programma è accessibile solo indirettamente, via EDIH"],
+ ["fuTOURiSME, DETOUR, TourINN-Act, ST3ER, TRACE, EU DigiTOUR","Cascade funding UE","tutte chiuse. fuTOURiSME era la più generosa del filone (30.000 € al 100%, 60 progetti, Italia ammessa): occasione persa, e primo bersaglio se esce una seconda edizione"],
+ ["EIT SME Market Expansion 2026","EIT","chiusa il 01/12/2025 e limitata a cinque temi di urban mobility"],
+ ["Avviso Unioncamere per la certificazione parità di genere","Dip. Pari Opportunità / Unioncamere","chiuso dal 18/04/2025 (voucher fino a 2.500 € di assistenza + 12.500 € di certificazione). Il target PNRR era fissato al Q2 2026 ed è scaduto: una riedizione è improbabile"],
+ ["Valore Artigiano 2026","Lazio Innova","riservato alle imprese iscritte all'Albo artigiani"],
+ ["Nuovo Fondo Futuro 2026","Lazio Innova","solo microimprese costituite da meno di 36 mesi, e comunque chiuso il 25/05/2026 per esaurimento"],
+ ["Basket Bond Lazio","Lazio Innova","soglia di accesso: fatturato ≥ 5 M€, oggi non raggiunta — da riconsiderare quando lo sarà"],
+ ["Avviso promozione turistica Regione Lazio","Regione Lazio","solo associazioni, fondazioni ed enti del terzo settore iscritti al RUNTS. Le imprese private, TO inclusi, non sono ammesse"],
+ ["LaDIT — Lazio Digital Innovation Tourism","Regione Lazio / LAZIOcrea","beneficiari: solo i Comuni del Lazio"],
+ ["Bando Nuove Imprese e Idea Innovativa femminile","CCIAA Roma","rivolti ad aspiranti imprenditori e a nuova imprenditorialità. Onivà è costituita dal 2021"],
+ ["Bando competitività imprese 2026","CCIAA Roma","beneficiari: associazioni di categoria ed enti non profit. Onivà può però beneficiarne indirettamente partecipando ai progetti di un'associazione di categoria (linee internazionalizzazione e digitalizzazione, 50% fino a 40.000 €)"],
+ ["Bando ITS Academy 2026","CCIAA Roma","incentiva l'iscrizione degli studenti ai percorsi ITS, non è un contributo all'impresa. Utilizzabile solo come canale di reclutamento"],
+ ["For.Te — Avviso di Sistema 2/26","For.Te","i piani aziendali sono riservati a imprese 51–249 dipendenti. Via residua: entrare in un piano territoriale o settoriale promosso da un capofila del turismo laziale, entro il 20/10/2026"],
+ ["Fondimpresa","Fondimpresa","adesione tecnicamente possibile ma è il fondo Confindustria, tarato su manifattura: avvisi competitivi su temi industriali. Migrare significherebbe rinunciare al posizionamento terziario"],
+ ["Fondir e Fondoprofessioni","Fondi interprofessionali","il primo finanzia solo la formazione dei dirigenti (Onivà non ne ha in organico), il secondo è riservato agli studi professionali"],
+ ["Formatemp","Formatemp","fondo per la formazione dei lavoratori in somministrazione: non pertinente a dipendenti diretti"],
+ ["Fondo Nuove Competenze 3","Ministero del Lavoro","sportello chiuso dall'aprile 2025; il rifinanziamento di gennaio 2026 serve solo allo scorrimento delle istanze già presentate"],
+ ["Sostituzione veicoli commerciali inquinanti","Regione Lazio","formalmente ammissibile, senza rilevanza per il modello operativo"]
+];
+
+/* ---------- rendering ---------- */
+const $=s=>document.querySelector(s);
+const F={cat:"all",st:"all",donne:"all",ver:"all"};
+
+function giorni(iso){
+  if(!iso) return null;
+  const p=iso.split("-").map(Number);
+  const d=new Date(p[0],p[1]-1,p[2]);
+  return Math.round((d-OGGI)/86400000);
+}
+function fmt(iso){
+  if(!iso) return "";
+  const MM=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+  const p=iso.split("-").map(Number);
+  return p[2]+" "+MM[p[1]-1]+" "+p[0];
+}
+const VERLAB={ok:"✓ confermata alla fonte",nonuscita:"✓ non ancora uscita",prev:"◷ previsione",sec:"fonte secondaria"};
+const STLAB={aperto:"Aperto ora",sportello:"Sempre aperto",atteso:"Atteso",incerto:"Incerto",supporto:"Supporto"};
+
+function tiles(){
+  const aperte=M.filter(m=>m.st==="aperto"||m.st==="sportello").length;
+  const attese=M.filter(m=>m.st==="atteso"||m.st==="incerto").length;
+  const urgenti=M.filter(m=>{const g=giorni(m.d);return g!==null&&g>=0&&g<=90;}).length;
+  const donne=M.filter(m=>m.donne).length;
+  const t=[
+    [M.length,"misure a radar"],
+    [aperte,"attivabili adesso"],
+    [attese,"da presidiare"],
+    [urgenti,"con una data entro 90 giorni",true],
+    [donne,"dove la leva di genere pesa"]
+  ];
+  $("#tiles").innerHTML=t.map(x=>
+    `<div class="tile${x[2]?" hot":""}"><div class="n">${x[0]}</div><div class="l">${x[1]}</div></div>`).join("");
+}
+
+function card(m){
+  const g=giorni(m.d);
+  const urgente=(g!==null&&g>=0&&g<=45)||!!m.flag;
+  let dataHtml="";
+  if(m.d){
+    const cls=g<0?"":(g<=30?"urg hot":(g<=90?"urg warm":"urg"));
+    const lab=m.dlab||(m.st==="atteso"||m.st==="incerto"?"apertura":"scadenza");
+    dataHtml=`<span>${lab} <b class="${cls}">${fmt(m.d)}</b>${(g!==null&&g>=0&&g<=120)?` <span class="${cls}">(${g} gg)</span>`:""}</span>`;
+  }
+  return `<article class="card${urgente?" urgent":""}"
+     data-cat="${m.cat.join("|")}" data-st="${m.st}" data-ver="${m.ver}" data-donne="${m.donne?"si":"no"}">
+    <div class="chead">
+      <div class="cname"><a href="${m.url}" target="_blank" rel="noopener">${m.n}</a></div>
+      <div class="cente">${m.e}</div>
+    </div>
+    <p class="cbody">${m.t}</p>
+    <div class="meta">
+      ${dataHtml}
+      ${m.forma?`<span>forma <b>${m.forma}</b></span>`:""}
+      ${m.imp?`<span>importo <b>${m.imp}</b></span>`:""}
+    </div>
+    <div class="badges">
+      ${m.cat.map(c=>`<span class="b cat" data-c="${c}">${c}</span>`).join("")}
+      <span class="b st" data-v="${m.st}">${STLAB[m.st]}</span>
+      ${m.donne?`<span class="b donne">leva di genere</span>`:""}
+      ${m.flag?`<span class="b warnflag">${m.flag}</span>`:""}
+      <span class="b ver" data-v="${m.ver}">${VERLAB[m.ver]}</span>
+    </div>
+  </article>`;
+}
+
+function render(){
+  $("#cards").innerHTML=M.map(card).join("");
+  $("#calBody").innerHTML=CAL.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("");
+  $("#deadList").innerHTML=DEAD.map(d=>`<li><b>${d[0]}</b> <i>— ${d[1]}</i> — ${d[2]}</li>`).join("");
+  $("#deadSummary").textContent=DEAD.length+" misure controllate e messe da parte, con il motivo";
+  tiles();
+  apply();
+}
+
+function apply(){
+  let n=0;
+  document.querySelectorAll("#cards .card").forEach(c=>{
+    const okCat=F.cat==="all"||c.dataset.cat.split("|").includes(F.cat);
+    const okSt=F.st==="all"||c.dataset.st===F.st;
+    const okDo=F.donne==="all"||c.dataset.donne===F.donne;
+    const okVe=F.ver==="all"||c.dataset.ver===F.ver;
+    const show=okCat&&okSt&&okDo&&okVe;
+    c.style.display=show?"":"none";
+    if(show)n++;
+  });
+  const old=$("#cards .empty"); if(old) old.remove();
+  if(n===0) $("#cards").insertAdjacentHTML("beforeend",
+    '<div class="empty">Nessuna misura con questi filtri. Prova ad allargare.</div>');
+}
+
+document.querySelectorAll(".chip").forEach(b=>{
+  b.addEventListener("click",()=>{
+    const f=b.dataset.f;
+    F[f]=b.dataset.v;
+    document.querySelectorAll(`.chip[data-f="${f}"]`).forEach(o=>
+      o.setAttribute("aria-pressed",String(o===b)));
+    apply();
+  });
+});
+
+(function(){
+  const root=document.documentElement;
+  let saved=null;
+  try{saved=sessionStorage.getItem("oniva-radar-theme");}catch(e){}
+  if(saved) root.setAttribute("data-theme",saved);
+  $("#themeBtn").addEventListener("click",()=>{
+    const cur=root.getAttribute("data-theme");
+    const dark=cur? cur==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    const nxt=dark?"light":"dark";
+    root.setAttribute("data-theme",nxt);
+    try{sessionStorage.setItem("oniva-radar-theme",nxt);}catch(e){}
+  });
+})();
+
+render();
+</script>
+</body>
+</html>
