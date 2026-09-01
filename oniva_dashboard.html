@@ -114,7 +114,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
   </div>
   <div class="upd">
     Contratti agg. <b>25.08.2026</b><br>
-    Cashflow agg. <b>08.06.2026</b><br>
+    Cashflow agg. <b>24.08.2026</b><br>
     Saldi bancari agg. <b>01.09.2026</b>
   </div>
 </div>
@@ -281,13 +281,17 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
 </div><!--/previsionale-->
 <div class="tab-panel" id="tab-cashflow">
 <div class="section">
-  <div class="sec-title">Cashflow 2026 — proiezione cassa (al 08.06.2026)</div>
+  <div class="sec-title">Cashflow 2026 — proiezione cassa (al 24.08.2026)</div>
   <div class="metrics" id="cfMetrics"></div>
 </div>
 
 <div class="chart-row">
   <div class="chart-box">
     <div class="ctitle">Cassa a fine mese 2026 (€)</div>
+    <div class="legend">
+      <span><b style="background:#2F6B58"></b>con stima nuovi contratti</span>
+      <span><b style="background:#9A988F"></b>solo contratti già firmati</span>
+    </div>
     <div style="position:relative;width:100%;height:220px"><canvas id="chartCassa"></canvas></div>
   </div>
   <div class="chart-box">
@@ -306,7 +310,7 @@ body { font-family: var(--font-sans, 'Inter', system-ui, sans-serif); }
     <div class="cf-table-wrap">
       <table class="cf-table" id="cfTable"></table>
     </div>
-    <div class="note">Valori in €. <b>Cassa fine mese = Cassa inizio + CF stimato + Delta CF stimato − Spese amministrative</b>. Il Delta CF è effettivo (Gen–Mag) e stimato a +50.000/mese da Lug (su base dati 2025). Mesi Giu–Dic stimati. Cassa inizio anno = 177.000 €, non comprende Gift Card non utilizzate e fondo TFR al 31.12.2025. Fonte: foglio CF2026 MTD (rev PB).</div>
+    <div class="note">Valori in €. <b>Cassa fine mese = Cassa inizio + CF stimato + Delta CF − Spese amministrative</b>. Effettivi fino a luglio, stime da agosto. Due letture del 2026: la riga <b>solo firmato</b> proietta i soli contratti già in portafoglio al 24.08 e chiude l'anno a −127.632 €; la riga <b>con nuovi contratti</b> aggiunge la correzione del mark up sui contratti esistenti (−61.288 €) e la stima dei contratti da firmare ago–dic (rate +853.769 €, uscite −598.094 €, netto +331.574 €, su base stagionalità 2025) e chiude a +142.653 €. La differenza tra le due curve è quanto il 2026 dipende ancora dalle firme dei prossimi mesi. Cassa al 1.1.2026 = 130.000 €, non comprende Gift Card non utilizzate e fondo TFR al 31.12.2025. Fonte: foglio CF2026 MTD, dati al 24.08.2026.</div>
   </div>
 </div>
 
@@ -426,20 +430,26 @@ const RAW = {
 };
 
 const CF = {
+  asOf: '24.08.2026',
   mesi: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'],
-  cassaInizio: [177000,195794.75,261987.98,391703.38,454172.74,589935.80,407764.61,366090.26,269823.26,215348.08,103181.09,57404.05],
-  cassaFine:   [195794.75,261987.98,391703.38,454172.74,589935.80,407764.61,366090.26,269823.26,215348.08,103181.09,57404.05,22375.31],
-  entrateStim: [275002,388133,378119.74,439412,426835,258087,188453.71,107108,76973,4450,10415,0],
-  entrateEff:  [259096.78,383813.8,372613.74,427057.65,422510.11,null,null,null,null,null,null,null],
-  usciteStim:  [186091.87,269719.38,242188.22,313620.29,289228.02,364539.55,212691.72,202235.31,126888.39,114125.93,49901.5,12537],
-  usciteEff:   [178732.99,264822.58,187675.34,308818.03,228231.26,null,null,null,null,null,null,null],
-  cfStim:      [88910.13,118413.62,135931.52,125791.71,137606.98,-106452.55,-24238.01,-95127.31,-49915.39,-109675.93,-39486.5,-12537],
-  deltaCF:     [-8546.34,577.60,49006.88,-7552.09,56671.87,null,50000,50000,50000,50000,50000,50000],
-  cfEff:       [80363.79,118991.22,184938.4,118239.62,194278.85,null,null,null,null,null,null,null],
-  speseAmm:    [61569.04,52797.99,55222.996,55770.26,58515.79,75718.64,67436.34,51139.69,54559.79,52491.06,56290.54,72491.74],
+  cassaInizio: [130000,149148.77,215265.61,341364.68,405749.24,530144.96,395238.81,463502.98,300471.04,220713.65,55012.66,-41354.38],
+  cassaFine:   [149148.77,215265.61,341364.68,405749.24,530144.96,395238.81,463502.98,300471.04,220713.65,55012.66,-41354.38,-127632.12],
+  cassaFineNC: [149148.77,215265.61,341364.68,405749.24,530144.96,395238.81,463502.98,293818.27,239856.4,127638.5,111804.73,142653.09],
+  entrateStim: [275002,388133,380119.74,438637.5,424835,436624,394840.77,181738,144095,22500,39515,14480],
+  entrateEff:  [259096.78,383813.8,372613.74,428467.65,422510.11,387878.2,446305.4,null,null,null,null,null],
+  usciteStim:  [185996.87,268488.38,241945.22,313046.99,288888.18,499757.97,353624.66,293630.25,169292.6,135709.93,79591.5,28266],
+  usciteEff:   [178378.97,264898.97,191291.67,308312.83,239598.6,447065.71,310604.89,null,null,null,null,null],
+  cfStim:      [89005.13,119644.62,138174.52,125590.51,135946.82,-63133.97,41216.11,-111892.25,-25197.6,-113209.93,-40076.5,-13786],
+  deltaCF:     [-8287.32,-729.79,43147.55,-5435.69,46964.69,3946.46,94484.4,null,null,null,null,null],
+  cfEff:       [80717.81,118914.83,181322.07,120154.82,182911.51,-59187.51,135700.51,null,null,null,null,null],
+  speseAmm:    [61569.04,52797.99,55223,55770.26,58515.79,75718.64,67436.34,51139.69,54559.79,52491.06,56290.54,72491.74],
+  corrMU:      [null,null,null,null,null,null,null,-33216.07,-3678.97,-16529.2,-5851.36,-2012.82],
+  nuoviCF:     [null,null,null,null,null,null,null,26563.3,29474.49,70012.3,86384.63,119138.93],
   tot: {
-    entrateStim: 2552988.45, usciteStim: 2383767.18, cfStim: 169221.27, deltaCF: 25148.83, speseAmm: 714003.88,
-    bancaInizio: 177000, bancaFineAnno: 22375.31
+    entrateStim: 3140520.01, usciteStim: 2858238.55, cfStim: 282281.46,
+    deltaCF: 174090.3, speseAmm: 714003.88,
+    corrMU: -61288.43, nuoviCF: 331573.65, rateNuovi: 853769, usciteNuovi: 598094.33,
+    bancaInizio: 130000, bancaFineAnno: -127632.12, bancaFineAnnoNC: 142653.09
   }
 };
 
@@ -814,16 +824,16 @@ function renderDest() {
   `).join('');
 }
 
-const eur = v => '€'+Math.round(v).toLocaleString('it');
-const eurK = v => (v<0?'-€':'€')+Math.round(Math.abs(v)/1000).toLocaleString('it')+'k';
+const eur = v => (v<0?'\u2212€':'€')+Math.round(Math.abs(v)).toLocaleString('it');
+const eurK = v => (v<0?'\u2212€':'€')+Math.round(Math.abs(v)/1000).toLocaleString('it')+'k';
 
 function renderCfMetrics() {
   const t = CF.tot;
   document.getElementById('cfMetrics').innerHTML = `
     <div class="metric"><div class="label">Banca al 1.1.2026</div><div class="val">${eurK(t.bancaInizio)}</div><div class="sub">cassa iniziale</div></div>
-    <div class="metric"><div class="label">CF stimato 2026</div><div class="val">${eurK(t.cfStim)}</div><div class="sub">entrate − uscite</div></div>
     <div class="metric"><div class="label">Spese amministrative</div><div class="val">${eurK(t.speseAmm)}</div><div class="sub">personale + costi op.</div></div>
-    <div class="metric"><div class="label">Cassa stimata fine 2026</div><div class="val" style="color:${t.bancaFineAnno<0?'#C0392B':'#1D7A5A'}">${eur(t.bancaFineAnno)}</div><div class="sub">cassa al 31.12</div></div>
+    <div class="metric"><div class="label">Cassa fine 2026 — solo firmato</div><div class="val" style="color:${t.bancaFineAnno<0?'#C0392B':'#1D7A5A'}">${eur(t.bancaFineAnno)}</div><div class="sub">nessuna nuova firma da agosto</div></div>
+    <div class="metric"><div class="label">Cassa fine 2026 — con nuovi contratti</div><div class="val" style="color:${t.bancaFineAnnoNC<0?'#C0392B':'#1D7A5A'}">${eur(t.bancaFineAnnoNC)}</div><div class="sub">stima ago–dic su stagionalità 2025</div></div>
   `;
 }
 
@@ -831,12 +841,22 @@ function renderCassaChart() {
   if(charts.cassa) charts.cassa.destroy();
   charts.cassa = new Chart(document.getElementById('chartCassa'),{
     type:'line',
-    data:{labels:CF.mesi,datasets:[{
-      data:CF.cassaFine, borderColor:ONI.ink, backgroundColor:'rgba(20,60,58,0.10)',
-      fill:true, tension:0.35, pointRadius:3.5, pointHoverRadius:5,
-      pointBackgroundColor:CF.cassaFine.map(v=>v<0?ONI.red:ONI.gold), pointBorderColor:ONI.ink, pointBorderWidth:1.5
-    }]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+eur(c.raw)}}},
+    data:{labels:CF.mesi,datasets:[
+      {
+        label:'con stima nuovi contratti',
+        data:CF.cassaFineNC, borderColor:ONI.ink, backgroundColor:'rgba(47,107,88,0.10)',
+        fill:true, tension:0.35, pointRadius:3.5, pointHoverRadius:5,
+        pointBackgroundColor:CF.cassaFineNC.map(v=>v<0?ONI.red:ONI.gold), pointBorderColor:ONI.ink, pointBorderWidth:1.5
+      },
+      {
+        label:'solo contratti già firmati',
+        data:CF.cassaFine, borderColor:ONI.grey, backgroundColor:'transparent',
+        borderDash:[5,4], fill:false, tension:0.35, pointRadius:2.5, pointHoverRadius:4,
+        pointBackgroundColor:CF.cassaFine.map(v=>v<0?ONI.red:ONI.grey), pointBorderColor:ONI.grey, pointBorderWidth:1
+      }
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+eur(c.raw)}}},
       scales:{x:{ticks:{color:'#888',font:{size:11}},grid:{display:false}},
         y:{ticks:{color:'#888',font:{size:11},callback:v=>eurK(v)},grid:{color:'rgba(128,128,128,0.1)'}}}}
   });
@@ -869,11 +889,14 @@ function renderCfTable() {
     ['Delta CF stimato (eff. − stim.)', CF.deltaCF, true, CF.tot.deltaCF],
     ['CF effettivo (fee)', CF.cfEff, true, ''],
     ['Spese amministrative', CF.speseAmm, false, CF.tot.speseAmm],
-    ['Cassa fine mese', CF.cassaFine, true, '']
+    ['Cassa fine mese — solo firmato', CF.cassaFine, true, ''],
+    ['Correzione MU contratti firmati', CF.corrMU, true, CF.tot.corrMU],
+    ['CF stimato nuovi contratti', CF.nuoviCF, true, CF.tot.nuoviCF],
+    ['Cassa fine mese — con nuovi contratti', CF.cassaFineNC, true, '']
   ];
   let html = '<thead><tr><th>Voce</th>'+CF.mesi.map(m=>`<th>${m}</th>`).join('')+'<th>Tot 2026</th></tr></thead><tbody>';
   rows.forEach(([label,arr,cls,tot],i)=>{
-    const sep = (i===1||i===3||i===5||i===9) ? ' class="sep"' : '';
+    const sep = (i===1||i===3||i===5||i===9||i===12) ? ' class="sep"' : '';
     html += `<tr${sep}><td>${label}</td>`+arr.map(v=>fmt(v,cls)).join('')+
       (tot!==''&&tot!=null?fmt(tot,cls):'<td>—</td>')+'</tr>';
   });
