@@ -64,13 +64,34 @@ def export_sheet(service, file_id, out_path):
     print(f"  exported {os.path.basename(out_path)}  ({len(data):,} bytes)")
 
 
+def sheet_modified_time(service, file_id):
+    """Drive's own last-modified timestamp (RFC3339, UTC) for the file.
+
+    Used for the dashboard's "Saldi bancari agg." date: the "SALDO al" cell
+    inside the bank sheet is typed by hand and is often NOT updated when the
+    balances are, so it understates how fresh the data really is.
+    """
+    try:
+        info = service.files().get(fileId=file_id, fields="modifiedTime").execute()
+        return info.get("modifiedTime")
+    except Exception as exc:  # non-fatal: recompute falls back to the cell
+        print(f"  WARN: could not read modifiedTime for {file_id}: {exc}")
+        return None
+
+
 def main():
     dest = os.environ.get("ONIVA_SRC", os.getcwd())
     os.makedirs(dest, exist_ok=True)
     service = build("drive", "v3", credentials=creds_from_env(), cache_discovery=False)
     print(f"Exporting {len(SHEETS)} sheets to {dest}")
+    meta = {}
     for file_id, name in SHEETS.items():
         export_sheet(service, file_id, os.path.join(dest, name))
+        meta[name] = sheet_modified_time(service, file_id)
+    meta_path = os.path.join(dest, "sources_meta.json")
+    with open(meta_path, "w", encoding="utf-8") as fh:
+        json.dump(meta, fh, indent=2)
+    print(f"  wrote sources_meta.json -> {meta}")
     print("Done.")
 
 

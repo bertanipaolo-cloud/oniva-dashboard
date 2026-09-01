@@ -65,10 +65,35 @@ def main():
         return d.strftime("%d.%m.%Y")
 
     contracts_date = fmt(datetime.date.fromisoformat(forecast["asOf"])) if forecast else mtime(contracts)
+    # Bank date: prefer Drive's own modifiedTime for the source sheet (written
+    # by fetch_sheets.py into sources_meta.json). The "SALDO al" cell inside
+    # DATI BANCARI_CONTO is typed by hand and is often NOT updated when the
+    # balances are: on 01.09.2026 the amounts changed while the cell still read
+    # 14.08.2026, making the dashboard look staler than it was. Drive's
+    # timestamp cannot be forgotten. Fallbacks: the cell, then the file mtime.
+    bank_date = None
     try:
-        bank_date = R.banner_dates(contracts, bank_f, bank_f)["bank"]
-    except Exception:
-        bank_date = mtime(bank_f)
+        import json
+        with open(os.path.join(SRC, "sources_meta.json"), encoding="utf-8") as fh:
+            stamp = json.load(fh).get(os.path.basename(bank_f))
+        if stamp:
+            dt = datetime.datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+            try:
+                from zoneinfo import ZoneInfo
+                dt = dt.astimezone(ZoneInfo("Europe/Rome"))
+            except Exception:
+                pass
+            bank_date = fmt(dt.date())
+            print(f"  bank date from Drive modifiedTime: {bank_date}")
+    except Exception as exc:
+        print(f"  (sources_meta.json unusable: {exc})")
+    if not bank_date:
+        try:
+            bank_date = R.banner_dates(contracts, bank_f, bank_f)["bank"]
+            print(f"  bank date from 'SALDO al' cell (fallback): {bank_date}")
+        except Exception:
+            bank_date = mtime(bank_f)
+            print(f"  bank date from file mtime (last fallback): {bank_date}")
 
     html = open(HTML, encoding="utf-8").read()
 
